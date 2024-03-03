@@ -1,7 +1,30 @@
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import axios from 'axios';
+import RegisterPage from './pages/public/RegisterPage';
+import LoginPage from './pages/public/LoginPage';
+import PublicLayout from './layouts/PublicLayout';
+import HomePage from './pages/public/HomePage';
+import NotFoundPage from './pages/public/NotFoundPage';
+import OwnerLayout from './layouts/OwnerLayout';
+import DashboardPage from './pages/owner/DashboardPage';
 
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+// axios.defaults.withCredentials = true;
 function App() {
-	return <div className="text-red-400">Test</div>;
+	return (
+		<Routes>
+			<Route element={<PublicLayout />}>
+				<Route path="/" element={<HomePage />} />
+				<Route path="/login" element={<LoginPage />} />
+				<Route path="/register" element={<RegisterPage />} />
+			</Route>
+			<Route element={<OwnerLayout />}>
+				<Route path="/dashboard" element={<DashboardPage />} />
+			</Route>
+			<Route path="*" element={<NotFoundPage />} />
+		</Routes>
+	);
 }
 
 export default App;
