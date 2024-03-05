@@ -8,22 +8,25 @@ import HomePage from './pages/public/HomePage';
 import NotFoundPage from './pages/public/NotFoundPage';
 import OwnerLayout from './layouts/OwnerLayout';
 import DashboardPage from './pages/owner/DashboardPage';
+import { UserContextProvider } from './hooks/UserContext';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 // axios.defaults.withCredentials = true;
 function App() {
 	return (
-		<Routes>
-			<Route element={<PublicLayout />}>
-				<Route path="/" element={<HomePage />} />
-				<Route path="/login" element={<LoginPage />} />
-				<Route path="/register" element={<RegisterPage />} />
-			</Route>
-			<Route element={<OwnerLayout />}>
-				<Route path="/dashboard" element={<DashboardPage />} />
-			</Route>
-			<Route path="*" element={<NotFoundPage />} />
-		</Routes>
+		<UserContextProvider>
+			<Routes>
+				<Route element={<PublicLayout />}>
+					<Route path="/" element={<HomePage />} />
+					<Route path="/login" element={<LoginPage />} />
+					<Route path="/register" element={<RegisterPage />} />
+				</Route>
+				<Route element={<OwnerLayout />}>
+					<Route path="/dashboard" element={<DashboardPage />} />
+				</Route>
+				<Route path="*" element={<NotFoundPage />} />
+			</Routes>
+		</UserContextProvider>
 	);
 }
 
