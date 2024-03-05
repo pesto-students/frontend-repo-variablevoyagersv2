@@ -1,18 +1,21 @@
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import axios from 'axios';
+import { UserContext } from '../../hooks/UserContext';
 
 export default function LoginPage() {
 	const navigate = useNavigate();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [redirect, setRedirect] = useState(false);
+	const { setUser } = useContext(UserContext)
 
 	async function handleLoginSubmit(ev) {
 		ev.preventDefault();
 		try {
 			const { data } = await axios.post('/auth/login', { email, password });
-			console.log('User', data);
+			console.log('User', data.data);
+			setUser(data.data)
 			localStorage.setItem('user', JSON.stringify(data.data));
 			alert('Login successful');
 			navigate('/');
