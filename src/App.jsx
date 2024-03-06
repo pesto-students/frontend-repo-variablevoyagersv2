@@ -9,6 +9,7 @@ import NotFoundPage from './pages/public/NotFoundPage';
 import OwnerLayout from './layouts/OwnerLayout';
 import DashboardPage from './pages/owner/DashboardPage';
 import { UserContextProvider } from './hooks/UserContext';
+import AddPropertyPage from './pages/owner/AddPropertyPage';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 // axios.defaults.withCredentials = true;
@@ -23,6 +24,7 @@ function App() {
 				</Route>
 				<Route element={<OwnerLayout />}>
 					<Route path="/dashboard" element={<DashboardPage />} />
+					<Route path="/add-property" element={<AddPropertyPage />} />
 				</Route>
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
