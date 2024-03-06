@@ -3,8 +3,6 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { UserContext } from '../../hooks/UserContext';
-
-
 const LoginPage = () => {
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -83,3 +81,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+

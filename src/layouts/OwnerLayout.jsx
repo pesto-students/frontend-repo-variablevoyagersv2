@@ -11,11 +11,13 @@ const OwnerLayout = () => {
 	};
 
 	return (
-		<div className="flex h-screen bg-gray-100">
+		<div className="flex h-screen ">
 			<Sidebar isOpen={isSidebarOpen} />
 			<div className="flex flex-col flex-1 overflow-y-auto">
 				<TopNav toggleSidebar={toggleSidebar} />
-				<Outlet />
+				<div className="px-4">
+					<Outlet />
+				</div>
 			</div>
 		</div>
 	);
