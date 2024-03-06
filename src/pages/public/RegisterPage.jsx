@@ -7,7 +7,9 @@ export default function RegisterPage() {
 	const [lastName, setLastName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [role, setRole] = useState('');
 	const [loading, setLoading] = useState(false);
+	
 	async function registerUser(ev) {
 		ev.preventDefault();
 		setLoading(true);
@@ -17,7 +19,7 @@ export default function RegisterPage() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ firstName, lastName, email, password, role: 'OWNER' }),
+				body: JSON.stringify({ firstName, lastName, email, password, role }),
 			});
 			const data = await res.json();
 			console.log(data);
@@ -30,16 +32,30 @@ export default function RegisterPage() {
 	}
 	return (
 		<div className="mt-4 grow flex items-center justify-around">
-			<div className="mb-64">
+			<div className="mb-16 border p-4 rounded-xl border-gray-400 border-opacity-20 shadow-2xl">
 				<h1 className="text-4xl text-center mb-4">Register</h1>
 				<form className="max-w-md mx-auto" onSubmit={registerUser}>
-					<div className="flex items-centr justify-between gap-[4px]">
+					<ul className='flex'>
+						<li className="w-full ">
+							<div className="flex items-center ps-3">
+								<input id="horizontal-list-radio-license" type="radio"  value="CUSTOMER" onChange={(ev) => setRole(ev.target.value)} name="list-radio" className="w-4 h-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700"/>
+									<label for="horizontal-list-radio-license" className="w-full py-3 ms-2 text-primary ">Customer </label>
+							</div>
+						</li>
+						<li className="w-full">
+							<div className="flex items-center ps-3">
+								<input id="horizontal-list-radio-id" type="radio" value="OWNER" onChange={(ev) => setRole(ev.target.value)} name="list-radio" className="w-4 h-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700"/>
+									<label for="horizontal-list-radio-id" className="w-full py-3 ms-2 text-primary ">Owner</label>
+							</div>
+						</li>
+					</ul>
+					<div className="flex items-center justify-between gap-[4px]">
 						<input type="text" placeholder="First name" value={firstName} onChange={(ev) => setFirstName(ev.target.value)} />
 						<input type="text" placeholder="Last name" value={lastName} onChange={(ev) => setLastName(ev.target.value)} />
 					</div>
-					<input type="email" placeholder="your@email.com" value={email} onChange={(ev) => setEmail(ev.target.value)} />
+					<input type="email" placeholder="Your@email.com" value={email} onChange={(ev) => setEmail(ev.target.value)} />
 					<input type="password" placeholder="Password" value={password} onChange={(ev) => setPassword(ev.target.value)} />
-					<button className="primary" disabled={loading}>
+					<button className="primary my-3"  disabled={loading}>
 						Register
 					</button>
 					<div className="text-center py-2 text-gray-500">
