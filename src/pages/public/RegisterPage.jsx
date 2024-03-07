@@ -49,7 +49,7 @@ export default function RegisterPage() {
 						<ul className='flex'>
 							<li className="w-full ">
 								<div className="flex items-center ps-3">
-									<input id="horizontal-list-radio-license" defaultChecked value="CUSTOMER" type="radio" {...register('role')} defaultChecked name="list-radio" className="w-4 h-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700" />
+									<input id="horizontal-list-radio-license" defaultChecked value="CUSTOMER" type="radio" {...register('role')} name="list-radio" className="w-4 h-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700" />
 									<label for="horizontal-list-radio-license" className="w-full py-3 ms-2 text-primary ">Customer </label>
 								</div>
 							</li>
