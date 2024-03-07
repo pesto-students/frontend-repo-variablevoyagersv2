@@ -1,44 +1,39 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { UserContext } from '../../hooks/UserContext';
+
 const LoginPage = () => {
     const navigate = useNavigate();
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const { setUser } = useContext(UserContext)
-    // const [generalError, setGeneralError] = useState('');
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+    const { setUser } = useContext(UserContext);
+    const [generalError, setGeneralError] = useState('');
 
     const onSubmit = async (values) => {
-        // console.log(data);
         try {
             const { data } = await axios.post('/auth/login', values);
-            console.log('User', data.data);
-            setUser(data.data)
+            setUser(data.data);
+            localStorage.setItem('user', JSON.stringify(data.data));
             alert('Login successful');
             navigate("/");
         } catch (error) {
-            // if (error.response && error.response.status === 401) {
-            //     // Invalid email or password
-            //     setError('general', {
-            //       type: 'manual',
-            //       message: 'Invalid email or password',
-            //     });
-            //   } else {
-            //     // Other server-side error
-            //     setGeneralError('Login failed');
-            //   }
+            if (error.response && error.response.status === 401) {
+                setGeneralError(error.response.data.message);
+            } else {
+                setGeneralError('Login failed');
+            }
         }
-
     };
 
     return (
-        <div className="mt-4 grow flex items-center justify-around h-4">
-            <div className="mb-16 border p-4 rounded-xl border-gray-400 border-opacity-20 shadow-2xl">
+        <div className="flex-grow flex justify-center items-center max-h-screen">
+            <div className="p-4 border border-gray-400 border-opacity-20 shadow-2xl rounded-xl w-full max-w-md">
                 <h1 className="text-4xl text-center mb-4">Login</h1>
-                <form className="max-w-md mx-auto" onSubmit={handleSubmit(onSubmit)}>
+                <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                     <div>
                         <input
+                            id='username'
                             type="text"
                             placeholder="Your@email.com"
                             {...register('email', {
@@ -48,6 +43,7 @@ const LoginPage = () => {
                                     message: 'Invalid email address',
                                 },
                             })}
+                            className="w-full p-2 border rounded"
                         />
                         <p className='text-red-500'>{errors.email?.message}</p>
                     </div>
@@ -63,14 +59,17 @@ const LoginPage = () => {
                                     message: 'Password must be at least 6 characters',
                                 },
                             })}
+                            className="w-full p-2 border rounded"
                         />
                         <p className='text-red-500'>{errors.password?.message}</p>
                     </div>
-                    <button className="primary my-3" type='submit' >Login</button>
+                    {generalError && <p className="text-red-500">{generalError}</p>}
+
+                    <button className="primary my-3" disabled={isSubmitting} type='submit'>{isSubmitting ? 'Loading' : 'Log-In'}</button>
 
                     <div className="text-center py-2 text-gray-500">
                         Don't have an account yet?{' '}
-                        <Link className="underline text-black" to={'/register'}>
+                        <Link className="underline text-blue-500" to={'/register'}>
                             Register now
                         </Link>
                     </div>
@@ -81,4 +80,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
