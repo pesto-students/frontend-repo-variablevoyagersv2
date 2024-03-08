@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "/logo.png";
+import logo from "/Logo1.png";
 
 export default function Logo() {
   return (
@@ -8,8 +8,8 @@ export default function Logo() {
       onClick={(e) => window.location = '/'}
         src={logo}
         className="hidden md:block cursor-pointer"
-        height="100"
-        width="100"
+        height="180"
+        width="180"
         alt="Logo"
       />
     </>

@@ -9,6 +9,7 @@ import OwnerLayout from './layouts/OwnerLayout';
 import DashboardPage from './pages/owner/DashboardPage';
 import { UserContextProvider } from './hooks/UserContext';
 import AddPropertyPage from './pages/owner/AddPropertyPage';
+import MyProfile from './pages/owner/MyProfile';
 
 function App() {
 	return (
@@ -18,6 +19,7 @@ function App() {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/register" element={<RegisterPage />} />
+					<Route path="/my-profile" element={<MyProfile />} />
 				</Route>
 				<Route element={<OwnerLayout />}>
 					<Route path="/dashboard" element={<DashboardPage />} />
