@@ -21,7 +21,7 @@ export default function UserMenu() {
           onMouseEnter={() => setShowDropdown(true)}
           onMouseLeave={() => setShowDropdown(false)}
         >
-          <div className="flex items-center gap-2 border border-gray-300 rounded-full px-3 py-2 cursor-pointer"
+          <div className="flex gap-2 border border-gray-300 rounded-full px-3 py-2 cursor-pointer"
 
           >
             <div className="bg-white-500 text-primary rounded-full border border-gray-500 overflow-hidden">
@@ -42,16 +42,18 @@ export default function UserMenu() {
           </div>
 
           {showDropdown && (
-            <div className="flex-col justify-center absolute right-0 p-2 bg-white shadow-md rounded-md border border-gray-100 w-40 z-10">
-              <Link to="/my-booking" className="block text-sm text-center py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black">
-                Booking
+            <div className="absolute right-0 p-2 bg-white shadow-md rounded-md border border-gray-100 w-40 z-10">
+              <Link to="/my-booking" className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black">
+                My Booking
               </Link>
-              <Link to="/my-profile" className="block text-sm text-center py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black">
-                Profile
+              <Link to="/my-profile" className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black">
+                My Profile
               </Link>
-              {user.role == "OWNER" ? (<Link to="/logout" className="block my-1 text-sm text-center py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black">
-                Property
+              {user.role == "OWNER" ? (<Link to="/logout" className="block my-1 text-sm py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black">
+                My Property
               </Link>) : (<></>)}
+              <div className="w-full border h-[1px]">
+              </div>
               <button onClick={handleLogout} className="right-5 text-sm text-center py-1 px-11 my-1 w-max bg-white hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black">
                 Log Out
               </button>
