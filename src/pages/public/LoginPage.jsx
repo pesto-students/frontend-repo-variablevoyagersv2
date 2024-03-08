@@ -1,82 +1,88 @@
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserContext } from '../../hooks/UserContext';
+import { axiosInstance } from '../../services/axios.service';
 
 const LoginPage = () => {
-    const navigate = useNavigate();
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
-    const { setUser } = useContext(UserContext);
-    const [generalError, setGeneralError] = useState('');
+	const navigate = useNavigate();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isSubmitting },
+	} = useForm();
+	const { setUser } = useContext(UserContext);
+	const [generalError, setGeneralError] = useState('');
 
-    const onSubmit = async (values) => {
-        try {
-            const { data } = await axios.post('/auth/login', values);
-            setUser(data.data);
-            localStorage.setItem('user', JSON.stringify(data.data));
-            alert('Login successful');
-            navigate("/");
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                setGeneralError(error.response.data.message);
-            } else {
-                setGeneralError('Login failed');
-            }
-        }
-    };
+	const onSubmit = async (values) => {
+		try {
+			const { data } = await axiosInstance.post('/auth/login', values);
+			setUser(data.data);
+			localStorage.setItem('user', JSON.stringify(data.data));
+			alert('Login successful');
+			navigate('/');
+		} catch (error) {
+			if (error.response && error.response.status === 401) {
+				setGeneralError(error.response.data.message);
+			} else {
+				setGeneralError('Login failed');
+			}
+		}
+	};
 
-    return (
-        <div className="flex-grow flex justify-center items-center max-h-screen">
-            <div className="p-4 border border-gray-400 border-opacity-20 shadow-2xl rounded-xl w-full max-w-md">
-                <h1 className="text-4xl text-center mb-4">Login</h1>
-                <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-                    <div>
-                        <input
-                            id='username'
-                            type="text"
-                            placeholder="Your@email.com"
-                            {...register('email', {
-                                required: 'Email is required',
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                                    message: 'Invalid email address',
-                                },
-                            })}
-                            className="w-full p-2 border rounded"
-                        />
-                        <p className='text-red-500'>{errors.email?.message}</p>
-                    </div>
+	return (
+		<div className="flex-grow flex justify-center items-center max-h-screen">
+			<div className="p-4 border border-gray-400 border-opacity-20 shadow-2xl rounded-xl w-full max-w-md">
+				<h1 className="text-4xl text-center mb-4">Login</h1>
+				<form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+					<div>
+						<input
+							id="username"
+							type="text"
+							placeholder="Your@email.com"
+							{...register('email', {
+								required: 'Email is required',
+								pattern: {
+									value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+									message: 'Invalid email address',
+								},
+							})}
+							className="w-full p-2 border rounded"
+						/>
+						<p className="text-red-500">{errors.email?.message}</p>
+					</div>
 
-                    <div>
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            {...register('password', {
-                                required: 'Password is required',
-                                minLength: {
-                                    value: 6,
-                                    message: 'Password must be at least 6 characters',
-                                },
-                            })}
-                            className="w-full p-2 border rounded"
-                        />
-                        <p className='text-red-500'>{errors.password?.message}</p>
-                    </div>
-                    {generalError && <p className="text-red-500">{generalError}</p>}
+					<div>
+						<input
+							type="password"
+							placeholder="Password"
+							{...register('password', {
+								required: 'Password is required',
+								minLength: {
+									value: 6,
+									message: 'Password must be at least 6 characters',
+								},
+							})}
+							className="w-full p-2 border rounded"
+						/>
+						<p className="text-red-500">{errors.password?.message}</p>
+					</div>
+					{generalError && <p className="text-red-500">{generalError}</p>}
 
-                    <button className="primary my-3" disabled={isSubmitting} type='submit'>{isSubmitting ? 'Loading' : 'Log-In'}</button>
+					<button className="primary my-3" disabled={isSubmitting} type="submit">
+						{isSubmitting ? 'Loading' : 'Log-In'}
+					</button>
 
-                    <div className="text-center py-2 text-gray-500">
-                        Don't have an account yet?{' '}
-                        <Link className="underline text-blue-500" to={'/register'}>
-                            Register now
-                        </Link>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
+					<div className="text-center py-2 text-gray-500">
+						Don't have an account yet?{' '}
+						<Link className="underline text-blue-500" to={'/register'}>
+							Register now
+						</Link>
+					</div>
+				</form>
+			</div>
+		</div>
+	);
 };
 
 export default LoginPage;
