@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Container from '../../components/Container';
-import { axiosPrivate } from '../../services/axios.service';
+
 const HomePage = () => {
 	// enable this For testing protected router
 	// useEffect(() => {

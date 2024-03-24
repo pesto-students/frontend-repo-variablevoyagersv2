@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import InputField from '../../components/forms/InputField';
 import ImageUpload from '../../components/forms/ImageUpload';

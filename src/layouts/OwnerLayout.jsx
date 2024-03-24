@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/common/Sidebar';
 import TopNav from '../components/common/TopNav';
+import Navbar from '../components/navbar/Navbar';
+import Container from '../components/Container';
 
 const OwnerLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -12,12 +14,9 @@ const OwnerLayout = () => {
 
 	return (
 		<div className="flex h-screen ">
-			<Sidebar isOpen={isSidebarOpen} />
-			<div className="flex flex-col flex-1 overflow-y-auto">
-				<TopNav toggleSidebar={toggleSidebar} />
-				<div className="w-full mx-auto p-4">
-					<Outlet />
-				</div>
+			<Navbar />
+			<div className="mx-auto w-full max-w-5xl px-4 py-28">
+				<Outlet />
 			</div>
 		</div>
 	);

@@ -11,14 +11,14 @@ const useCurrentUser = () => {
 		const getCurrentUser = async () => {
 			try {
 				const { data } = await axiosPrivate.get('/user/current-user');
-				console.log('data', data);
+
 				dispatch(setUser(data.data));
 			} catch (error) {
 				console.log(error);
 			}
 		};
 		const token = JSON.parse(localStorage.getItem('token'));
-		console.log(token);
+
 		if (token) {
 			getCurrentUser();
 		}

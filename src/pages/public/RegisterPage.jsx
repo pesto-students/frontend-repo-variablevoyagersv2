@@ -1,10 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { UserContext } from '../../hooks/UserContext';
 import { axiosInstance } from '../../services/axios.service';
+import useRedirect from '../../hooks/useRedirect';
 
 export default function RegisterPage() {
+	useRedirect();
+	const navigate = useNavigate();
 	const {
 		register,
 		handleSubmit,
@@ -15,8 +17,6 @@ export default function RegisterPage() {
 		},
 	});
 	const [generalError, setGeneralError] = useState('');
-	const navigate = useNavigate();
-	const { setUser } = useContext(UserContext);
 
 	const registerUser = async (userData) => {
 		console.log(userData);

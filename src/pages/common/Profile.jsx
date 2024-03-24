@@ -1,15 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { useNavigate, useParams } from 'react-router';
-import axios from 'axios';
-import useAuth from '../../hooks/useAuth';
 import { updateUser } from '../../services/user.service';
 import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser, setUser } from '../../redux/slices/authSlice';
 
-const MyProfile = () => {
-	const navigate = useNavigate();
-	const { user, setUser } = useAuth();
+const Profile = () => {
+	const dispatch = useDispatch();
+	const user = useSelector(selectUser);
 	const {
 		register,
 		handleSubmit,
@@ -39,7 +38,7 @@ const MyProfile = () => {
 			formData.append('phone', values.phone);
 			const updatedUser = await updateUser(user.id, formData);
 			localStorage.setItem('user', JSON.stringify(updatedUser));
-			setUser(updatedUser);
+			dispatch(setUser(updatedUser));
 			setGeneralError('');
 			toast.success('Profile updated');
 		} catch (error) {
@@ -141,4 +140,4 @@ const MyProfile = () => {
 	);
 };
 
-export default MyProfile;
+export default Profile;
