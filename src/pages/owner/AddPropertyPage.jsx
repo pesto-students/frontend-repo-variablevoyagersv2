@@ -11,9 +11,7 @@ const AddPropertyPage = () => {
 	const handleImagesChange = (images) => {
 		setPropertyImages(images);
 	};
-	useEffect(() => {
-		toast.error('Something went wrong');
-	}, []);
+
 	const {
 		register,
 		handleSubmit,
@@ -54,7 +52,7 @@ const AddPropertyPage = () => {
 	};
 
 	return (
-		<div className="max-w-4xl mx-auto p-6">
+		<div>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="bg-white rounded-lg shadow-md mb-8">
 					<div className="p-6">

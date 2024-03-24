@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/common/Sidebar';
 import TopNav from '../components/common/TopNav';
 
-const OwnerLayout = () => {
+const CustomerLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
 	const toggleSidebar = () => {
@@ -15,7 +15,7 @@ const OwnerLayout = () => {
 			<Sidebar isOpen={isSidebarOpen} />
 			<div className="flex flex-col flex-1 overflow-y-auto">
 				<TopNav toggleSidebar={toggleSidebar} />
-				<div className="w-full mx-auto p-4">
+				<div className="px-4">
 					<Outlet />
 				</div>
 			</div>
@@ -23,4 +23,4 @@ const OwnerLayout = () => {
 	);
 };
 
-export default OwnerLayout;
+export default CustomerLayout;
