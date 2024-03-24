@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import { axiosInstance } from '../../services/axios.service';
-import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { addUser } from '../../redux/slices/user.slice';
 import { setUser } from '../../redux/slices/authSlice';
+import useRedirect from '../../hooks/useRedirect';
+import { ROLES } from '../../constants/roles';
 
 const LoginPage = () => {
+	useRedirect();
 	const navigate = useNavigate();
+
 	const {
 		register,
 		handleSubmit,
@@ -22,9 +24,9 @@ const LoginPage = () => {
 			const { data } = await axiosInstance.post('/auth/login', values);
 			localStorage.setItem('token', JSON.stringify(data.data.accessToken));
 			dispatch(setUser(data.data));
-			toast.success('Login success');
-			if (data.data.role === 'OWNER') {
-				navigate('/dashboard');
+			// toast.success('Login success');
+			if (data.data.role === ROLES.OWNER) {
+				navigate('/owner/dashboard');
 			} else {
 				navigate('/');
 			}

@@ -1,12 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { AiOutlineMenu } from 'react-icons/ai';
-import { Link } from 'react-router-dom';
-import Avatar from '../Avatar';
-import { UserContext } from '../../hooks/UserContext';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, selectIsAuthenticated, selectUser } from '../../redux/slices/authSlice';
 
 export default function UserMenu() {
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const isAuthenticated = useSelector(selectIsAuthenticated);
 	const user = useSelector(selectUser);
@@ -14,6 +12,15 @@ export default function UserMenu() {
 
 	const handleLogout = () => {
 		dispatch(clearUser());
+		navigate('/');
+	};
+
+	const getInitials = (user) => {
+		const firstInitial = user.firstName.charAt(0).toUpperCase();
+		const lastInitial = user.lastName.charAt(0).toUpperCase();
+
+		// Concatenate the initials and return
+		return `${firstInitial}${lastInitial}`;
 	};
 
 	return (
@@ -30,32 +37,62 @@ export default function UserMenu() {
 								/>
 							</svg>
 						</div>
-						{isAuthenticated && <div>{user.firstName}</div>}
+						{isAuthenticated && <div>{getInitials(user)}</div>}
 					</div>
 
 					{showDropdown && (
-						<div className="absolute right-0 p-2 bg-white shadow-md rounded-md border border-gray-100 w-40 z-10">
-							<Link
-								to="/my-booking"
-								className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
-							>
-								My Booking
-							</Link>
-							<Link
-								to="/my-profile"
-								className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
-							>
-								My Profile
-							</Link>
+						<div className="absolute right-0 p-2 bg-white shadow-md rounded-md border border-gray-100  z-10 w-60 overflow-hidden">
+							<div className="px-2 py-2">
+								<div>
+									<p className="text-md font-semibold">
+										{user.firstName} {user.lastName}
+									</p>
+									<p className="text-sm capitalize text-base-secondary-text">{user.role.toLowerCase()}</p>
+								</div>
+							</div>
+
 							{user.role == 'OWNER' ? (
-								<Link
-									to="/add-property"
-									className="block my-1 text-sm py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
-								>
-									My Property
-								</Link>
+								<>
+									<Link
+										to="/owner/dashboard"
+										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
+									>
+										Dashboard
+									</Link>
+									<Link
+										to="/owner/bookings"
+										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
+									>
+										Bookings
+									</Link>
+									<Link
+										to="/owner/add-property"
+										className="block my-1 text-sm py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
+									>
+										My Property
+									</Link>
+									<Link
+										to="/owner/profile"
+										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
+									>
+										My Profile
+									</Link>
+								</>
 							) : (
-								<></>
+								<>
+									<Link
+										to="/customer/my-bookings"
+										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
+									>
+										My Booking
+									</Link>
+									<Link
+										to="/customer/profile"
+										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
+									>
+										My Profile
+									</Link>
+								</>
 							)}
 							<div className="w-full border h-[1px]"></div>
 							<button
@@ -70,15 +107,12 @@ export default function UserMenu() {
 			) : (
 				<div className="flex flex-row items-center gap-3 overflow-hidden">
 					<Link
-						to={'/register'}
+						to="/register"
 						className="hover:shadow-md   text-primary border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-primary"
 					>
 						Sign-up
 					</Link>
-					<Link
-						to={'/login'}
-						className="hover:shadow-md text-primary border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-primary"
-					>
+					<Link to="/login" className="hover:shadow-md text-primary border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-primary">
 						Log-In
 					</Link>
 				</div>
