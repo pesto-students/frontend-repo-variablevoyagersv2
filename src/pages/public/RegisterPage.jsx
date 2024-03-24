@@ -9,31 +9,25 @@ export default function RegisterPage() {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm();
+	} = useForm({
+		defaultValues: {
+			role: 'CUSTOMER',
+		},
+	});
 	const [generalError, setGeneralError] = useState('');
 	const navigate = useNavigate();
 	const { setUser } = useContext(UserContext);
 
 	const registerUser = async (userData) => {
+		console.log(userData);
 		setGeneralError('');
 		try {
-			// console.log('User', userData);
-			// const res = await fetch(`http://localhost:5050/api/v1/auth`, {
-			// 	method: 'POST',
-			// 	headers: {
-			// 		'Content-Type': 'application/json',
-			// 	},
-			// 	body: JSON.stringify(userData),
-			// });
-			// const data = await res.json();
-			// console.log(data);
-
-			const { data } = await axiosInstance.post('/auth', JSON.stringify(userData));
+			const { data } = await axiosInstance.post('/auth', userData);
 			console.log(data);
 			if (data.status >= 400 && data.status < 500) setGeneralError(data.message);
 			else {
-				setUser(data.data);
-				localStorage.setItem('user', JSON.stringify(data.data));
+				// setUser(data.data);
+				// localStorage.setItem('user', JSON.stringify(data.data));
 				navigate('/');
 			}
 		} catch (error) {
@@ -54,15 +48,13 @@ export default function RegisterPage() {
 							<li className="w-full ">
 								<div className="flex items-center ps-3">
 									<input
-										id="horizontal-list-radio-license"
-										defaultChecked
+										id="customer"
 										value="CUSTOMER"
 										type="radio"
 										{...register('role')}
-										name="list-radio"
 										className="w-4 h-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700"
 									/>
-									<label htmlFor="horizontal-list-radio-license" className="w-full py-3 ms-2 text-primary ">
+									<label htmlFor="customer" className="w-full py-3 ms-2 text-primary ">
 										Customer{' '}
 									</label>
 								</div>
@@ -70,14 +62,13 @@ export default function RegisterPage() {
 							<li className="w-full">
 								<div className="flex items-center ps-3">
 									<input
-										id="horizontal-list-radio-id"
+										id="owner"
 										type="radio"
 										value="OWNER"
 										{...register('role')}
-										name="list-radio"
 										className="w-4 h-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700"
 									/>
-									<label htmlFor="horizontal-list-radio-id" className="w-full py-3 ms-2 text-primary ">
+									<label htmlFor="owner" className="w-full py-3 ms-2 text-primary ">
 										Owner
 									</label>
 								</div>

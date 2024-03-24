@@ -1,8 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
-import { UserContext } from '../../hooks/UserContext';
 import { axiosInstance } from '../../services/axios.service';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { addUser } from '../../redux/slices/user.slice';
+import { setUser } from '../../redux/slices/authSlice';
 
 const LoginPage = () => {
 	const navigate = useNavigate();
@@ -11,16 +14,20 @@ const LoginPage = () => {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm();
-	const { setUser } = useContext(UserContext);
-	const [generalError, setGeneralError] = useState('');
 
+	const [generalError, setGeneralError] = useState('');
+	const dispatch = useDispatch();
 	const onSubmit = async (values) => {
 		try {
 			const { data } = await axiosInstance.post('/auth/login', values);
-			setUser(data.data);
-			localStorage.setItem('user', JSON.stringify(data.data));
-			alert('Login successful');
-			navigate('/');
+			localStorage.setItem('token', JSON.stringify(data.data.accessToken));
+			dispatch(setUser(data.data));
+			toast.success('Login success');
+			if (data.data.role === 'OWNER') {
+				navigate('/dashboard');
+			} else {
+				navigate('/');
+			}
 		} catch (error) {
 			if (error.response && error.response.status === 401) {
 				setGeneralError(error.response.data.message);

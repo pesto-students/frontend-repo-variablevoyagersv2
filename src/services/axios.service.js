@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const axiosInstance = axios.create({
@@ -15,8 +16,7 @@ export const axiosPrivate = axios.create({
 // Request interceptor for adding access token to headers
 axiosPrivate.interceptors.request.use(
 	(config) => {
-		const { accessToken } = JSON.parse(localStorage.getItem('user'));
-
+		const accessToken = JSON.parse(localStorage.getItem('token'));
 		if (accessToken) {
 			config.headers['Authorization'] = `Bearer ${accessToken}`;
 		}
@@ -41,8 +41,8 @@ axiosPrivate.interceptors.response.use(
 					crossDomain: true,
 					withCredentials: true,
 				});
-				const user = JSON.parse(localStorage.getItem('user'));
-				localStorage.setItem('user', JSON.stringify({ ...user, accessToken: response.data.accessToken }));
+
+				localStorage.setItem('token', JSON.stringify(response.data.accessToken));
 				return axiosPrivate(originalRequest);
 			} catch (error) {
 				console.log(error);
