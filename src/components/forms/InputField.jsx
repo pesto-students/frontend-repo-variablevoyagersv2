@@ -1,7 +1,7 @@
 // InputField.js
 import React from 'react';
 
-const InputField = ({ label, id, name, register, required, error }) => {
+const InputField = ({ label, id, name, register, required, error, type }) => {
 	console.log(error);
 	return (
 		<>
@@ -9,7 +9,7 @@ const InputField = ({ label, id, name, register, required, error }) => {
 				{label}
 			</label>
 			<input
-				type="text"
+				type={type ? type : 'text'}
 				id={id}
 				name={name}
 				{...register(name, { required })}
