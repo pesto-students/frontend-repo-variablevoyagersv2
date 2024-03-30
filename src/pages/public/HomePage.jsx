@@ -24,7 +24,7 @@ const HomePage = () => {
 					{/* enable this For testing protected router */}
 					{/* <button onClick={() => getById()}>Click</button> */}
 					{[0, 1, 2, 3, 4].map((ele, idx) => (
-						<Link key={idx} to="/">
+						<Link key={idx} to={`/property-detail/${idx}`}>
 							<div className="bg-gray-500 mb-2 rounded-2xl flex">
 								<img
 									className="rounded-2xl object-cover aspect-square"
