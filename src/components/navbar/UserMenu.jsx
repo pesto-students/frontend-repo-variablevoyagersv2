@@ -44,56 +44,12 @@ export default function UserMenu() {
 						<div className="absolute right-0 p-2 bg-white shadow-md rounded-md border border-gray-100  z-10 w-60 overflow-hidden">
 							<div className="px-2 py-2">
 								<div>
-									<p className="text-md font-semibold">
+									<p className="text-md font-semibold capitalize">
 										{user.firstName} {user.lastName}
 									</p>
 									<p className="text-sm capitalize text-base-secondary-text">{user.role.toLowerCase()}</p>
 								</div>
 							</div>
-
-							{user.role == 'OWNER' ? (
-								<>
-									<Link
-										to="/owner/dashboard"
-										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
-									>
-										Dashboard
-									</Link>
-									<Link
-										to="/owner/bookings"
-										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
-									>
-										Bookings
-									</Link>
-									<Link
-										to="/owner/add-property"
-										className="block my-1 text-sm py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
-									>
-										My Property
-									</Link>
-									<Link
-										to="/owner/profile"
-										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
-									>
-										My Profile
-									</Link>
-								</>
-							) : (
-								<>
-									<Link
-										to="/customer/my-bookings"
-										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
-									>
-										My Booking
-									</Link>
-									<Link
-										to="/customer/profile"
-										className="block text-sm  py-1 px-2 my-1 hover:bg-gray-100 dark:hover:bg-gray-200 rounded-md dark:hover:text-black"
-									>
-										My Profile
-									</Link>
-								</>
-							)}
 							<div className="w-full border h-[1px]"></div>
 							<button
 								onClick={handleLogout}

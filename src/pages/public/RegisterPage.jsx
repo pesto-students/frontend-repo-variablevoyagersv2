@@ -3,10 +3,13 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { axiosInstance } from '../../services/axios.service';
 import useRedirect from '../../hooks/useRedirect';
+import { setUser } from '../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 export default function RegisterPage() {
 	useRedirect();
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const {
 		register,
 		handleSubmit,
@@ -26,9 +29,13 @@ export default function RegisterPage() {
 			console.log(data);
 			if (data.status >= 400 && data.status < 500) setGeneralError(data.message);
 			else {
-				// setUser(data.data);
-				// localStorage.setItem('user', JSON.stringify(data.data));
-				navigate('/');
+				localStorage.setItem('token', JSON.stringify(data.data.accessToken));
+				dispatch(setUser(data.data));
+				if (data.data.role === ROLES.OWNER) {
+					navigate('/owner/dashboard');
+				} else {
+					navigate('/');
+				}
 			}
 		} catch (error) {
 			if (error.response && error.response.status >= 400 && error.response.status < 500) {

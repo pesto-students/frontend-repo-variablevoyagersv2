@@ -47,7 +47,7 @@ const Profile = () => {
 	};
 
 	return (
-		<div className="mt-20 flex-grow flex justify-center items-center max-h-screen">
+		<div className="flex-grow flex justify-center items-center">
 			<div className="p-4 border border-gray-400 border-opacity-20 shadow-2xl rounded-xl w-full max-w-md">
 				<h1 className="text-4xl text-center mb-4">My Profile</h1>
 				<form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>

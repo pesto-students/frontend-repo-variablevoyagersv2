@@ -3,6 +3,7 @@ import Container from '../Container';
 import Logo from './Logo';
 import Search from './Search';
 import UserMenu from './UserMenu';
+import PrivateNav from './PrivateNav';
 
 export default function Navbar() {
 	return (
@@ -11,13 +12,15 @@ export default function Navbar() {
 				<Container>
 					<div
 						className=" flex
-            flex-row
-            items-center
-            justify-between
-            gap-3
-            md:gap-0"
+						flex-row
+						items-center
+						justify-between
+						gap-3
+						md:gap-0"
 					>
+
 						<Logo />
+						<PrivateNav/>
 						{/* <Search/> */}
 						<UserMenu className="hidden md:block" />
 					</div>

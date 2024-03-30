@@ -11,6 +11,8 @@ import NotFoundPage from '../pages/public/NotFoundPage';
 import { ROLES } from '../constants/roles';
 import MyBookings from '../pages/customer/MyBookings';
 import Bookings from '../pages/owner/Bookings';
+import PropertyDetailPage from '../pages/public/PropertyDetailPage';
+import PropertyPage from '../pages/owner/PropertyPage';
 export const router = createBrowserRouter([
 	{
 		path: '/',
@@ -19,6 +21,7 @@ export const router = createBrowserRouter([
 			{ index: true, element: <HomePage /> },
 			{ path: 'login', element: <LoginPage /> },
 			{ path: 'register', element: <RegisterPage /> },
+			{ path: 'property-detail/:id', element: <PropertyDetailPage/> },
 		],
 	},
 	{
@@ -29,9 +32,11 @@ export const router = createBrowserRouter([
 				element: <OwnerLayout />,
 				children: [
 					{ path: 'dashboard', element: <DashboardPage /> },
+					{ path: 'property', element: <PropertyPage/> },
 					{ path: 'add-property', element: <AddPropertyPage /> },
 					{ path: 'bookings', element: <Bookings /> },
 					{ path: 'profile', element: <Profile /> },
+					{ path: 'property-detail/:id', element: <PropertyDetailPage/> },
 				],
 			},
 		],
@@ -45,6 +50,7 @@ export const router = createBrowserRouter([
 				children: [
 					{ path: 'profile', element: <Profile /> },
 					{ path: 'my-bookings', element: <MyBookings /> },
+					{ path: 'property-detail/:id', element: <PropertyDetailPage/> },
 				],
 			},
 		],
