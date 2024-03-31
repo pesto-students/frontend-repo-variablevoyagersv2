@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, selectIsAuthenticated, selectUser } from '../../redux/slices/authSlice';
+import { axiosPrivate } from '../../services/axios.service';
 
 export default function UserMenu() {
 	const navigate = useNavigate();
@@ -10,16 +11,20 @@ export default function UserMenu() {
 	const user = useSelector(selectUser);
 	const [showDropdown, setShowDropdown] = useState(false);
 
-	const handleLogout = () => {
-		dispatch(clearUser());
-		navigate('/');
+	const handleLogout = async () => {
+		try {
+			const { data } = await axiosPrivate.post('/auth/logout', {});
+			console.log(data);
+			dispatch(clearUser());
+			navigate('/');
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	const getInitials = (user) => {
 		const firstInitial = user.firstName.charAt(0).toUpperCase();
 		const lastInitial = user.lastName.charAt(0).toUpperCase();
-
-		// Concatenate the initials and return
 		return `${firstInitial}${lastInitial}`;
 	};
 
@@ -27,18 +32,14 @@ export default function UserMenu() {
 		<>
 			{user ? (
 				<div className="relative group " onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
-					<div className="flex gap-2 border border-gray-300 rounded-full px-3 py-2 cursor-pointer">
-						<div className="bg-white-500 text-primary rounded-full border border-gray-500 overflow-hidden">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 relative top-1">
-								<path
-									fillRule="evenodd"
-									d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
-									clipRule="evenodd"
-								/>
-							</svg>
-						</div>
-						{isAuthenticated && <div>{getInitials(user)}</div>}
-					</div>
+					{isAuthenticated &&
+						(user.avatar ? (
+							<img src={user.avatar} alt="Profile photo" className="inline-block h-10 w-10 rounded-full object-cover" />
+						) : (
+							<div className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-gray-200 font-semibold uppercase text-gray-700">
+								{getInitials(user)}
+							</div>
+						))}
 
 					{showDropdown && (
 						<div className="absolute right-0 p-2 bg-white shadow-md rounded-md border border-gray-100  z-10 w-60 overflow-hidden">

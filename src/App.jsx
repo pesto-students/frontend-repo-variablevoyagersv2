@@ -4,9 +4,13 @@ import './App.css';
 import { router } from './routes/router';
 
 import useCurrentUser from './hooks/useCurrentUser';
+import Loader from './components/common/Loader';
 
 function App() {
-	useCurrentUser();
+	const loading = useCurrentUser();
+	if (loading) {
+		return <Loader />;
+	}
 
 	return <RouterProvider router={router} />;
 }

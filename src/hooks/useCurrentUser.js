@@ -2,19 +2,23 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { axiosPrivate } from '../services/axios.service';
 import { selectIsAuthenticated, setUser } from '../redux/slices/authSlice';
+import { useState } from 'react';
 
 const useCurrentUser = () => {
 	const dispatch = useDispatch();
 	const isAuthenticated = useSelector(selectIsAuthenticated);
-
+	const [loading, setLoading] = useState(false);
 	useEffect(() => {
 		const getCurrentUser = async () => {
+			setLoading(true);
 			try {
 				const { data } = await axiosPrivate.get('/user/current-user');
 
 				dispatch(setUser(data.data));
 			} catch (error) {
 				console.log(error);
+			} finally {
+				setLoading(false);
 			}
 		};
 		const token = JSON.parse(localStorage.getItem('token'));
@@ -24,7 +28,7 @@ const useCurrentUser = () => {
 		}
 	}, [dispatch, isAuthenticated]);
 
-	return null;
+	return loading;
 };
 
 export default useCurrentUser;
