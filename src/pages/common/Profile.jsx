@@ -5,138 +5,42 @@ import { updateUser } from '../../services/user.service';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, setUser } from '../../redux/slices/authSlice';
+import AccountForm from '../../components/profile/AccountForm';
+import ChangePasswordForm from '../../components/profile/ChangePasswordForm';
 
 const Profile = () => {
-	const dispatch = useDispatch();
-	const user = useSelector(selectUser);
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		formState: { errors, isSubmitting },
-	} = useForm({});
-	const [generalError, setGeneralError] = useState('');
-	const phoneRegex = /^[6-9]\d{9}$/;
-
-	useEffect(() => {
-		if (user) {
-			setValue('firstName', user.firstName);
-			setValue('lastName', user.lastName);
-			setValue('email', user.email);
-			setValue('avatar', user.avatar);
-			setValue('phone', user.phone);
-		}
-	}, [user, setValue]);
-
-	const onSubmit = async (values) => {
-		try {
-			const formData = new FormData();
-			formData.append('firstName', values.firstName);
-			formData.append('lastName', values.lastName);
-			formData.append('email', values.email);
-			formData.append('avatar', values.avatar);
-			formData.append('phone', values.phone);
-			const updatedUser = await updateUser(user.id, formData);
-			localStorage.setItem('user', JSON.stringify(updatedUser));
-			dispatch(setUser(updatedUser));
-			setGeneralError('');
-			toast.success('Profile updated');
-		} catch (error) {
-			toast.error(error.message);
-		}
-	};
+	const [view, setView] = useState('account');
 
 	return (
-		<div className="flex-grow flex justify-center items-center">
-			<div className="p-4 border border-gray-400 border-opacity-20 shadow-2xl rounded-xl w-full max-w-md">
-				<h1 className="text-4xl text-center mb-4">My Profile</h1>
-				<form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-					<div className="flex flex-row gap-2">
-						{/* <div className="flex items-center space-x-4">
-                            <label htmlFor="avatar">Avatar</label>
-                            <div className="flex items-center space-x-2">
-                                <img
-                                    alt="Your avatar"
-                                    className="rounded-full"
-                                    height="64"
-                                    // src="/placeholder.jpg"
+		<>
+			<div className="lg:grid lg:grid-cols-12 lg:gap-x-5">
+				<aside className="px-2 py-6 sm:px-6 lg:col-span-3 lg:px-0 lg:py-0">
+					<nav className="space-y-1 flex  lg:flex-col">
+						<a
+							onClick={() => setView('account')}
+							className={`cursor-pointer text-gray-900 group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+								view === 'account' ? 'bg-gray-50 text-indigo-700' : 'hover:bg-gray-50 hover:text-gray-900'
+							}`}
+						>
+							<span className="truncate">Account</span>
+						</a>
+						<a
+							onClick={() => setView('password')}
+							className={`cursor-pointer text-gray-900 group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+								view === 'password' ? 'bg-gray-50 text-indigo-700' : 'hover:bg-gray-50 hover:text-gray-900'
+							}`}
+						>
+							<span className="truncate">Password</span>
+						</a>
+					</nav>
+				</aside>
 
-                                    style={{
-                                        aspectRatio: "64/64",
-                                        objectFit: "cover",
-                                    }}
-                                    width="64"
-                                />
-                                <Button size="sm">Upload</Button>
-                            </div>
-                        </div> */}
-						<div>
-							<input
-								type="text"
-								placeholder="First Name"
-								{...register('firstName', { required: 'First Name is required' })}
-								className="w-full p-2 border rounded"
-							/>
-							<p className="text-red-500">{errors.firstName?.message}</p>
-						</div>
-
-						<div>
-							<input
-								type="text"
-								placeholder="Last Name"
-								{...register('lastName', { required: 'Last Name is required' })}
-								className="w-full p-2 border rounded"
-							/>
-							<p className="text-red-500">{errors.lastName?.message}</p>
-						</div>
-					</div>
-
-					<div>
-						<input
-							disabled
-							type="text"
-							placeholder="Your@email.com"
-							{...register('email', {
-								required: 'Email is required',
-								pattern: {
-									value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-									message: 'Invalid email address',
-								},
-							})}
-							className="w-full p-2 border rounded text-gray-400"
-						/>
-						<p className="text-red-500">{errors.email?.message}</p>
-					</div>
-
-					<div>
-						<input type="text" placeholder="Avatar URL" {...register('avatar')} className="w-full p-2 border rounded" />
-						<p className="text-red-500">{errors.avatar?.message}</p>
-					</div>
-
-					<div>
-						<input
-							type="tel"
-							placeholder="Phone"
-							{...register('phone', {
-								required: 'Phone is required',
-								pattern: {
-									value: phoneRegex,
-									message: 'Invalid phone number',
-								},
-							})}
-							className="w-full p-2 border rounded"
-						/>
-						<p className="text-red-500">{errors.phone?.message}</p>
-					</div>
-
-					{generalError && <p className="text-red-500">{generalError}</p>}
-
-					<button className="primary my-3" disabled={isSubmitting} type="submit">
-						{isSubmitting ? 'Updating' : 'Update Profile'}
-					</button>
-				</form>
+				<div className="space-y-6 sm:px-6 lg:col-span-9 lg:px-0">
+					{view === 'account' && <AccountForm />}
+					{view === 'password' && <ChangePasswordForm />}
+				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 
