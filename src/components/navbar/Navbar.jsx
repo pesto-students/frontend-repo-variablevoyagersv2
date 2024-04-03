@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Container from '../Container';
 import Logo from './Logo';
 import Search from './Search';
@@ -6,26 +6,21 @@ import UserMenu from './UserMenu';
 import PrivateNav from './PrivateNav';
 
 export default function Navbar() {
-	return (
-		<div className="fixed w-full bg-white z-10 shadow-sm">
-			<div className="py-4 border-b-[1px]">
-				<Container>
-					<div
-						className=" flex
-						flex-row
-						items-center
-						justify-between
-						gap-3
-						md:gap-0"
-					>
 
-						<Logo />
-						<PrivateNav/>
-						{/* <Search/> */}
-						<UserMenu className="hidden md:block" />
+	return (
+		<nav className="fixed w-full bg-white z-10 shadow-sm border-b-[1px]">
+
+			<div className="mx-auto max-w-7xl px-2 sm:px-9 lg:px-9 ">
+				<div className="relative flex h-16 items-center justify-between">
+					<Logo />
+					<div className='flex gap-2'>
+						<PrivateNav />
+						<div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-0 sm:pr-0">
+							<UserMenu />
+						</div>
 					</div>
-				</Container>
+				</div>
 			</div>
-		</div>
+		</nav>
 	);
 }
