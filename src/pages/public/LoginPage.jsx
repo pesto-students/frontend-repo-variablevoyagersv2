@@ -23,6 +23,7 @@ const LoginPage = () => {
 		try {
 			const { data } = await axiosInstance.post('/auth/login', values);
 			localStorage.setItem('token', JSON.stringify(data.data.accessToken));
+			localStorage.setItem('role', JSON.stringify(data.data.role));
 			dispatch(setUser(data.data));
 			// toast.success('Login success');
 			if (data.data.role === ROLES.OWNER) {

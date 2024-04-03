@@ -1,11 +1,10 @@
 // authSlice.js
 
 import { createSlice } from '@reduxjs/toolkit';
-import { Navigate } from 'react-router-dom';
 
 const initialState = {
 	user: null,
-	isAuthenticated: false,
+	isAuthenticated: !!localStorage.getItem('token'),
 };
 
 export const authSlice = createSlice({
@@ -13,14 +12,17 @@ export const authSlice = createSlice({
 	initialState,
 	reducers: {
 		setUser: (state, action) => {
-			state.user = action.payload;
-			state.isAuthenticated = true;
+			// state.user = action.payload;
+			// state.isAuthenticated = true;
 			console.log(action);
+			state.user = action.payload;
+			state.isAuthenticated = !!action.payload;
 		},
 		clearUser: (state) => {
 			state.user = null;
 			state.isAuthenticated = false;
 			localStorage.removeItem('token');
+			localStorage.removeItem('role');
 		},
 	},
 });

@@ -1,10 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-
-import { updateUser } from '../../services/user.service';
-import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUser, setUser } from '../../redux/slices/authSlice';
+import React, { useState } from 'react';
 import AccountForm from '../../components/profile/AccountForm';
 import ChangePasswordForm from '../../components/profile/ChangePasswordForm';
 
@@ -13,24 +7,30 @@ const Profile = () => {
 
 	return (
 		<>
+			<div className="md:flex md:items-center md:justify-between mb-8">
+				<div className="min-w-0 flex-1">
+					<h2 className="text-2xl font-bold leading-7 text-gray-50 sm:truncate sm:text-3xl sm:tracking-tight">Profile Settings</h2>
+					<p className="mt-1 text-sm text-gray-50">Keep your profile up to date </p>
+				</div>
+			</div>
 			<div className="lg:grid lg:grid-cols-12 lg:gap-x-5">
 				<aside className="px-2 py-6 sm:px-6 lg:col-span-3 lg:px-0 lg:py-0">
-					<nav className="space-y-1 flex  lg:flex-col">
+					<nav className="flex gap-2  lg:flex-col">
 						<a
 							onClick={() => setView('account')}
-							className={`cursor-pointer text-gray-900 group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-								view === 'account' ? 'bg-gray-50 text-indigo-700' : 'hover:bg-gray-50 hover:text-gray-900'
+							className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium  ${
+								view === 'account' ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
 							}`}
 						>
 							<span className="truncate">Account</span>
 						</a>
 						<a
 							onClick={() => setView('password')}
-							className={`cursor-pointer text-gray-900 group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-								view === 'password' ? 'bg-gray-50 text-indigo-700' : 'hover:bg-gray-50 hover:text-gray-900'
+							className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+								view === 'password' ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
 							}`}
 						>
-							<span className="truncate">Password</span>
+							<span className="truncate">Change Password</span>
 						</a>
 					</nav>
 				</aside>

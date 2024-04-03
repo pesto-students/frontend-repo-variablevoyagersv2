@@ -19,8 +19,8 @@ const InputField = ({ label, id, name, register, required, error, type, disabled
 							message: `Invalid ${label}`,
 						},
 					})}
-					className={`mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
-						error ? 'border-red-500' : ''
+					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+						error ? 'border-error-700 focus:border-error-700 focus:ring-error-50' : 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'
 					}`}
 					disabled={disabled ? true : false}
 				/>
@@ -31,13 +31,9 @@ const InputField = ({ label, id, name, register, required, error, type, disabled
 					name={name}
 					{...register(name, {
 						required,
-						// pattern: {
-						// 	value: /^[6-9]\d{9}$/,
-						// 	message: `Invalid ${label}`,
-						// },
 					})}
-					className={`mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
-						error ? 'border-red-500' : ''
+					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+						error ? 'border-error-700 focus:border-error-700 focus:ring-error-50' : 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'
 					}`}
 					disabled={disabled ? true : false}
 				/>
@@ -49,8 +45,8 @@ const InputField = ({ label, id, name, register, required, error, type, disabled
 					{...register(name, {
 						required,
 					})}
-					className={`mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
-						error ? 'border-red-500' : ''
+					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+						error ? 'border-error-700 focus:border-error-700 focus:ring-error-50' : 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'
 					}`}
 					disabled={disabled ? true : false}
 				/>

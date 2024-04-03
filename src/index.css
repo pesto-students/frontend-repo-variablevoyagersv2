@@ -6,8 +6,12 @@ input[type='password'],
 input[type='email'],
 input[type='number'],
 input[type='tel'],
-
+input[type='datetime-local'],
+input[type='time'],
 textarea {
+	-moz-appearance: textfield;
+	appearance: textfield;
+
 	@apply w-full border border-gray-300 my-1 py-2 px-3 rounded-md;
 }
 
@@ -28,6 +32,26 @@ html,
 body,
 :root {
 	height: 100%;
+}
+
+.loading-icon {
+	/* color: teal;
+  font-size: 2rem; */
+	animation: animate 2s infinite;
+}
+
+@keyframes animate {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(720deg);
+	}
+}
+
+.bg-gradient {
+	background: rgb(2, 0, 36);
+	background: linear-gradient(51deg, rgba(2, 0, 36, 1) 0%, rgba(85, 103, 147, 1) 100%);
 }
 
 .rdrMonth {
