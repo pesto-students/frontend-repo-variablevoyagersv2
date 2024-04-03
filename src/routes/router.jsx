@@ -1,5 +1,4 @@
-import { Outlet, createBrowserRouter } from 'react-router-dom';
-import { PublicLayout, OwnerLayout, CustomerLayout } from '@/layouts';
+import { createBrowserRouter } from 'react-router-dom';
 import HomePage from '../pages/public/HomePage';
 import LoginPage from '../pages/public/LoginPage';
 import RegisterPage from '../pages/public/RegisterPage';
@@ -13,45 +12,105 @@ import MyBookings from '../pages/customer/MyBookings';
 import Bookings from '../pages/owner/Bookings';
 import PropertyDetailPage from '../pages/public/PropertyDetailPage';
 import PropertyPage from '../pages/owner/PropertyPage';
+import PublicLayout from '../layouts/PublicLayout';
+import OwnerLayout from '../layouts/OwnerLayout';
+import CustomerLayout from '../layouts/CustomerLayout';
+
 export const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <PublicLayout />,
 		children: [
-			{ index: true, element: <HomePage /> },
+			{ path: '', element: <HomePage /> },
 			{ path: 'login', element: <LoginPage /> },
 			{ path: 'register', element: <RegisterPage /> },
-			{ path: 'property-detail/:id', element: <PropertyDetailPage/> },
+			{ path: 'property-detail/:id', element: <PropertyDetailPage /> },
 		],
 	},
+
 	{
-		path: '/owner',
-		element: <PrivateRoute allowedRoles={ROLES.OWNER} />,
+		path: '/owner/',
+		element: <OwnerLayout />,
 		children: [
 			{
-				element: <OwnerLayout />,
-				children: [
-					{ path: 'dashboard', element: <DashboardPage /> },
-					{ path: 'property', element: <PropertyPage/> },
-					{ path: 'add-property', element: <AddPropertyPage /> },
-					{ path: 'bookings', element: <Bookings /> },
-					{ path: 'profile', element: <Profile /> },
-					{ path: 'property-detail/:id', element: <PropertyDetailPage/> },
-				],
+				path: 'dashboard',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.OWNER}>
+						<DashboardPage />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'property',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.OWNER}>
+						<PropertyPage />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'add-property',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.OWNER}>
+						<AddPropertyPage />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'bookings',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.OWNER}>
+						<Bookings />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'profile',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.OWNER}>
+						<Profile />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'property-detail/:id',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.OWNER}>
+						<PropertyDetailPage />
+					</PrivateRoute>
+				),
 			},
 		],
 	},
+
 	{
-		path: '/customer',
-		element: <PrivateRoute allowedRoles={ROLES.CUSTOMER} />,
+		path: '/customer/',
+		element: <CustomerLayout />,
+
 		children: [
 			{
-				element: <CustomerLayout />,
-				children: [
-					{ path: 'profile', element: <Profile /> },
-					{ path: 'my-bookings', element: <MyBookings /> },
-					{ path: 'property-detail/:id', element: <PropertyDetailPage/> },
-				],
+				path: 'profile',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.CUSTOMER}>
+						<Profile />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'my-bookings',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.CUSTOMER}>
+						<MyBookings />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'property-detail/:id',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.CUSTOMER}>
+						<PropertyDetailPage />
+					</PrivateRoute>
+				),
 			},
 		],
 	},

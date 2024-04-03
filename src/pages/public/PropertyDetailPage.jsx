@@ -6,8 +6,9 @@ import Container from '../../components/Container';
 import PropertyHead from '../../components/PropertyDetails/PropertyHead';
 import PropertyDescriptions from '../../components/PropertyDetails/PropertyDescriptions';
 import PropertyReservation from '../../components/PropertyDetails/PropertyReservation';
-
+import Loader from '../../components/common/Loader';
 const PropertyDetailPage = () => {
+	const [loading, setLoading] = useState(null);
 	const [property, setProperty] = useState(null);
 	const [dateRange, setDateRange] = useState({
 		startDate: new Date(),
@@ -16,34 +17,28 @@ const PropertyDetailPage = () => {
 	});
 	const { id } = useParams();
 
-	// const disabledDates = [
-	// 	new Date('2024-04-15'),
-	// 	new Date('2024-04-22'),
-	// ];
-
 	useEffect(() => {
 		getProperty();
 	}, []);
 
 	async function getProperty() {
 		try {
+			setLoading(true);
 			const { data } = await axiosPrivate.get(`/property/${id}`);
 			setProperty(data.data);
 			console.log('GET ID', data);
 		} catch (error) {
 			console.log('GET', error);
+		} finally {
+			setLoading(false);
 		}
 	}
 
 	const [totalPrice, setTotalPrice] = useState(property?.price);
 
-
 	useEffect(() => {
 		if (dateRange.startDate && dateRange.endDate) {
-			const dayCount = differenceInDays(
-				dateRange.endDate,
-				dateRange.startDate
-			);
+			const dayCount = differenceInDays(dateRange.endDate, dateRange.startDate);
 
 			if (dayCount && property?.price) {
 				setTotalPrice(dayCount * property?.price);
@@ -52,15 +47,19 @@ const PropertyDetailPage = () => {
 			}
 		}
 	}, [dateRange, property?.price]);
+	if (loading) {
+		return <Loader />;
+	}
 
 	return (
-		<div className='mt-20'>
+		<div className="mt-20">
 			<Container>
 				<div className="max-w-screen-lg mx-auto">
 					<div className="flex flex-col gap-6">
 						<PropertyHead
 							propertyName={property?.propertyName}
-							city={property?.city} country={property?.country}
+							city={property?.city}
+							country={property?.country}
 							propertyImages={property?.propertyImages[0].imgUrl}
 						/>
 						<div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-6">
