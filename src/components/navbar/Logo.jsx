@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "/Logo1.png";
+import logo from "/Logo2.png";
 
 export default function Logo() {
   return (
@@ -7,7 +7,7 @@ export default function Logo() {
       <img
       onClick={(e) => window.location = '/'}
         src={logo}
-        className="hidden md:block cursor-pointer"
+        className="hidden sm:block cursor-pointer"
         height="180"
         width="180"
         alt="Logo"

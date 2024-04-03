@@ -1,19 +1,26 @@
 import React from 'react'
+import ImagePlaceholder from "../../assets/ImagePlaceholder.jpeg"
+import Heading from '../PropertyDetails/Heading'
 
-const PropertyCard = ({property}) => {
+const PropertyCard = ({ property }) => {
     return (
         <>
             <div className="bg-gray-500 mb-2 rounded-2xl flex">
-                <img
+                {property?.propertyImages.length > 0 ? (
+                    <img
+                        className="rounded-2xl object-cover aspect-square"
+                        src={property.propertyImages[0]?.imgUrl}
+                        alt=""
+                    />
+                ):(<img
                     className="rounded-2xl object-cover aspect-square"
-                    src="https://ik.imagekit.io/venueBooking/Property/avatar-1709318908522-289822310_wpUxtfZfR?updatedAt=1709318913836"
+                    src={ImagePlaceholder}
                     alt=""
-                />
+                />)}
             </div>
-            <h2 className="font-bold">Debidanga, Siliguri</h2>
-            <h3 className="text-sm text-gray-500">{property?.propertyName}</h3>
+            <Heading name={property?.propertyName} city={property?.city} country={property?.country}/>
             <div className="mt-1">
-                <span className="font-bold">Rs. 1000</span> per day
+                <span className="font-bold">Rs. {property?.price}</span> per day
             </div>
         </>
     )

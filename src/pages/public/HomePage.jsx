@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import Container from '../../components/Container';
 import PropertyCard from '../../components/common/PropertyCard';
 import { axiosPrivate } from '../../services/axios.service';
+import Loader from '../../components/common/Loader';
 
 const HomePage = () => {
 	// enable this For testing protected router
 
 	const [properties, setProperties] = useState([]);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		getProperties();
@@ -16,15 +18,21 @@ const HomePage = () => {
 	// enable this For testing protected router
 	async function getProperties() {
 		try {
+			setLoading(true);
 			const { data } = await axiosPrivate.get('/property');
 			setProperties(data.data)
 			console.log('GET D', data);
 		} catch (error) {
 			console.log('GET', error);
 		}
+		finally{
+			setLoading(false);
+		}
 	}
 
-
+	if (loading) {
+		return <Loader />;
+	}
 
 
 	return (
