@@ -73,7 +73,7 @@ export default function UserMenu() {
                                 <p className="text-md font-semibold capitalize">
                                     {user.firstName} {user.lastName}
                                 </p>
-                                <p className="text-sm flex flex-col items-start capitalize text-base-secondary-text">{user.role.toLowerCase()}</p>
+                                <p className="text-sm flex flex-col items-start capitalize text-base-secondary-text">{user?.role.toLowerCase()}</p>
                             </div>
                         </div>
                         <div className="w-full border h-[1px]"></div>

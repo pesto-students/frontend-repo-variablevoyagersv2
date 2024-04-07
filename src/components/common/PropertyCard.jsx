@@ -5,10 +5,10 @@ import Heading from '../PropertyDetails/Heading'
 const PropertyCard = ({ property }) => {
     return (
         <>
-            <div className="bg-gray-500 mb-2 rounded-2xl flex">
+            <div className="bg-gray-500 mb-2 rounded-2xl flex ">
                 {property?.propertyImages.length > 0 ? (
                     <img
-                        className="rounded-2xl object-cover aspect-square"
+                        className="rounded-2xl object-cover aspect-square w-full"
                         src={property.propertyImages[0]?.imgUrl}
                         alt=""
                     />

@@ -88,7 +88,7 @@ const PropertyPage = () => {
 
 															<div className="ml-4">
 																<div className="font-medium text-gray-900">{property.propertyName}</div>
-																<div className="mt-1 text-gray-500">{property.description}</div>
+																{/* <div className="mt-1 text-gray-500">{property.description}</div> */}
 															</div>
 														</div>
 													</td>
