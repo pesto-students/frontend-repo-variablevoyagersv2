@@ -60,35 +60,35 @@ const PrivateNav = () => {
 					</svg>
 				</button>
 			</div>
-			{isMenuOpen && (
-				<div className="absolute border h-screen bg-white mt-3 left-[-2%] w-40" onClick={handleMenuClick}>
-					{isAuthenticated && user.role === ROLES.OWNER && (
-						<>
-							<MenuLink to="/owner/dashboard" onClick={toggleMenu}>
-								Dashboard
-							</MenuLink>
-							<MenuLink to="/owner/bookings" onClick={toggleMenu}>
-								Booking
-							</MenuLink>
-							<MenuLink to="/owner/property" onClick={toggleMenu}>
-								Property
-							</MenuLink>
-							<MenuLink to="/owner/profile" onClick={toggleMenu}>
-								Profile
-							</MenuLink>
-						</>
-					)}
-					{isAuthenticated && user.role === ROLES.CUSTOMER && (
-						<>
-							<MenuLink to="/customer/my-bookings">My Booking</MenuLink>
-							<MenuLink to="/customer/profile">Profile</MenuLink>
-						</>
-					)}
-				</div>
-			)}
+			<div className={`absolute md:hidden border h-screen bg-white mt-3 left-[-3%] w-60 transform transition-transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} z-10`} onClick={handleMenuClick}>
+				{isAuthenticated && user?.role === ROLES.OWNER && (
+					<>
+						<MenuLink to="/">Home</MenuLink>
+						<MenuLink to="/owner/dashboard" onClick={toggleMenu}>
+							Dashboard
+						</MenuLink>
+						<MenuLink to="/owner/bookings" onClick={toggleMenu}>
+							Booking
+						</MenuLink>
+						<MenuLink to="/owner/property" onClick={toggleMenu}>
+							Property
+						</MenuLink>
+						<MenuLink to="/owner/profile" onClick={toggleMenu}>
+							Profile
+						</MenuLink>
+					</>
+				)}
+				{isAuthenticated && user?.role === ROLES.CUSTOMER && (
+					<>
+						<MenuLink to="/">Home</MenuLink>
+						<MenuLink to="/customer/my-bookings">My Booking</MenuLink>
+						<MenuLink to="/customer/profile">Profile</MenuLink>
+					</>
+				)}
+			</div>
 			<div className="hidden md:ml-6 md md:block">
 				<div className="flex space-x-4">
-					{isAuthenticated && user.role === ROLES.OWNER && (
+					{isAuthenticated && user?.role === ROLES.OWNER && (
 						<>
 							<MenuLink to="/owner/dashboard">Dashboard</MenuLink>
 							<MenuLink to="/owner/bookings">Booking</MenuLink>
@@ -96,7 +96,7 @@ const PrivateNav = () => {
 							<MenuLink to="/owner/profile">Profile</MenuLink>
 						</>
 					)}
-					{isAuthenticated && user.role === ROLES.CUSTOMER && (
+					{isAuthenticated && user?.role === ROLES.CUSTOMER && (
 						<>
 							<MenuLink to="/customer/my-bookings">My Booking</MenuLink>
 							<MenuLink to="/customer/profile">Profile</MenuLink>
@@ -105,6 +105,7 @@ const PrivateNav = () => {
 				</div>
 			</div>
 		</div>
+
 	);
 };
 

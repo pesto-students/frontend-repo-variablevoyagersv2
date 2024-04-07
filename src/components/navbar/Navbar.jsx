@@ -9,8 +9,7 @@ export default function Navbar() {
 
 	return (
 		<nav className="fixed w-full bg-white z-10 shadow-sm border-b-[1px]">
-
-			<div className="mx-auto max-w-7xl px-2 sm:px-9 lg:px-9 ">
+			<div className="mx-auto max-w-8xl  px-2 sm:px-9 lg:px-9 ">
 				<div className="relative flex h-16 items-center justify-between">
 					<Logo />
 					<div className='flex gap-2'>

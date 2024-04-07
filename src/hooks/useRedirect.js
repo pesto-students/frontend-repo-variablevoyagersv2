@@ -11,7 +11,7 @@ const useRedirect = () => {
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			if (user.role === ROLES.CUSTOMER) {
+			if (user?.role === ROLES.CUSTOMER) {
 				navigate('/');
 			} else {
 				navigate('/owner/dashboard');

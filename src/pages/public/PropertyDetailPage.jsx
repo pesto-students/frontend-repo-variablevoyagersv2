@@ -60,7 +60,7 @@ const PropertyDetailPage = () => {
 							propertyName={property?.propertyName}
 							city={property?.city}
 							country={property?.country}
-							propertyImages={property?.propertyImages[0].imgUrl}
+							propertyImages={property?.propertyImages}
 						/>
 						<div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-6">
 							<PropertyDescriptions
@@ -68,6 +68,7 @@ const PropertyDetailPage = () => {
 								avatar={property?.owner?.avatar}
 								capacity={property?.capacity}
 								description={property?.description}
+								address={property?.address}
 							/>
 							<div className="order-first mb-10 md:order-last md:col-span-3 shadow-2xl rounded-xl">
 								<PropertyReservation
