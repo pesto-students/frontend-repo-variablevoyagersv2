@@ -7,6 +7,8 @@ import PropertyHead from '../../components/PropertyDetails/PropertyHead';
 import PropertyDescriptions from '../../components/PropertyDetails/PropertyDescriptions';
 import PropertyReservation from '../../components/PropertyDetails/PropertyReservation';
 import Loader from '../../components/common/Loader';
+import Reviews from '../../components/PropertyDetails/Reviews';
+import UserReviews from '../../components/PropertyDetails/UserReviews';
 const PropertyDetailPage = () => {
 	const [loading, setLoading] = useState(null);
 	const [property, setProperty] = useState(null);
@@ -52,36 +54,59 @@ const PropertyDetailPage = () => {
 	}
 
 	return (
-		<div className="mt-20">
-			<Container>
-				<div className="max-w-screen-lg mx-auto">
-					<div className="flex flex-col gap-6">
-						<PropertyHead
-							propertyName={property?.propertyName}
-							city={property?.city}
-							country={property?.country}
-							propertyImages={property?.propertyImages}
+		<div className=" w-auto mx-16">
+			<div className="flex flex-col gap-6">
+				<PropertyHead
+					propertyName={property?.propertyName}
+					city={property?.city}
+					country={property?.country}
+					propertyImages={property?.propertyImages}
+				/>
+				<div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-1">
+					<PropertyDescriptions
+						ownerName={property?.owner?.firstName}
+						avatar={property?.owner?.avatar}
+						capacity={property?.capacity}
+						description={property?.description}
+						address={property?.address}
+					/>
+					<div className="order-first mb-10 md:order-last md:col-span-3">
+						<PropertyReservation
+							price={property?.price}
+							totalPrice={totalPrice}
+							dateRange={dateRange}
+							onChangeDate={(value) => setDateRange(value)}
 						/>
-						<div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-6">
-							<PropertyDescriptions
-								ownerName={property?.owner?.firstName}
-								avatar={property?.owner?.avatar}
-								capacity={property?.capacity}
-								description={property?.description}
-								address={property?.address}
-							/>
-							<div className="order-first mb-10 md:order-last md:col-span-3 shadow-2xl rounded-xl">
-								<PropertyReservation
-									price={property?.price}
-									totalPrice={totalPrice}
-									dateRange={dateRange}
-									onChangeDate={(value) => setDateRange(value)}
-								/>
-							</div>
-						</div>
 					</div>
 				</div>
-			</Container>
+				<hr />
+				<div className="text-lg font-light text-neutral-500">
+					<h1 className='text-black font-bold mb-2'>What this place offers</h1>
+					<div className='flex gap-10 items-center'>
+						<ul>
+							Event Facilities:
+							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+						</ul>
+						<ul>
+							Event Facilities:
+							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+						</ul>
+						<ul>
+							Event Facilities:
+							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+						</ul>
+					</div>
+				</div>
+				<hr />
+				<Reviews />
+				<UserReviews />
+			</div>
 		</div>
 	);
 };

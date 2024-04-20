@@ -25,7 +25,7 @@ const HomePage = () => {
 		} catch (error) {
 			console.log('GET', error);
 		}
-		finally{
+		finally {
 			setLoading(false);
 		}
 	}
@@ -36,19 +36,17 @@ const HomePage = () => {
 
 
 	return (
-		<Container>
-			<div className="mt-32">
-				<div className="grid gap-x-6 gap-y-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-					{/* enable this For testing protected router */}
-					{/* <button onClick={() => getById()}>Click</button> */}
-					{properties?.map((property) => (
-						<Link key={property.id} to={`/property-detail/${property.id}`}>
-							<PropertyCard property={property}/>
-						</Link>
-					))}
-				</div>
+		// <Container>
+			<div className="mx-10 grid gap-x-6 gap-y-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-10">
+				{/* enable this For testing protected router */}
+				{/* <button onClick={() => getById()}>Click</button> */}
+				{properties?.map((property) => (
+					<Link key={property.id} to={`/property-detail/${property.id}`}>
+						<PropertyCard property={property} />
+					</Link>
+				))}
 			</div>
-		</Container>
+		// </Container>
 	);
 };
 

@@ -46,7 +46,7 @@ export default function RegisterPage() {
 		}
 	};
 	return (
-		<div className='flex-grow flex justify-center items-center max-h-screen mt-24 mb-10'>
+		<div className='flex-grow flex justify-center items-center max-h-screen mb-10'>
 			<div className="flex items-center justify-around">
 				<div className="border p-4 rounded-xl border-gray-400 border-opacity-20 shadow-2xl">
 					<h1 className="text-4xl text-center mb-4">Register</h1>
