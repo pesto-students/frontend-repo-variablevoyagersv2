@@ -15,6 +15,7 @@ import PropertyPage from '../pages/owner/PropertyPage';
 import PublicLayout from '../layouts/PublicLayout';
 import OwnerLayout from '../layouts/OwnerLayout';
 import CustomerLayout from '../layouts/CustomerLayout';
+import Payment from '../pages/payment/Payment';
 
 export const router = createBrowserRouter([
 	{
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
 			{ path: 'login', element: <LoginPage /> },
 			{ path: 'register', element: <RegisterPage /> },
 			{ path: 'property-detail/:id', element: <PropertyDetailPage /> },
+			{ path: 'payment/:id', element: <Payment/> },
 		],
 	},
 

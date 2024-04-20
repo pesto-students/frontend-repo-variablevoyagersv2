@@ -2,12 +2,12 @@ import React from 'react'
 import placeholder from "/placeholder.jpg";
 
 
-export default function Avatar({src}) {
+export default function Avatar({src,h,w}) {
   return (
     <img
     className="rounded-full" 
-      height="30" 
-      width="30" 
+      height={h} 
+      width={w} 
       alt="Avatar" 
       src={src || placeholder} 
     />

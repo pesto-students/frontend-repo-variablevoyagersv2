@@ -60,7 +60,7 @@ const PrivateNav = () => {
 					</svg>
 				</button>
 			</div>
-			<div className={`absolute md:hidden border h-screen bg-white mt-3 left-[-3%] w-60 transform transition-transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} z-10`} onClick={handleMenuClick}>
+			<div className={`absolute md:hidden sm:left-[-6%] h-screen bg-white mt-3 left-[-3%] w-60 transform transition-transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} z-10`} onClick={handleMenuClick}>
 				{isAuthenticated && user?.role === ROLES.OWNER && (
 					<>
 						<MenuLink to="/">Home</MenuLink>
