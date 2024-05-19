@@ -8,12 +8,13 @@ const PropertyDetails = () => {
 		register,
 		formState: { errors, isSubmitting },
 	} = useFormContext();
+
 	return (
-		<div className="shadow sm:overflow-hidden sm:rounded-md mb-5">
+		<div className="shadow sm:overflow-hidden sm:rounded-md">
 			<div className="space-y-6 bg-white px-4 py-6 sm:p-6">
 				<div>
-					<h3 className="text-base font-semibold leading-6 text-gray-900">Property Information</h3>
-					<p className="mt-1 text-sm text-gray-500">Provide information about the property.</p>
+					<h3 className="text-base font-semibold leading-6 text-gray-900">Property Details</h3>
+					<p className="mt-1 text-sm text-gray-500">Provide basic information about the property</p>
 				</div>
 				<div className="grid grid-cols-6 gap-6">
 					<div className="col-span-6 sm:col-span-2">
@@ -40,6 +41,35 @@ const PropertyDetails = () => {
 						<div>
 							<InputField label="Price" id="price" name="price" register={register} required={true} error={errors?.price} />
 							{errors?.price && <span className="text-red-500 text-sm">Price is required</span>}
+						</div>
+					</div>
+
+					<div className="col-span-6 sm:col-span-3">
+						<div>
+							<InputField
+								label="Check In Time"
+								id="checkInTime"
+								name="checkInTime"
+								type="time"
+								register={register}
+								required={true}
+								error={errors?.checkInTime}
+							/>
+							{errors.checkInTime && <span className="text-red-500 text-sm">Check In Time is required</span>}
+						</div>
+					</div>
+					<div className="col-span-6 sm:col-span-3">
+						<div>
+							<InputField
+								label="Check Out Time"
+								id="checkOutTime"
+								name="checkOutTime"
+								type="time"
+								register={register}
+								required={true}
+								error={errors?.checkOutTime}
+							/>
+							{errors.checkOutTime && <span className="text-red-500 text-sm">Check Out Time is required</span>}
 						</div>
 					</div>
 					<div className="col-span-6 sm:col-span-6">
