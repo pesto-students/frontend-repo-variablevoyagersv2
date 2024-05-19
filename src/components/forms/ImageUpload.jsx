@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaCircleXmark } from 'react-icons/fa6';
-const ImageUpload = ({ onImagesChange }) => {
-	const [imageData, setImageData] = useState([]);
+const ImageUpload = ({ onImagesChange, propertyImages }) => {
+	// const [imageData, setImageData] = useState([]);
 
 	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
 		onDrop: (acceptedFiles) => {
@@ -12,38 +12,38 @@ const ImageUpload = ({ onImagesChange }) => {
 			}));
 
 			// Combine new images with existing ones and limit to 5
-			const combinedImages = [...imageData, ...newImages].slice(0, 5);
+			const combinedImages = [...propertyImages, ...newImages].slice(0, 5);
 
-			setImageData(combinedImages);
+			// setImageData(combinedImages);
 			onImagesChange(combinedImages);
 		},
 	});
 
 	const handleCaptionChange = (index, value) => {
-		const updatedImageData = [...imageData];
+		const updatedImageData = [...propertyImages];
 		updatedImageData[index].caption = value;
-		setImageData(updatedImageData);
+		// setImageData(updatedImageData);
 		onImagesChange(updatedImageData);
 	};
 
 	const removeImage = (index) => {
-		const updatedImageData = imageData.filter((_, i) => i !== index);
-		setImageData(updatedImageData);
+		const updatedImageData = propertyImages.filter((_, i) => i !== index);
+		// setImageData(updatedImageData);
 		onImagesChange(updatedImageData);
 	};
 
 	return (
 		<div className="mb-8">
-			{imageData.length <= 4 && (
+			{propertyImages.length <= 4 && (
 				<div {...getRootProps()} className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
 					<input {...getInputProps()} />
 					<div className="space-y-1 text-center">
-						<p className="text-gray-600">Drag 'n' drop some files here, or click to select files</p>
+						<p className="text-gray-600">Drag 'n' drop some images here, or click to select files</p>
 					</div>
 				</div>
 			)}
 			<ul className="mt-4 flex flex-wrap gap-4 justify-stretch">
-				{imageData.map((item, index) => (
+				{propertyImages.map((item, index) => (
 					<li key={index} className="relative border border-gray-300 rounded-md  w-44">
 						<div className="relative">
 							<img src={URL.createObjectURL(item.file)} alt="Property" className="block w-full h-24 md:h-32 object-cover rounded-t-md" />

@@ -11,6 +11,7 @@ import moment from 'moment';
 import Button from '../../components/common/Button';
 import { FaEye, FaPenToSquare, FaPlus, FaTrash } from 'react-icons/fa6';
 import { RxEyeOpen, RxPencil2 } from 'react-icons/rx';
+import ImagePlaceholder from '../../assets/ImagePlaceholder.jpeg';
 const PropertyPage = () => {
 	const [loading, setLoading] = useState(false);
 	const [properties, setProperties] = useState([]);
@@ -67,7 +68,7 @@ const PropertyPage = () => {
 													Capacity
 												</th>
 												<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-													Address
+													City
 												</th>
 												<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
 													Last update
@@ -83,7 +84,11 @@ const PropertyPage = () => {
 													<td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
 														<div className="flex items-center">
 															<div className="h-14 w-14 flex-shrink-0">
-																<img className="h-14 w-14 rounded-md" src={property.propertyImages[0].imgUrl} alt="" />
+																<img
+																	className="h-14 w-14 rounded-md"
+																	src={property.propertyImages[0]?.imgUrl ? property.propertyImages[0]?.imgUrl : ImagePlaceholder}
+																	alt={property.propertyName}
+																/>
 															</div>
 
 															<div className="ml-4">
