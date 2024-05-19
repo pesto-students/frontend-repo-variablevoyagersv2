@@ -6,15 +6,15 @@ import FormatPrice from '../FormatPrice'
 const PropertyCard = ({ property }) => {
     return (
         <>
-            <div className="bg-gray-500 mb-2 rounded-2xl flex ">
+            <div className="bg-gray-500 mb-2 w-[250px] rounded-lg flex ">
                 {property?.propertyImages.length > 0 ? (
                     <img
-                        className="rounded-2xl object-cover aspect-square w-full"
+                        className="rounded-lg object-cover aspect-square w-full"
                         src={property.propertyImages[0]?.imgUrl}
                         alt=""
                     />
                 ):(<img
-                    className="rounded-2xl object-cover aspect-square"
+                    className="rounded-lg object-cover aspect-square"
                     src={ImagePlaceholder}
                     alt=""
                 />)}

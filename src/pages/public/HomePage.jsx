@@ -4,6 +4,7 @@ import Container from '../../components/Container';
 import PropertyCard from '../../components/common/PropertyCard';
 import { axiosPrivate } from '../../services/axios.service';
 import Loader from '../../components/common/Loader';
+import Categories from '../../components/common/Categories';
 
 const HomePage = () => {
 	// enable this For testing protected router
@@ -36,8 +37,8 @@ const HomePage = () => {
 
 
 	return (
-		// <Container>
-			<div className="mx-10 grid gap-x-6 gap-y-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-10">
+		<>
+			<div className="px-20 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
 				{/* enable this For testing protected router */}
 				{/* <button onClick={() => getById()}>Click</button> */}
 				{properties?.map((property) => (
@@ -46,7 +47,7 @@ const HomePage = () => {
 					</Link>
 				))}
 			</div>
-		// </Container>
+		</>
 	);
 };
 

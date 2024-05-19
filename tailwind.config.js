@@ -16,7 +16,10 @@ export default {
 				square: 'square',
 			},
 			colors: {
-				primary: '#556793',
+				primary: '#8c4370',
+				// primary: '#b4457f',
+				primary1: '#556793',
+				theame: '#8c4370',
 				main: {
 					25: '#f2f3f7',
 					50: '#e0e4ef',

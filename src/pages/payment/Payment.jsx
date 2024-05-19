@@ -8,6 +8,7 @@ import Loader from '../../components/common/Loader';
 const Payment = () => {
     const [loading, setLoading] = useState(null);
     const [property, setProperty] = useState(null);
+
     const { id } = useParams();
 
     useEffect(() => {
@@ -76,8 +77,8 @@ const Payment = () => {
                         </div>
 
                     </div>
-                    <div className="order-first mb-10 md:order-last md:col-span-3 sticky">
-                        <div className="bg-white flex flex-col gap-8 rounded-xl shadow-lg border-[1px] p-4 border-neutral-200 overflow-hidden">
+                    <div className="order-first mb-10 md:order-last md:col-span-3">
+                        <div className="bg-white flex flex-col gap-8  sticky top-20 rounded-xl shadow-lg border-[1px] p-4 border-neutral-200 overflow-hidden">
                             <div className="flex flex-row items-center mt-3">
                                 <div className='flex gap-5 items-center'>
                                     <img src={property?.propertyImages[0].imgUrl} alt="" className='rounded-md w-[100px] h-[100px]' />

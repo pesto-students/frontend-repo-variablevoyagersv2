@@ -89,11 +89,11 @@ export default function UserMenu() {
                 <div className="flex flex-row items-center gap-3 overflow-hidden">
                     <Link
                         to="/register"
-                        className="hover:shadow-md   text-primary border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-primary"
+                        className="hover:shadow-md   text-theame font-bold border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
                     >
                         Sign-up
                     </Link>
-                    <Link to="/login" className="hover:shadow-md text-primary border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-primary">
+                    <Link to="/login" className="hover:shadow-md text-theame font-bold border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame ">
                         Log-In
                     </Link>
                 </div>

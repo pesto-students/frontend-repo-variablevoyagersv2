@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaEye, FaPenToSquare, FaTrash } from 'react-icons/fa6';
+import { FaEllipsisVertical, FaEye, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 
 const MyBookings = () => {
 	let arr = [1, 2, 3, 4, 5];
@@ -60,7 +60,7 @@ const MyBookings = () => {
 														</div>
 													</td>
 													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">15 Apr 2024 - 24 Apr 2-24</td>
-													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">10 Apr 2024</td>
+													<td className="whites pace-nowrap px-3 py-5 text-sm text-gray-500">10 Apr 2024</td>
 													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
 														<div className="text-gray-900">Rs.5000</div>
 													</td>
@@ -70,16 +70,11 @@ const MyBookings = () => {
 															Pending
 														</span>
 													</td>
-													<td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 flex item-center justify-between">
-														<a href="#" className="text-indigo-600 hover:text-indigo-900">
-															<FaPenToSquare className="h-5 w-5 text-primary" />
+													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+														<a href="#" className="text-indigo-600 hover:text-indigo-900 flex justify-center">
+															<FaEllipsisVertical />
 														</a>
-														<a href="#" className="text-indigo-600 hover:text-indigo-900">
-															<FaTrash className="h-5 w-5 text-red-600" />
-														</a>
-														<a href="#" className="text-indigo-600 hover:text-indigo-900">
-															<FaEye className="h-5 w-5 text-primary" />
-														</a>
+ 
 													</td>
 												</tr>
 											))}
