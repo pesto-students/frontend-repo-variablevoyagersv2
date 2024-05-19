@@ -16,7 +16,7 @@ const CustomerLayout = () => {
 		<div className="flex flex-col bg-gradient">
 			<Navbar />
 
-			<div className="mx-auto w-full max-w-5xl px-4 pb-28 pt-32">
+			<div className="mx-auto w-full px-20 pb-28 mt-20">
 				<Outlet />
 			</div>
 			<Footer />

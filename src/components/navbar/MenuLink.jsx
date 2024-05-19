@@ -6,7 +6,7 @@ const MenuLink = ({ to, onClick, children }) => {
 		<NavLink
 			to={to}
 			className={({ isActive }) =>
-				isActive ? 'block px-6 md:px-3 py-2  bg-primary text-white md:rounded-md' : 'block px-6 md:px-3 py-2 text-primary hover:bg-gray-200 sm:rounded-md'
+				isActive ? 'block px-6 md:px-3 py-2  bg-primary text-white md:rounded-md font-bold' : 'block px-6 md:px-3 py-2 text-primary font-bold hover:bg-primary hover:text-white sm:rounded-md'
 			}
 			onClick={onClick}
 		>

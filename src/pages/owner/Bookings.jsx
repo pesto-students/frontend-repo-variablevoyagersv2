@@ -118,7 +118,7 @@ const Bookings = () => {
 				</div>
 			</div>
 
-			{[1, 2, 3, 4, 5].map((ele, idx) => (
+			{[1, 2, 3].map((ele, idx) => (
 				<div key={idx} className="border-b border-t border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border mt-8">
 					<h3 className="sr-only">
 						Order placed on <time datetime="2021-07-06">Jul 6, 2021</time>
