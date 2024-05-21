@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
 	return (
-		<footer className="bg-gray-50 border mt-20">
+		<footer className=" mt-6">
 			<div className="mx-auto max-w-7xl overflow-hidden mt-5 px-0 py-1 sm:py-23 lg:px-1">
 				<nav className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
 					<div className="pb-2">

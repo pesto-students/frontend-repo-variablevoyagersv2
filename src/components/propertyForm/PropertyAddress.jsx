@@ -10,7 +10,7 @@ const PropertyAddress = () => {
 		formState: { errors, isSubmitting },
 	} = useFormContext();
 	const [showDrop, setShowDrop] = useState(false);
-	const [selectedCity, setSelectedCity] = useState('Delhi');
+	const [selectedCity, setSelectedCity] = useState('');
 	const closeDrop = useCallback(() => {
 		setShowDrop(false);
 	}, []);

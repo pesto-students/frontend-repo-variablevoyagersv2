@@ -10,8 +10,8 @@ const PropertyReservation = ({ price, totalPrice, onChangeDate, dateRange, disab
 
         <div className="bg-white rounded-xl shadow-lg border-[1px] border-neutral-200 overflow-hidden">
             <div className="flex flex-row items-center gap-0 p-4">
-                <div className="text-2xl font-semibold">{<FormatPrice price={price} />}/</div>
-                <div className="font-light text-neutral-600 ">Night</div>
+                <div className="text-2xl font-semibold">{<FormatPrice price={price} />}</div>
+                <div className=" text-neutral-600 ml-2 font-normal">Per Day</div>
             </div>
             <hr />
             <Calendar

@@ -9,15 +9,16 @@ export default {
 				base: ['16px', '28px'],
 			},
 			fontFamily: {
-				sans: ['Nunito', 'sans-serif'],
+				sans: ["Poppins",'Nunito', 'sans-serif'],
 				poppins: ['Poppins', 'sans-serif'],
 			},
 			listStyleType: {
 				square: 'square',
 			},
 			colors: {
-				primary: '#8c4370',
-				// primary: '#b4457f',
+				// primary: '#7469B6',
+				primary: '#b4457f',
+				// primary: '#C60000',
 				primary1: '#556793',
 				theame: '#8c4370',
 				main: {
