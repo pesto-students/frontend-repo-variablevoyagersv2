@@ -9,7 +9,7 @@ const PublicLayout = () => {
 	return (
 		<div className="flex flex-col justify-between">
 			<Navbar />
-			<Categories/>
+			
 			<div >
 				<Outlet />
 			</div>

@@ -43,7 +43,7 @@ const PropertyPage = () => {
 				</div>
 				<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
 					<Link to="/owner/add-property">
-						<Button buttonType="button" size="md" variant="filled" innerClass="w-40 bg-white " innerTextClass="text-primary" startIcon={<FaPlus />}>
+						<Button buttonType="button" size="md" variant="filled" innerClass="w-50 bg-white " innerTextClass="text-primary " startIcon={<FaPlus />}>
 							Add Property
 						</Button>
 					</Link>

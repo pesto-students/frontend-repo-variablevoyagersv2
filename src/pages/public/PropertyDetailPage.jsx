@@ -54,7 +54,7 @@ const PropertyDetailPage = () => {
 	}
 
 	return (
-		<div className=" w-auto mx-16">
+		<div className=" w-auto mx-20 mt-24	">
 			<div className="flex flex-col gap-6">
 				<PropertyHead
 					propertyName={property?.propertyName}
@@ -62,13 +62,14 @@ const PropertyDetailPage = () => {
 					country={property?.country}
 					propertyImages={property?.propertyImages}
 				/>
-				<div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-1">
+				<div className="grid grid-cols-1 md:grid-cols-7 md:gap-16 mt-2">
 					<PropertyDescriptions
 						ownerName={property?.owner?.firstName}
 						avatar={property?.owner?.avatar}
 						capacity={property?.capacity}
 						description={property?.description}
 						address={property?.address}
+						tags={property?.propertyTags}
 					/>
 					<div className="order-first mb-10 md:order-last md:col-span-3">
 						<PropertyReservation

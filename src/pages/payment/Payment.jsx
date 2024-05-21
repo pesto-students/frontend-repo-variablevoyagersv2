@@ -34,35 +34,35 @@ const Payment = () => {
 
     return (
         <Container>
-            <div className='mt-10'>
+            <div className='mt-32'>
                 <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10">
                     <div className='col-span-4 flex flex-col'>
-                        <h1 className="text-4xl font-bold">Confirm And Pay</h1>
-                        <p className="mt-10 font-semibold text-2xl">Your Booking</p>
-                        <p className="mt-6 font-semibold text-xl">Dates</p>
+                        <h1 className="text-4xl  font-semibold">Confirm And Pay</h1>
+                        <p className="mt-10 font-medium text-2xl">Your Booking</p>
+                        <p className="mt-6 font-mediumd text-xl">Dates</p>
                         <div className='mt-2 mb-9 flex justify-between'>
                             <p className="text-lg">13-20 May</p>
-                            <p className="text-lg font-semibold underline cursor-pointer">Edit</p>
+                            <p className="text-lg font-medium underline cursor-pointer">Edit</p>
                         </div>
                         <hr />
-                        <p className="mt-10 mb-10 font-semibold text-2xl">Pay With</p>
+                        <p className="mt-10 mb-10 font-medium text-2xl">Pay With</p>
                         <hr />
                         <div className='mt-10 mb-10'>
-                            <p className="font-semibold text-2xl">Required for your trip</p>
+                            <p className="font-medium text-2xl">Required for your trip</p>
                             <div className='flex justify-between'>
-                                <p className="mt-1 font-semibold text-xl">Phone number</p>
-                                <button className='rounded-md p-2 bg-white border font-semibold'>Add</button>
+                                <p className="mt-1 font-medium text-xl">Phone number</p>
+                                <button className='rounded-md p-2 bg-white border font-medium'>Add</button>
                             </div>
                         </div>
                         <hr />
                         <div className='mt-10 mb-10'>
-                            <p className="font-semibold text-2xl">Cancellation policy</p>
+                            <p className="font-medium text-2xl">Cancellation policy</p>
                             <span>Free cancellation for 48 hours. Cancel before 6 May for a partial refund.</span>
                             <p className=' underline font-bold'>Learn More</p>
                         </div>
                         <hr />
                         <div className='mt-10 mb-10'>
-                            <p className="font-semibold text-2xl">Ground rules</p>
+                            <p className="font-medium text-2xl">Ground rules</p>
                             <span>We ask every guest to remember a few simple things about what makes a great guest.</span>
                             <p className='font-bold'>1. Treat your Host’s home like your own</p>
                             <p className='font-bold'>
@@ -70,19 +70,15 @@ const Payment = () => {
                             </p>
                         </div>
                         <hr />
-                        <div className='mt-10 mb-10'>
-                            <button className='text-3xl px-4 py-2 rounded-md bg-primary text-white'>
-                                Confirm and Pay
-                            </button>
-                        </div>
+                        
 
                     </div>
                     <div className="order-first mb-10 md:order-last md:col-span-3">
-                        <div className="bg-white flex flex-col gap-8  sticky top-20 rounded-xl shadow-lg border-[1px] p-4 border-neutral-200 overflow-hidden">
+                        <div className="bg-white flex flex-col gap-5  sticky top-32 rounded-xl shadow-lg border-[1px] p-4 border-neutral-200 overflow-hidden">
                             <div className="flex flex-row items-center mt-3">
                                 <div className='flex gap-5 items-center'>
                                     <img src={property?.propertyImages[0].imgUrl} alt="" className='rounded-md w-[100px] h-[100px]' />
-                                    <div className='font-semibold text-2xl'>
+                                    <div className='font-medium text-2xl'>
                                         {property?.propertyName}
                                         <div className='flex items-center text-base'>
                                             <svg
@@ -104,7 +100,7 @@ const Payment = () => {
                             </div>
                             <hr />
                             <div className='flex flex-col'>
-                                <p className="font-semibold text-2xl">Price Details</p>
+                                <p className="font-medium text-2xl">Price Details</p>
                                 <div className='flex justify-between'>
                                     <div>
                                         <FormatPrice price={50000} />
@@ -117,11 +113,16 @@ const Payment = () => {
                             </div>
                             <hr />
                             <div className='flex justify-between'>
-                                <p className="font-semibold text-2xl">Total</p>
-                                <div className="font-semibold text-2xl">
+                                <p className="font-medium text-2xl">Total</p>
+                                <div className="font-medium text-2xl">
                                     <FormatPrice price={150000} />
                                 </div>
                             </div>
+                            <button className='text-3xl px-4 py-2 rounded-md bg-primary text-white'>
+                                Confirm and Pay
+                            </button>
+                            <div className='w-max'>
+                        </div>
                         </div>
                     </div>
                 </div>

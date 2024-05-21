@@ -69,7 +69,7 @@ const AddPropertyPage = () => {
 		fd.append('capacity', data.capacity);
 		fd.append('price', data.price);
 		fd.append('address', data.address);
-		fd.append('city', 'Delhi');
+		fd.append('city', data.city);
 		fd.append('country', data.country);
 		fd.append('pincode', '');
 		fd.append('ownerId', user?.id);
