@@ -13,7 +13,7 @@ const TagButton = ({ event, isSelected, onSelectEvent, hasErrors, isDisabled }) 
 	};
 
 	return (
-		<button onClick={() => !isDisabled && onSelectEvent(event.value)} type="button" className={getButtonClasses()} disabled={isDisabled}>
+		<button onClick={() => !isDisabled && onSelectEvent(event.tagName)} type="button" className={getButtonClasses()} disabled={isDisabled}>
 			<div className="flex flex-col items-center">
 				<img src={event.icon} className="w-8 h-8" />
 				{event.title}

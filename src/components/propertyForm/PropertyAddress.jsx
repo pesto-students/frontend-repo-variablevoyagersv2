@@ -4,27 +4,23 @@ import InputField from '../forms/InputField';
 import TextAreaField from '../forms/TextAreaField';
 import useOutsideClick from '../../hooks/useOutsideClick';
 const cityList = ['Delhi', 'Mumbai', 'Bangalore', 'Kolkata', 'Chennai', 'Pune', 'Hyderabad'];
-const PropertyAddress = () => {
+const PropertyAddress = ({ handleCityChange, selectedCity }) => {
 	const {
 		register,
 		formState: { errors, isSubmitting },
 	} = useFormContext();
+
 	const [showDrop, setShowDrop] = useState(false);
-	const [selectedCity, setSelectedCity] = useState('');
+
 	const closeDrop = useCallback(() => {
 		setShowDrop(false);
 	}, []);
-
+	const dropRef = useOutsideClick(showDrop, closeDrop);
 	const toggleDrop = (event) => {
-		event.stopPropagation(); // Prevents event bubbling to body
+		event.stopPropagation();
 		setShowDrop(!showDrop);
 	};
 
-	const handleDropClick = (event) => {
-		event.stopPropagation(); // Prevents event bubbling to body
-	};
-
-	const dropRef = useOutsideClick(showDrop, closeDrop);
 	return (
 		<div className="shadow sm:overflow-hidden sm:rounded-md">
 			<div className="space-y-6 bg-white px-4 py-6 sm:p-6">
@@ -40,10 +36,6 @@ const PropertyAddress = () => {
 						</div>
 					</div>
 					<div className="col-span-6 sm:col-span-3">
-						{/* <div>
-							<InputField label="City" id="city" name="city" register={register} required={true} error={errors?.city} />
-							{errors?.city && <span className="text-red-500 text-sm">City is required</span>}
-						</div> */}
 						<div>
 							<label id="listbox-label" className="block text-sm font-medium leading-6 text-gray-900">
 								City
@@ -84,7 +76,7 @@ const PropertyAddress = () => {
 												className="text-gray-900 relative cursor-default select-none py-2 pl-8 pr-4 hover:bg-indigo-600 hover:text-white"
 												id="listbox-option-0"
 												role="option"
-												onClick={() => setSelectedCity(c)}
+												onClick={() => handleCityChange(c)}
 											>
 												<span className="font-normal block truncate">{c}</span>
 												{selectedCity === c && (

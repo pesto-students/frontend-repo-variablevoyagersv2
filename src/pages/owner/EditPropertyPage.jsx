@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ImageUpload from '../../components/forms/ImageUpload';
 import { toast } from 'react-toastify';
 import { selectUser } from '../../redux/slices/authSlice';
@@ -10,6 +10,10 @@ import PropertyDetails from '../../components/propertyForm/PropertyDetails';
 import PropertyAddress from '../../components/propertyForm/PropertyAddress';
 import PropertyExtra from '../../components/propertyForm/PropertyExtra';
 import PropertyTagsAndAmenities from '../../components/propertyForm/PropertyTagsAndAmenities';
+import { useParams } from 'react-router-dom';
+import Loader from '../../components/common/Loader';
+
+import { CATEGORIES } from '../../constants/categories';
 const steps = [
 	{ name: 'Property Details', key: 'property-details' },
 	{ name: 'Location Information', key: 'property-address' },
@@ -18,14 +22,45 @@ const steps = [
 	{ name: 'Additional Information', key: 'property-extra' },
 ];
 const views = ['property-details', 'property-address', 'property-images', 'property-tags', 'property-extra'];
-const AddPropertyPage = () => {
+const EditPropertyPage = () => {
+	const { id } = useParams();
 	const user = useSelector(selectUser);
+	const [loading, setLoading] = useState(false);
 	const [propertyImages, setPropertyImages] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [catErr, setCatErr] = useState(false);
 	const [noImgErr, setNoImgErr] = useState(false);
 	const [amenities, setAmenities] = useState([]);
-	const [selectedCity, setSelectedCity] = useState('Delhi');
+	const [selectedCity, setSelectedCity] = useState('Mumbai');
+
+	useEffect(() => {
+		getProperty();
+	}, []);
+
+	const getProperty = async () => {
+		try {
+			setLoading(true);
+			const {
+				data: { data },
+			} = await axiosPrivate.get(`/property/${id}`);
+
+			reset(data);
+			setSelectedCity(data.city);
+			setPropertyImages(data.propertyImages);
+			setCategories(
+				CATEGORIES.filter((category) => data.propertyTags.includes(category.tagName)).map(({ id, tagName }) => ({
+					id,
+					tagName,
+				})),
+			);
+			setAmenities(data.Amenities.map((amenity) => ({ amenityName: amenity })));
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const handleSetCategories = (eventValue) => {
 		console.log(categories);
 		setCategories(eventValue);
@@ -65,19 +100,30 @@ const AddPropertyPage = () => {
 		fd.append('capacity', data.capacity);
 		fd.append('price', data.price);
 		fd.append('address', data.address);
-		fd.append('city', data.city);
+		fd.append('city', selectedCity);
 		fd.append('country', data.country);
 		fd.append('extraInfo', data.extraInfo ?? '');
 		fd.append('pincode', '');
+		fd.append('lat', '');
+		fd.append('lan', '');
 		fd.append('ownerId', user?.id);
 		fd.append('checkInTime', data?.checkInTime);
 		fd.append('checkOutTime', data?.checkOutTime);
 		fd.append('propertyTags', JSON.stringify(categories));
+		let oldImages = [];
 		let captions = [];
-		propertyImages.forEach((f) => {
-			fd.append(`propertyImages`, f.file);
-			captions.push(f.caption);
+		propertyImages.forEach((image) => {
+			if (image.file) {
+				fd.append(`propertyImages`, image.file);
+				captions.push(image.caption);
+			} else {
+				oldImages.push(image);
+			}
 		});
+
+		if (oldImages.length > 0) {
+			fd.append('propertyImagesUrls', JSON.stringify(oldImages));
+		}
 		fd.append(`captions`, JSON.stringify(captions));
 		const amenitiesFiltered = amenities.filter((ele) => ele.amenityName);
 		if (amenitiesFiltered.length > 0) {
@@ -85,21 +131,21 @@ const AddPropertyPage = () => {
 		}
 
 		try {
-			const res = await axiosPrivate.post(`property`, fd, {
+			const res = await axiosPrivate.put(`property/${id}`, fd, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
 			});
 
 			if (res.data.success) {
-				reset();
-				setPropertyImages([]);
-				setCategories([]);
-				setAmenities([]);
-				setSelectedCity('Delhi');
-				setView('property-details');
-				setEnabledViews(['property-details']);
-				toast.success('Property is added');
+				// reset();
+				// setPropertyImages([]);
+				// setCategories([]);
+				// setAmenities([]);
+				// setSelectedCity('Delhi');
+				// setView('property-details');
+				// setEnabledViews(['property-details']);
+				toast.success('Property is updated');
 			} else {
 				toast.error('Something went wrong');
 			}
@@ -161,12 +207,17 @@ const AddPropertyPage = () => {
 			setView(key);
 		}
 	};
+
+	if (loading) {
+		return <Loader />;
+	}
+
 	return (
 		<>
 			<div className="md:flex md:items-center md:justify-between mb-8">
 				<div className="min-w-0 flex-1">
-					<h2 className="text-2xl font-bold leading-7 text-gray-50 sm:truncate sm:text-3xl sm:tracking-tight">Add Property</h2>
-					<p className="mt-1 text-sm text-gray-50">List out your property </p>
+					<h2 className="text-2xl font-bold leading-7 text-gray-50 sm:truncate sm:text-3xl sm:tracking-tight">Update Property</h2>
+					<p className="mt-1 text-sm text-gray-50">Update your property </p>
 				</div>
 			</div>
 			<div className="lg:grid lg:grid-cols-12 lg:gap-x-5">
@@ -204,6 +255,7 @@ const AddPropertyPage = () => {
 									</div>
 								</div>
 							)}
+
 							{view === 'property-tags' && (
 								<PropertyTagsAndAmenities
 									handleSetCategories={handleSetCategories}
@@ -228,6 +280,7 @@ const AddPropertyPage = () => {
 										Prev
 									</Button>
 								)}
+
 								{view !== 'property-extra' && (
 									<Button
 										buttonType="button"
@@ -262,4 +315,4 @@ const AddPropertyPage = () => {
 	);
 };
 
-export default AddPropertyPage;
+export default EditPropertyPage;
