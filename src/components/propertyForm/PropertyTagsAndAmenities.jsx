@@ -1,63 +1,45 @@
 import React, { useState } from 'react';
-import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
-
-import TextAreaField from '../forms/TextAreaField';
-import TagButton from './TagButton';
-import crossImage from '../../assets/icons/cross.png';
+import TagButton from '../common/TagButton';
 import Button from '../common/Button';
 import { FaPlus, FaXmark } from 'react-icons/fa6';
-import WeddingIcon from '../../assets/icons/wedding.png';
-import BirthdayIcon from '../../assets/icons/birthday.png';
-import EngagementIcon from '../../assets/icons/engage.png';
-import CorIcon from '../../assets/icons/cor-party.png';
-import PoolIcon from '../../assets/icons/pool-party.png';
-import CocktailIcon from '../../assets/icons/cocktail.png';
-import BanquetIcon from '../../assets/icons/hall.png';
-import RestaurantIcon from '../../assets/icons/res.png';
-import FarmIcon from '../../assets/icons/farm.png';
-import KittyIcon from '../../assets/icons/kitty.png';
-const events = [
-	{ title: 'Wedding', value: 'wedding', icon: WeddingIcon },
-	{ title: 'Birthday', value: 'birthday', icon: BirthdayIcon },
-	{ title: 'Engagement', value: 'engagement', icon: EngagementIcon },
-	{ title: 'Pool Party', value: 'pool-party', icon: PoolIcon },
-	{ title: 'Cocktail Party', value: 'cocktail-party', icon: CocktailIcon },
-	{ title: 'Corporate Party', value: 'corporate-party', icon: CorIcon },
-	{ title: 'Banquet Halls', value: 'banquet-halls', icon: BanquetIcon },
-	{ title: 'Restaurants', value: 'restaurants', icon: RestaurantIcon },
-	{ title: 'Farm Houses', value: 'farm-houses', icon: FarmIcon },
-	{ title: 'Kitty Party', value: 'kitty-party', icon: KittyIcon },
-];
-const MAX_CATEGORIES = 3;
-const MAX_AMENITIES = 5;
+import { CATEGORIES, MAX_AMENITIES, MAX_CATEGORIES } from '../../constants/categories';
+
 const PropertyTagsAndAmenities = ({ handleSetCategories, categories, catErr, handleAmenityChange, amenities }) => {
 	const [amenityError, setAmenityError] = useState(false);
 	const onSelectEvent = (eventValue) => {
-		handleSetCategories(eventValue);
-	};
-	const handleRemoveAmenity = (index) => {
-		const newAmenities = [...amenities];
-		newAmenities.splice(index, 1);
-		handleAmenityChange(newAmenities);
-	};
+		let newSelectedEvents;
+		if (categories.some((category) => category.tagName === eventValue)) {
+			newSelectedEvents = categories.filter((category) => category.tagName !== eventValue);
+		} else if (categories.length < MAX_CATEGORIES) {
+			const selectedEvent = CATEGORIES.find((event) => event.tagName === eventValue);
+			newSelectedEvents = [...categories, { id: selectedEvent.id, tagName: selectedEvent.tagName }];
+		} else {
+			newSelectedEvents = categories;
+		}
 
+		handleSetCategories(newSelectedEvents);
+	};
 	const handleAddInput = () => {
 		if (amenities.length >= MAX_AMENITIES) {
 			return;
 		}
-		const isEmptyInput = amenities.some((input) => !input.trim());
+		const isEmptyInput = amenities.some((input) => !input.amenityName.trim());
 		if (isEmptyInput) {
 			setAmenityError(true);
 			return;
 		}
 		setAmenityError(false);
-
-		handleAmenityChange([...amenities, '']);
+		handleAmenityChange([...amenities, { amenityName: '' }]);
 	};
 
 	const handleAmenityInputChange = (index, value) => {
 		const newAmenities = [...amenities];
-		newAmenities[index] = value;
+		newAmenities[index] = { ...newAmenities[index], amenityName: value };
+		handleAmenityChange(newAmenities);
+	};
+
+	const handleRemoveAmenity = (index) => {
+		const newAmenities = amenities.filter((_, i) => i !== index);
 		handleAmenityChange(newAmenities);
 	};
 	return (
@@ -73,13 +55,13 @@ const PropertyTagsAndAmenities = ({ handleSetCategories, categories, catErr, han
 						<p className="text-sm text-gray-500">Select up to {MAX_CATEGORIES} categories that match your property.</p>
 					</div>
 					<div className="flex flex-1 w-100 flex-wrap gap-4">
-						{events.map((event) => (
+						{CATEGORIES.map((event) => (
 							<TagButton
-								key={event.value}
+								key={event.tagName}
 								event={event}
-								isSelected={categories.includes(event.value)}
+								isSelected={categories.some((category) => category.tagName === event.tagName)}
 								onSelectEvent={onSelectEvent}
-								isDisabled={!categories.includes(event.value) && categories.length >= MAX_CATEGORIES}
+								isDisabled={!categories.some((category) => category.tagName === event.tagName) && categories.length >= MAX_CATEGORIES}
 							/>
 						))}
 					</div>
@@ -91,11 +73,11 @@ const PropertyTagsAndAmenities = ({ handleSetCategories, categories, catErr, han
 					<p className="mb-2 text-sm text-gray-500">Add up to {MAX_AMENITIES} available amenities in your property.</p>
 
 					{amenities?.map((item, index) => (
-						<div key={item.id} className="flex flex-1 w-100 gap-4 items-center">
+						<div key={index} className="flex flex-1 w-100 gap-4 items-center">
 							<input
 								type="text"
 								className="focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-								value={item}
+								value={item.amenityName}
 								onChange={(e) => handleAmenityInputChange(index, e.target.value)}
 							/>
 							<FaXmark className="text-red-500 text-2xl cursor-pointer" onClick={() => handleRemoveAmenity(index)} />

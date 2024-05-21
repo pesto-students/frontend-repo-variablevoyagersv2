@@ -16,6 +16,7 @@ import PublicLayout from '../layouts/PublicLayout';
 import OwnerLayout from '../layouts/OwnerLayout';
 import CustomerLayout from '../layouts/CustomerLayout';
 import Payment from '../pages/payment/Payment';
+import EditPropertyPage from '../pages/owner/EditPropertyPage';
 
 export const router = createBrowserRouter([
 	{
@@ -26,7 +27,7 @@ export const router = createBrowserRouter([
 			{ path: 'login', element: <LoginPage /> },
 			{ path: 'register', element: <RegisterPage /> },
 			{ path: 'property-detail/:id', element: <PropertyDetailPage /> },
-			{ path: 'payment/:id', element: <Payment/> },
+			{ path: 'payment/:id', element: <Payment /> },
 		],
 	},
 
@@ -55,6 +56,14 @@ export const router = createBrowserRouter([
 				element: (
 					<PrivateRoute allowedRoles={ROLES.OWNER}>
 						<AddPropertyPage />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'edit-property/:id',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.OWNER}>
+						<EditPropertyPage />
 					</PrivateRoute>
 				),
 			},

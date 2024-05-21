@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { selectUser } from '../../redux/slices/authSlice';
 import { axiosPrivate } from '../../services/axios.service';
 import Loader from '../../components/common/Loader';
@@ -12,7 +12,9 @@ import Button from '../../components/common/Button';
 import { FaEye, FaPenToSquare, FaPlus, FaTrash } from 'react-icons/fa6';
 import { RxEyeOpen, RxPencil2 } from 'react-icons/rx';
 import ImagePlaceholder from '../../assets/ImagePlaceholder.jpeg';
+import { toast } from 'react-toastify';
 const PropertyPage = () => {
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [properties, setProperties] = useState([]);
 	const user = useSelector(selectUser);
@@ -24,6 +26,7 @@ const PropertyPage = () => {
 		try {
 			setLoading(true);
 			const { data } = await axiosPrivate.get(`/property/owner-property/${user?.id}`);
+			console.log(data);
 			setProperties(data.data);
 		} catch (error) {
 			console.log(error);
@@ -31,6 +34,29 @@ const PropertyPage = () => {
 			setLoading(false);
 		}
 	};
+	const deleteProperty = async (id) => {
+		if (confirm('Are you sure to delete?')) {
+			console.log(id);
+			try {
+				const { data } = await axiosPrivate.put(`/property/delete/${id}`);
+				console.log(data);
+				if (data.success) {
+					toast.success('Property is deleted');
+					getOwnerProperties();
+				} else {
+					toast.success('Something went wrong');
+				}
+			} catch (error) {
+				console.log(error);
+				toast.error('Something went wrong');
+			}
+		}
+	};
+
+	const goto = (id) => {
+		navigate(`/owner/edit-property/${id}`);
+	};
+
 	if (loading) {
 		return <Loader />;
 	}
@@ -106,15 +132,15 @@ const PropertyPage = () => {
 
 													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{moment(property.updatedAt).format('MMMM Do YYYY')}</td>
 													<td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 flex item-center justify-between">
-														<a href="#" className="text-indigo-600 hover:text-indigo-900">
+														<div className="text-indigo-600 hover:text-indigo-900" onClick={() => goto(property.id)}>
 															<FaPenToSquare className="h-5 w-5 text-primary" />
-														</a>
-														<a href="#" className="text-indigo-600 hover:text-indigo-900">
+														</div>
+														<div className="text-indigo-600 hover:text-indigo-900" onClick={() => deleteProperty(property.id)}>
 															<FaTrash className="h-5 w-5 text-red-600" />
-														</a>
-														<a href="#" className="text-indigo-600 hover:text-indigo-900">
+														</div>
+														<div className="text-indigo-600 hover:text-indigo-900">
 															<FaEye className="h-5 w-5 text-primary" />
-														</a>
+														</div>
 													</td>
 												</tr>
 											))}

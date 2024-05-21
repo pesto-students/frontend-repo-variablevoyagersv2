@@ -9,7 +9,7 @@ export default {
 				base: ['16px', '28px'],
 			},
 			fontFamily: {
-				sans: ["Poppins",'Nunito', 'sans-serif'],
+				sans: ['Poppins', 'Nunito', 'sans-serif'],
 				poppins: ['Poppins', 'sans-serif'],
 			},
 			listStyleType: {
@@ -17,8 +17,11 @@ export default {
 			},
 			colors: {
 				// primary: '#7469B6',
-				primary: '#b4457f',
+
 				// primary: '#C60000',
+				// primary: '#891652', from Sandesh
+				//primary:"#ea6104" from Abishek
+				primary: '#b4457f',
 				primary1: '#556793',
 				theame: '#8c4370',
 				main: {

@@ -9,9 +9,12 @@ import PropertyReservation from '../../components/PropertyDetails/PropertyReserv
 import Loader from '../../components/common/Loader';
 import Reviews from '../../components/PropertyDetails/Reviews';
 import UserReviews from '../../components/PropertyDetails/UserReviews';
+import { CATEGORIES } from '../../constants/categories';
 const PropertyDetailPage = () => {
 	const [loading, setLoading] = useState(null);
 	const [property, setProperty] = useState(null);
+	const [totalPrice, setTotalPrice] = useState(property?.price);
+	const [tags, setTags] = useState([]);
 	const [dateRange, setDateRange] = useState({
 		startDate: new Date(),
 		endDate: new Date(),
@@ -26,17 +29,18 @@ const PropertyDetailPage = () => {
 	async function getProperty() {
 		try {
 			setLoading(true);
-			const { data } = await axiosPrivate.get(`/property/${id}`);
-			setProperty(data.data);
-			console.log('GET ID', data);
+			const {
+				data: { data },
+			} = await axiosPrivate.get(`/property/${id}`);
+			setProperty(data);
+			setTags(CATEGORIES.filter((category) => data.propertyTags.includes(category.tagName)).map((ele) => ({ ...ele })));
+			console.log(data);
 		} catch (error) {
-			console.log('GET', error);
+			console.log(error);
 		} finally {
 			setLoading(false);
 		}
 	}
-
-	const [totalPrice, setTotalPrice] = useState(property?.price);
 
 	useEffect(() => {
 		if (dateRange.startDate && dateRange.endDate) {
@@ -69,7 +73,7 @@ const PropertyDetailPage = () => {
 						capacity={property?.capacity}
 						description={property?.description}
 						address={property?.address}
-						tags={property?.propertyTags}
+						tags={tags}
 					/>
 					<div className="order-first mb-10 md:order-last md:col-span-3">
 						<PropertyReservation
@@ -82,25 +86,25 @@ const PropertyDetailPage = () => {
 				</div>
 				<hr />
 				<div className="text-lg font-light text-neutral-500">
-					<h1 className='text-black font-bold mb-2'>What this place offers</h1>
-					<div className='flex gap-10 items-center'>
+					<h1 className="text-black font-bold mb-2">What this place offers</h1>
+					<div className="flex gap-10 items-center">
 						<ul>
 							Event Facilities:
-							<li className=' text-sm'>* Indoor and outdoor spaces</li>
-							<li className=' text-sm'>* Indoor and outdoor spaces</li>
-							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+							<li className=" text-sm">* Indoor and outdoor spaces</li>
+							<li className=" text-sm">* Indoor and outdoor spaces</li>
+							<li className=" text-sm">* Indoor and outdoor spaces</li>
 						</ul>
 						<ul>
 							Event Facilities:
-							<li className=' text-sm'>* Indoor and outdoor spaces</li>
-							<li className=' text-sm'>* Indoor and outdoor spaces</li>
-							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+							<li className=" text-sm">* Indoor and outdoor spaces</li>
+							<li className=" text-sm">* Indoor and outdoor spaces</li>
+							<li className=" text-sm">* Indoor and outdoor spaces</li>
 						</ul>
 						<ul>
 							Event Facilities:
-							<li className=' text-sm'>* Indoor and outdoor spaces</li>
-							<li className=' text-sm'>* Indoor and outdoor spaces</li>
-							<li className=' text-sm'>* Indoor and outdoor spaces</li>
+							<li className=" text-sm">* Indoor and outdoor spaces</li>
+							<li className=" text-sm">* Indoor and outdoor spaces</li>
+							<li className=" text-sm">* Indoor and outdoor spaces</li>
 						</ul>
 					</div>
 				</div>
