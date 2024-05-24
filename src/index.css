@@ -9,6 +9,7 @@ input[type='number'],
 input[type='tel'],
 input[type='datetime-local'],
 input[type='time'],
+select,
 textarea {
 	-moz-appearance: textfield;
 	appearance: textfield;
@@ -16,11 +17,11 @@ textarea {
 }
 
 .swiper-button-next {
-	@apply  text-white p-2 rounded;
+	@apply text-white p-2 rounded;
 }
 
 .swiper-button-prev {
-	@apply  text-white p-2 rounded;
+	@apply text-white p-2 rounded;
 }
 
 textarea {

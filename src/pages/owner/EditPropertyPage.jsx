@@ -53,7 +53,7 @@ const EditPropertyPage = () => {
 					tagName,
 				})),
 			);
-			setAmenities(data.Amenities.map((amenity) => ({ amenityName: amenity })));
+			setAmenities(data.amenities.map((amenity) => ({ amenityName: amenity })));
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -127,7 +127,7 @@ const EditPropertyPage = () => {
 		fd.append(`captions`, JSON.stringify(captions));
 		const amenitiesFiltered = amenities.filter((ele) => ele.amenityName);
 		if (amenitiesFiltered.length > 0) {
-			fd.append('Amenities', JSON.stringify(amenitiesFiltered));
+			fd.append('amenities', JSON.stringify(amenitiesFiltered));
 		}
 
 		try {
