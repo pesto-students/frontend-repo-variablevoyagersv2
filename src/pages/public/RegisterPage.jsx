@@ -5,6 +5,7 @@ import { axiosInstance } from '../../services/axios.service';
 import useRedirect from '../../hooks/useRedirect';
 import { setUser } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
+import { ROLES } from '../../constants/roles';
 
 export default function RegisterPage() {
 	useRedirect();
@@ -30,6 +31,7 @@ export default function RegisterPage() {
 			if (data.status >= 400 && data.status < 500) setGeneralError(data.message);
 			else {
 				localStorage.setItem('token', JSON.stringify(data.data.accessToken));
+				localStorage.setItem('role', JSON.stringify(data.data.role));
 				dispatch(setUser(data.data));
 				if (data.data.role === ROLES.OWNER) {
 					navigate('/owner/dashboard');
@@ -46,7 +48,7 @@ export default function RegisterPage() {
 		}
 	};
 	return (
-		<div className='flex-grow flex justify-center items-center max-h-screen mt-32'>
+		<div className="flex-grow flex justify-center items-center max-h-screen mt-32">
 			<div className="flex items-center justify-around">
 				<div className="border p-4 rounded-xl border-gray-400 border-opacity-20 shadow-2xl">
 					<h1 className="text-4xl text-center mb-4">Register</h1>

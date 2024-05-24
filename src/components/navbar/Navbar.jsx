@@ -24,26 +24,13 @@ export default function Navbar() {
 		};
 	}, []);
 
-	const showImage = location.pathname === '/';
-
 	return (
 		<>
-			{showImage &&
-				<>
-					<div classNameName=" w-full">
-						<img src={venue} alt="venue" className='w-full h-[450px] opacity-80  object-cover object-center' />
-					</div>
-					
-
-				</>
-			}
-			<nav className={`fixed w-full z-10 shadow-lg border-b-[1px]transition-colors duration-500 
-			${isScrolled ? 'bg-white' : showImage ? ' bg-transparent' : 'bg-white'}
-			`}>
+			<nav className="fixed w-full z-10 shadow-lg border-b-[1px]transition-colors duration-500 bg-white">
 				<div className="mx-auto max-w-8xl  px-2 sm:px-9 lg:px-20 ">
 					<div className="relative flex h-16 items-center justify-between">
 						<Logo />
-						<div className='flex gap-2 justify-between sm:w-full '>
+						<div className="flex gap-2 justify-between sm:w-full ">
 							<PrivateNav />
 							<div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-0 sm:pr-0">
 								<UserMenu />
