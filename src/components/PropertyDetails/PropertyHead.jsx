@@ -19,10 +19,6 @@ const PropertyHead = ({ propertyName, city, country, propertyImages }) => {
 		return null; // or display a placeholder image or message
 	}
 
-
-
-
-
 	return (
 		<>
 			<div>
@@ -49,7 +45,7 @@ const PropertyHead = ({ propertyName, city, country, propertyImages }) => {
 					</>
 				)}
 				<button
-					className="hidden lg:block absolute z-10 px-2 py-1 rounded-md lg:top-2 lg:right-2 bg-white hover:bg-gray-100 "
+					className="hidden lg:block absolute z-1 px-2 py-1 rounded-md lg:top-2 lg:right-2 bg-white hover:bg-gray-100 "
 					onClick={toggleFullScreen}
 				>
 					Show All Photos

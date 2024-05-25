@@ -13,15 +13,9 @@ import { CATEGORIES } from '../../constants/categories';
 const PropertyDetailPage = () => {
 	const [loading, setLoading] = useState(null);
 	const [property, setProperty] = useState(null);
-	const [totalPrice, setTotalPrice] = useState(property?.price);
 	const [tags, setTags] = useState([]);
-	const [dateRange, setDateRange] = useState({
-		startDate: new Date(),
-		endDate: new Date(),
-		key: 'selection',
-	});
+	
 	const { id } = useParams();
-
 	useEffect(() => {
 		getProperty();
 	}, []);
@@ -42,17 +36,7 @@ const PropertyDetailPage = () => {
 		}
 	}
 
-	useEffect(() => {
-		if (dateRange.startDate && dateRange.endDate) {
-			const dayCount = differenceInDays(dateRange.endDate, dateRange.startDate);
-
-			if (dayCount && property?.price) {
-				setTotalPrice(dayCount * property?.price);
-			} else {
-				setTotalPrice(property?.price);
-			}
-		}
-	}, [dateRange, property?.price]);
+	
 	if (loading) {
 		return <Loader />;
 	}
@@ -66,7 +50,7 @@ const PropertyDetailPage = () => {
 					country={property?.country}
 					propertyImages={property?.propertyImages}
 				/>
-				<div className="grid grid-cols-1 md:grid-cols-7 md:gap-16 mt-2">
+				<div className="grid grid-cols-1 md:grid-cols-7 md:gap-36 mt-2">
 					<PropertyDescriptions
 						ownerName={property?.owner?.firstName}
 						avatar={property?.owner?.avatar}
@@ -74,40 +58,19 @@ const PropertyDetailPage = () => {
 						description={property?.description}
 						address={property?.address}
 						tags={tags}
+						amenities={property?.amenities}
 					/>
 					<div className="order-first mb-10 md:order-last md:col-span-3">
 						<PropertyReservation
 							price={property?.price}
-							totalPrice={totalPrice}
-							dateRange={dateRange}
-							onChangeDate={(value) => setDateRange(value)}
+							propertyId={property?.id}
+							// totalPrice={totalPrice}
+							// dateRange={dateRange}
+							// onChangeDate={(value) => setDateRange(value)}
 						/>
 					</div>
 				</div>
-				<hr />
-				<div className="text-lg font-light text-neutral-500">
-					<h1 className="text-black font-bold mb-2">What this place offers</h1>
-					<div className="flex gap-10 items-center">
-						<ul>
-							Event Facilities:
-							<li className=" text-sm">* Indoor and outdoor spaces</li>
-							<li className=" text-sm">* Indoor and outdoor spaces</li>
-							<li className=" text-sm">* Indoor and outdoor spaces</li>
-						</ul>
-						<ul>
-							Event Facilities:
-							<li className=" text-sm">* Indoor and outdoor spaces</li>
-							<li className=" text-sm">* Indoor and outdoor spaces</li>
-							<li className=" text-sm">* Indoor and outdoor spaces</li>
-						</ul>
-						<ul>
-							Event Facilities:
-							<li className=" text-sm">* Indoor and outdoor spaces</li>
-							<li className=" text-sm">* Indoor and outdoor spaces</li>
-							<li className=" text-sm">* Indoor and outdoor spaces</li>
-						</ul>
-					</div>
-				</div>
+				
 				<hr />
 				<Reviews />
 				<UserReviews />
