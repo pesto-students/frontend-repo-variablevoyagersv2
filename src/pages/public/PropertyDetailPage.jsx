@@ -14,7 +14,7 @@ const PropertyDetailPage = () => {
 	const [loading, setLoading] = useState(null);
 	const [property, setProperty] = useState(null);
 	const [tags, setTags] = useState([]);
-	
+
 	const { id } = useParams();
 	useEffect(() => {
 		getProperty();
@@ -36,7 +36,6 @@ const PropertyDetailPage = () => {
 		}
 	}
 
-	
 	if (loading) {
 		return <Loader />;
 	}
@@ -64,13 +63,14 @@ const PropertyDetailPage = () => {
 						<PropertyReservation
 							price={property?.price}
 							propertyId={property?.id}
+							queryId={id}
 							// totalPrice={totalPrice}
 							// dateRange={dateRange}
 							// onChangeDate={(value) => setDateRange(value)}
 						/>
 					</div>
 				</div>
-				
+
 				<hr />
 				<Reviews />
 				<UserReviews />

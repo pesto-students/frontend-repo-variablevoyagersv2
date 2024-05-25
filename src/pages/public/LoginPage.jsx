@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Link, useLocation, useSearchParams } from 'react-router-dom';
 import { axiosInstance } from '../../services/axios.service';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/authSlice';
@@ -8,9 +8,11 @@ import useRedirect from '../../hooks/useRedirect';
 import { ROLES } from '../../constants/roles';
 
 const LoginPage = () => {
-	useRedirect();
 	const navigate = useNavigate();
 	const location = useLocation();
+	const [searchParams] = useSearchParams();
+	const id = searchParams.get('id');
+	useRedirect(id);
 	const {
 		register,
 		handleSubmit,
@@ -28,15 +30,11 @@ const LoginPage = () => {
 			localStorage.setItem('token', JSON.stringify(data.data.accessToken));
 			localStorage.setItem('role', JSON.stringify(data.data.role));
 			dispatch(setUser(data.data));
-// debugger
-			if (redirectUrl) {
-				// console.log(object);
-			 	navigate(redirectUrl);
-				return
-			} else if (data.data.role === ROLES.OWNER) {
+
+			if (data.data.role === ROLES.OWNER) {
 				navigate('/owner/dashboard');
 			} else {
-				navigate('/');
+				navigate(id ? `/property-detail/${id}` : '/');
 			}
 		} catch (error) {
 			if (error.response && error.response.status === 401) {

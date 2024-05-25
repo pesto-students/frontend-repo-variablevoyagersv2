@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectIsAuthenticated, selectUser } from '../redux/slices/authSlice';
 import { ROLES } from '../constants/roles';
 
-const useRedirect = () => {
+const useRedirect = (id) => {
 	const navigate = useNavigate();
 	const isAuthenticated = useSelector(selectIsAuthenticated);
 	const user = useSelector(selectUser);
@@ -12,12 +12,12 @@ const useRedirect = () => {
 	useEffect(() => {
 		if (isAuthenticated) {
 			if (user?.role === ROLES.CUSTOMER) {
-				navigate('/');
+				navigate(id ? `/property-detail/${id}` : '/');
 			} else {
 				navigate('/owner/dashboard');
 			}
 		}
-	}, [navigate, isAuthenticated, user]);
+	}, [navigate, isAuthenticated, user, id]);
 };
 
 export default useRedirect;
