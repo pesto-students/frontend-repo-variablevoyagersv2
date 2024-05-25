@@ -13,12 +13,14 @@ function PrevArrow(props) {
 }
 const Categories = () => {
 	const settings = {
-		dots: false,
 		navs: true,
 		infinite: true,
 		speed: 500,
 		slidesToShow: 9,
 		slidesToScroll: 3,
+		loop: true,
+		variableWidth: true,
+		adaptiveHeight: true,
 		nextArrow: <NextArrow />,
 		prevArrow: <PrevArrow />,
 		responsive: [
@@ -27,6 +29,8 @@ const Categories = () => {
 				settings: {
 					slidesToShow: 6,
 					slidesToScroll: 3,
+					variableWidth: false,
+					infinite: true,
 				},
 			},
 			{
@@ -34,6 +38,8 @@ const Categories = () => {
 				settings: {
 					slidesToShow: 5,
 					slidesToScroll: 2,
+					variableWidth: false,
+					infinite: true,
 				},
 			},
 			{
@@ -41,15 +47,24 @@ const Categories = () => {
 				settings: {
 					slidesToShow: 3,
 					slidesToScroll: 2,
+					variableWidth: true,
+					infinite: true,
 				},
 			},
 		],
 	};
+	const handleClick = (category) => {
+		console.log(category);
+	};
 	return (
-		<div className="px-8 my-12  max-w-7xl mx-4  md:mx-16 xl:mx-auto">
+		<div className="px-8 my-16  max-w-6xl mx-4  md:mx-16 xl:mx-auto">
 			<Slider {...settings}>
 				{CATEGORIES.map((ele) => (
-					<div key={ele.tagName} className="group !flex justify-center items-center !flex-col transition-transform duration-200 cursor-pointer gap-2">
+					<div
+						key={ele.tagName}
+						className=" !w-[105px] group !flex !justify-center !items-center !flex-col transition-transform duration-200 cursor-pointer !gap-2"
+						onClick={() => handleClick(ele)}
+					>
 						<img src={ele.icon} alt={ele.title} className="object-cover w-8 h-8 opacity-80 group-hover:opacity-100" />
 						<div className="text-xs whitespace-nowrap font-normal group-hover:font-semibold">{ele.title}</div>
 					</div>
