@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { axiosInstance } from '../../services/axios.service';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/authSlice';
@@ -10,23 +10,30 @@ import { ROLES } from '../../constants/roles';
 const LoginPage = () => {
 	useRedirect();
 	const navigate = useNavigate();
-
+	const location = useLocation();
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm();
-
 	const [generalError, setGeneralError] = useState('');
 	const dispatch = useDispatch();
+
+	const redirectUrl = new URLSearchParams(location.search).get('redirect');
+	console.log(redirectUrl);
+
 	const onSubmit = async (values) => {
 		try {
 			const { data } = await axiosInstance.post('/auth/login', values);
 			localStorage.setItem('token', JSON.stringify(data.data.accessToken));
 			localStorage.setItem('role', JSON.stringify(data.data.role));
 			dispatch(setUser(data.data));
-			// toast.success('Login success');
-			if (data.data.role === ROLES.OWNER) {
+// debugger
+			if (redirectUrl) {
+				// console.log(object);
+			 	navigate(redirectUrl);
+				return
+			} else if (data.data.role === ROLES.OWNER) {
 				navigate('/owner/dashboard');
 			} else {
 				navigate('/');
@@ -53,7 +60,7 @@ const LoginPage = () => {
 							{...register('email', {
 								required: 'Email is required',
 								pattern: {
-									value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+									value: /^\S+@\S+\.\S+$/i,
 									message: 'Invalid email address',
 								},
 							})}
@@ -61,7 +68,6 @@ const LoginPage = () => {
 						/>
 						<p className="text-red-500">{errors.email?.message}</p>
 					</div>
-
 					<div>
 						<input
 							type="password"
@@ -78,11 +84,9 @@ const LoginPage = () => {
 						<p className="text-red-500">{errors.password?.message}</p>
 					</div>
 					{generalError && <p className="text-red-500">{generalError}</p>}
-
 					<button className="primary my-3" disabled={isSubmitting} type="submit">
 						{isSubmitting ? 'Loading' : 'Log-In'}
 					</button>
-
 					<div className="text-center py-2 text-gray-500">
 						Don't have an account yet?{' '}
 						<Link className="underline text-blue-500" to={'/register'}>

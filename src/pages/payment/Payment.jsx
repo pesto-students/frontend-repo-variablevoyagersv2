@@ -4,30 +4,44 @@ import { axiosPrivate } from '../../services/axios.service';
 import { useParams } from 'react-router-dom';
 import FormatPrice from '../../components/FormatPrice';
 import Loader from '../../components/common/Loader';
+// import { formatDateRange } from '../../utils/dateUtils';
 
 const Payment = () => {
     const [loading, setLoading] = useState(null);
-    const [property, setProperty] = useState(null);
+    const [booking, setBooking] = useState(null);
+    // dateUtils.js
+    const formatDateRange = (startDate, endDate) => {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        const startMonth = start.toLocaleString('default', { month: 'long' });
+        const startDay = start.getDate();
+        const endDay = end.getDate();
+
+        return `${startDay}-${endDay} ${startMonth}`;
+    };
 
     const { id } = useParams();
 
+    console.log();
+
     useEffect(() => {
-        getProperty();
+        getBooking();
     }, []);
 
-    async function getProperty() {
+    async function getBooking() {
         try {
             setLoading(true);
-            const { data } = await axiosPrivate.get(`/property/3417ecd1-4ed2-4b0f-8a12-e056e8528e10`);
-            setProperty(data.data);
-            console.log('GET ID', data);
+            const { data } = await axiosPrivate.get(`/booking/${id}`);
+            setBooking(data);
+            console.log('GET Booking ID:', data);
         } catch (error) {
             console.log('GET', error);
         } finally {
             setLoading(false);
         }
     }
-
+    // console.log(booking);
     if (loading) {
         return <Loader />;
     }
@@ -35,13 +49,13 @@ const Payment = () => {
     return (
         <Container>
             <div className='mt-32'>
-                <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10">
+                <h1 className="text-4xl  font-semibold mb-10 sm:mb-10">Confirm And Pay</h1>
+                <div className="grid grid-cols-1 md:grid-cols-7 md:gap-28">
                     <div className='col-span-4 flex flex-col'>
-                        <h1 className="text-4xl  font-semibold">Confirm And Pay</h1>
-                        <p className="mt-10 font-medium text-2xl">Your Booking</p>
+                        <p className="font-medium text-2xl">Your Booking</p>
                         <p className="mt-6 font-mediumd text-xl">Dates</p>
                         <div className='mt-2 mb-9 flex justify-between'>
-                            <p className="text-lg">13-20 May</p>
+                            <p className="text-lg">{booking && formatDateRange(booking.startDate, booking.endDate)}</p>
                             <p className="text-lg font-medium underline cursor-pointer">Edit</p>
                         </div>
                         <hr />
@@ -70,16 +84,16 @@ const Payment = () => {
                             </p>
                         </div>
                         <hr />
-                        
+
 
                     </div>
                     <div className="order-first mb-10 md:order-last md:col-span-3">
                         <div className="bg-white flex flex-col gap-5  sticky top-32 rounded-xl shadow-lg border-[1px] p-4 border-neutral-200 overflow-hidden">
                             <div className="flex flex-row items-center mt-3">
                                 <div className='flex gap-5 items-center'>
-                                    <img src={property?.propertyImages[0].imgUrl} alt="" className='rounded-md w-[100px] h-[100px]' />
+                                    <img src={booking?.property?.propertyImages[0].imgUrl} alt="" className='rounded-md w-[100px] h-[100px]' />
                                     <div className='font-medium text-2xl'>
-                                        {property?.propertyName}
+                                        {booking?.property?.propertyName}
                                         <div className='flex items-center text-base'>
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +136,7 @@ const Payment = () => {
                                 Confirm and Pay
                             </button>
                             <div className='w-max'>
-                        </div>
+                            </div>
                         </div>
                     </div>
                 </div>
