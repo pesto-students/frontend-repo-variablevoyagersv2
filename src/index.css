@@ -72,3 +72,7 @@ body,
 	font-size: 16px !important;
 	width: 100% !important;
 }
+
+.disable-scroll {
+	overflow: hidden;
+}

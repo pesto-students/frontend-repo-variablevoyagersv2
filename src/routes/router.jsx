@@ -24,8 +24,8 @@ export const router = createBrowserRouter([
 		element: <PublicLayout />,
 		children: [
 			{ path: '', element: <HomePage /> },
-			{ path: 'login', element: <LoginPage /> },
-			{ path: 'register', element: <RegisterPage /> },
+			// { path: 'login', element: <LoginPage /> },
+			// { path: 'register', element: <RegisterPage /> },
 			{ path: 'property-detail/:id', element: <PropertyDetailPage /> },
 			{ path: 'payment/:id', element: <Payment /> },
 		],

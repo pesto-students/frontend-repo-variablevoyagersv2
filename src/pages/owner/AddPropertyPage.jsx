@@ -217,7 +217,7 @@ const AddPropertyPage = () => {
 							<div className="py-3 text-right mt-3 gap-2 flex items-center justify-end">
 								{view !== 'property-details' && (
 									<Button
-										buttonType="buttom"
+										buttonType="button"
 										size="md"
 										variant="filled"
 										onClick={handlePrev}
