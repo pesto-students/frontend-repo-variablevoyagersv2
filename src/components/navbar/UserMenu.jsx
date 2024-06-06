@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, selectIsAuthenticated, selectUser } from '../../redux/slices/authSlice';
 import { axiosPrivate } from '../../services/axios.service';
 import { FaAngleDown, FaArrowRightFromBracket } from 'react-icons/fa6';
+import LoginPage from '../../pages/public/LoginPage';
 
 export default function UserMenu() {
 	const navigate = useNavigate();
@@ -12,6 +13,8 @@ export default function UserMenu() {
 	const user = useSelector(selectUser);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const buttonRef = useRef(null);
+	const [showLoginModal, setShowLoginModal] = useState(false);
+
 
 	const handleLogout = async () => {
 		try {
@@ -44,6 +47,36 @@ export default function UserMenu() {
 		};
 	}, [isMenuOpen]);
 
+	const getScrollbarWidth = () => {
+		const outer = document.createElement('div');
+		outer.style.visibility = 'hidden';
+		outer.style.overflow = 'scroll'; // Force scrollbar to appear
+		outer.style.width = '100px';
+		outer.style.position = 'absolute';
+		outer.style.top = '-9999px';
+		document.body.appendChild(outer);
+
+		const scrollbarWidth = outer.offsetWidth - outer.clientWidth;
+		document.body.removeChild(outer);
+		return scrollbarWidth;
+	};
+
+	useEffect(() => {
+		const scrollbarWidth = getScrollbarWidth();
+		if (showLoginModal) {
+			document.body.style.overflow = 'hidden';
+			document.body.style.paddingRight = `${scrollbarWidth}px`;
+		} else {
+			document.body.style.overflow = 'auto';
+			document.body.style.paddingRight = '0px';
+		}
+
+		return () => {
+			document.body.style.overflow = 'auto';
+			document.body.style.paddingRight = '0px';
+		};
+	}, [showLoginModal]);
+
 	const toggleMenu = (event) => {
 		event.stopPropagation(); // Prevents event bubbling to body
 		setIsMenuOpen(!isMenuOpen);
@@ -52,6 +85,8 @@ export default function UserMenu() {
 	const handleMenuClick = (event) => {
 		event.stopPropagation(); // Prevents event bubbling to body
 	};
+
+
 
 	return (
 		<div ref={buttonRef} className="relative ml-3">
@@ -62,7 +97,6 @@ export default function UserMenu() {
 						onClick={toggleMenu}
 						className="  rounded-full  text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 hover:opacity-70 flex items-center space-x-1.5 transition-opacity"
 					>
-						{/* <span className="absolute -inset-1.5"></span> */}
 						{user.avatar ? (
 							<img src={user.avatar} alt="Profile photo" className="inline-block h-10 w-10 rounded-full object-cover  " />
 						) : (
@@ -74,9 +108,8 @@ export default function UserMenu() {
 					</button>
 
 					<div
-						className={`absolute right-0 top-full z-20 w-48 origin-top-right overflow-hidden rounded-lg bg-white shadow-lg transition-opacity duration-200 opacity- pointer-events-auto ${
-							isMenuOpen ? '' : 'hidden'
-						}`}
+						className={`absolute right-0 top-full z-20 w-48 origin-top-right overflow-hidden rounded-lg bg-white shadow-lg transition-opacity duration-200 opacity- pointer-events-auto ${isMenuOpen ? '' : 'hidden'
+							}`}
 						onClick={handleMenuClick}
 					>
 						<div className="space-y-3 bg-gray-25 p-4">
@@ -86,7 +119,6 @@ export default function UserMenu() {
 								</p>
 								<p className="text-sm capitalize text-base-secondary-text"> {user?.role.toLowerCase()} </p>
 							</div>
-							{/* <div className="flex items-center gap-4"></div> */}
 						</div>
 						<div>
 							<ul>
@@ -100,17 +132,25 @@ export default function UserMenu() {
 				</>
 			) : (
 				<div className="flex flex-row items-center gap-3 overflow-hidden">
-					<Link
-						to="/register"
-						className="hover:shadow-md  text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
+					<button className="hover:shadow-md bg-white text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
+						onClick={() => setShowLoginModal(true)}
 					>
-						Sign-up
-					</Link>
-					<Link to="/login" className="hover:shadow-md text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame ">
-						Log-In
-					</Link>
+						Sign Up
+					</button>
+					<button className="hover:shadow-md bg-white text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
+						onClick={() => setShowLoginModal(true)}
+					>
+						Sign In
+					</button>
 				</div>
 			)}
+			{showLoginModal &&
+				<div className="flex bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-screen">
+					<div className="p-4 w-full max-w-md max-h-full">
+						<LoginPage isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+					</div>
+				</div>
+			}
 		</div>
 	);
 }

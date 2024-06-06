@@ -16,7 +16,7 @@ export const axiosPrivate = axios.create({
 // Request interceptor for adding access token to headers
 axiosPrivate.interceptors.request.use(
 	(config) => {
-		const accessToken = JSON.parse(localStorage.getItem('token'));
+		const accessToken = localStorage.getItem('token');
 		if (accessToken) {
 			config.headers['Authorization'] = `Bearer ${accessToken}`;
 		}

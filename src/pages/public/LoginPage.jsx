@@ -1,40 +1,81 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { axiosInstance } from '../../services/axios.service';
+import useRedirect from '../../hooks/useRedirect';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+import OtpModel from './OtpModel';
+import Button from '../../components/common/Button';
+import OnboardingModal from './OnboardingModal ';
+import InputField from '../../components/forms/InputField';
+import { handleLoginSuccess } from '../../services/user.service';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/authSlice';
-import useRedirect from '../../hooks/useRedirect';
-import { ROLES } from '../../constants/roles';
 
-const LoginPage = () => {
-	const navigate = useNavigate();
+const LoginPage = ({ isOpen, onClose }) => {
+
 	const location = useLocation();
 	const [searchParams] = useSearchParams();
 	const id = searchParams.get('id');
+
 	// useRedirect(id);
+
+	const [isOtpSent, setIsOtpSent] = useState(false);
+	const [isNewUser, setIsNewUser] = useState(false);
+	const [newUser, setNewUser] = useState({});
+	const [email, setEmail] = useState('');
+	const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+	useRedirect(id);
+
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm();
 	const [generalError, setGeneralError] = useState('');
-	const dispatch = useDispatch();
 
 	const redirectUrl = new URLSearchParams(location.search).get('redirect');
-	console.log(redirectUrl);
 
 	const onSubmit = async (values) => {
 		try {
-			const { data } = await axiosInstance.post('/auth/login', values);
-			localStorage.setItem('token', JSON.stringify(data.data.accessToken));
-			localStorage.setItem('role', JSON.stringify(data.data.role));
-			dispatch(setUser(data.data));
-
-			if (data.data.role === ROLES.OWNER) {
-				navigate('/owner/dashboard');
+			setEmail(values.email);
+			await axiosInstance.post('/auth/otp', values);
+			setIsOtpSent(true);
+		} catch (error) {
+			if (error.response && error.response.status === 401) {
+				setGeneralError(error.response.data.message);
 			} else {
-				navigate(id ? `/property-detail/${id}` : '/');
+				setGeneralError('Login failed');
+			}
+		}
+	};
+
+	const handleGoogleLogin = async (response) => {
+		try {
+			const { email, family_name, given_name, picture } = jwtDecode(response.credential)
+			// console.log(response.credential);
+			console.log(jwtDecode(response.credential));
+			const { data: { data } } = await axiosInstance.post('/auth/google', {
+				email: email,
+				firstName: given_name,
+				lastName: family_name,
+				avatar: picture
+			});
+			if (data.isNewUser) {
+				setNewUser(data);
+				setIsNewUser(true);
+			}
+			else {
+				handleLoginSuccess(data);
+				dispatch(setUser(data));
+				if (data.role === ROLES.OWNER) {
+					navigate('/owner/dashboard');
+				} else {
+					navigate('/');
+				}
 			}
 		} catch (error) {
 			if (error.response && error.response.status === 401) {
@@ -45,56 +86,78 @@ const LoginPage = () => {
 		}
 	};
 
+
 	return (
-		<div className="flex-grow flex justify-center items-center max-h-screen mb-20 mt-32">
-			<div className="p-4 border border-gray-400 border-opacity-20 shadow-2xl rounded-xl w-full max-w-md">
-				<h1 className="text-4xl text-center mb-4">Login</h1>
-				<form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-					<div>
-						<input
-							id="username"
-							type="text"
-							placeholder="Your@email.com"
-							{...register('email', {
-								required: 'Email is required',
-								pattern: {
-									value: /^\S+@\S+\.\S+$/i,
-									message: 'Invalid email address',
-								},
-							})}
-							className="w-full p-2 border rounded"
-						/>
-						<p className="text-red-500">{errors.email?.message}</p>
-					</div>
-					<div>
-						<input
-							type="password"
-							placeholder="Password"
-							{...register('password', {
-								required: 'Password is required',
-								minLength: {
-									value: 6,
-									message: 'Password must be at least 6 characters',
-								},
-							})}
-							className="w-full p-2 border rounded"
-						/>
-						<p className="text-red-500">{errors.password?.message}</p>
-					</div>
-					{generalError && <p className="text-red-500">{generalError}</p>}
-					<button className="primary my-3" disabled={isSubmitting} type="submit">
-						{isSubmitting ? 'Loading' : 'Log-In'}
-					</button>
-					<div className="text-center py-2 text-gray-500">
-						Don't have an account yet?{' '}
-						<Link className="underline text-blue-500" to={'/register'}>
-							Register now
-						</Link>
-					</div>
-				</form>
-			</div>
-		</div>
-	);
+		isOpen &&
+		(<div className="relative bg-white rounded-lg shadow">
+			{!isOtpSent ?
+				(!isNewUser ?
+					(<>
+						<div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t ">
+							<h3 className="text-xl font-semibold text-gray-900">Log in or sign up</h3>
+							<button type="button" onClick={onClose} className="end-2.5 text-gray-400 bg-transparent hover:bg-primary hover:text-white rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center ">
+								<svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+									<path stroke="currentColor" strokeLinecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+								</svg>
+								<span className="sr-only">Close modal</span>
+							</button>
+						</div>
+						<div className="p-4 md:p-5 ">
+							<form className="space-y-4 mb-4" onSubmit={handleSubmit(onSubmit)}>
+								<div>
+									<InputField
+										label="Email"
+										id="email"
+										name="email"
+										type="email"
+										register={register}
+										required="Email is required"
+										error={errors?.email}
+									// innerClass={"text-gray-800"}
+									/>
+									<p className="text-red-500">{errors.email?.message}</p>
+								</div>
+								{generalError && <p className="text-red-500">{generalError}</p>}
+								<Button
+									buttonType="submit"
+									size="md"
+									variant="filled"
+									innerClass="w-[100%] bg-primary"
+									innerTextClass="text-white"
+									disabled={isSubmitting}
+									loading={isSubmitting}
+								>
+									{isSubmitting ? 'Loading' : 'Continue'}
+								</Button>
+								<div className='w-full text-center text-md font-medium '>
+									OR
+								</div>
+							</form>
+							<GoogleLogin
+								onSuccess={handleGoogleLogin}
+								onError={() => {
+									console.log('Login Failed');
+								}}
+								text="signup_with"
+								shape='pill'
+								width="380"
+								useOneTap
+							// type='icon'
+							// theme='filled_blue'
+							/>
+						</div>
+					</>) : (
+						<OnboardingModal user={newUser} onClose={onClose} />
+					)
+				) :
+				(
+					<>
+						<OtpModel email={email} onPrev={() => setIsOtpSent(false)} resendOtp={onSubmit} onClose={onClose} />
+					</>
+				)}
+		</div>)
+
+	)
 };
 
 export default LoginPage;
