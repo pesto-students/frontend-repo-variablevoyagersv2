@@ -12,7 +12,7 @@ const LoginPage = () => {
 	const location = useLocation();
 	const [searchParams] = useSearchParams();
 	const id = searchParams.get('id');
-	useRedirect(id);
+	// useRedirect(id);
 	const {
 		register,
 		handleSubmit,
