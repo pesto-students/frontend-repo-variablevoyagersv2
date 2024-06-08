@@ -61,9 +61,10 @@ const PropertyDetailPage = () => {
 					/>
 					<div className="order-first mb-10 md:order-last md:col-span-3">
 						<PropertyReservation
-							price={property?.price}
-							propertyId={property?.id}
-							queryId={id}
+							property={property}
+							// price={property?.price}
+							// propertyId={property?.id}
+							// queryId={id}
 							// totalPrice={totalPrice}
 							// dateRange={dateRange}
 							// onChangeDate={(value) => setDateRange(value)}

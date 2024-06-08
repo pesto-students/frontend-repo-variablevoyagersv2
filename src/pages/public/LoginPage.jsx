@@ -18,6 +18,9 @@ const LoginPage = ({ isOpen, onClose }) => {
 	const location = useLocation();
 	const [searchParams] = useSearchParams();
 	const id = searchParams.get('id');
+
+	// useRedirect(id);
+
 	const [isOtpSent, setIsOtpSent] = useState(false);
 	const [isNewUser, setIsNewUser] = useState(false);
 	const [newUser, setNewUser] = useState({});
@@ -26,6 +29,7 @@ const LoginPage = ({ isOpen, onClose }) => {
     const dispatch = useDispatch();
 
 	useRedirect(id);
+
 	const {
 		register,
 		handleSubmit,
