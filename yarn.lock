@@ -1323,6 +1323,16 @@ delayed-stream@~1.0.0:
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
 
+dexie-react-hooks@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/dexie-react-hooks/-/dexie-react-hooks-1.1.7.tgz#75bd92a609a7c3dc3643e2fd21e7db5df6df923b"
+  integrity sha512-Lwv5W0Hk+uOW3kGnsU9GZoR1er1B7WQ5DSdonoNG+focTNeJbHW6vi6nBoX534VKI3/uwHebYzSw1fwY6a7mTw==
+
+dexie@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-4.0.7.tgz#c92e5032245fc075de58c636238a82ee3ff9fedb"
+  integrity sha512-M+Lo6rk4pekIfrc2T0o2tvVJwL6EAAM/B78DNfb8aaxFVoI1f8/rz5KTxuAnApkwqTSuxx7T5t0RKH7qprapGg==
+
 didyoumean@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/didyoumean/-/didyoumean-1.2.2.tgz#989346ffe9e839b4555ecf5666edea0d3e8ad037"
@@ -2942,17 +2952,15 @@ react-number-format@^5.3.4:
   dependencies:
     prop-types "^15.7.2"
 
-
-react-razorpay@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-razorpay/-/react-razorpay-2.0.1.tgz#a8b2a5ccb86c2fd92c69e9bf14b4f1f3b26cf000"
-  integrity sha512-eCVTqtAo3Ew6Ie9hjp3+a0BCJ7ZssSF4r2XNeikzXlk8WOD4W58wSSX7x/6R3OhL+yUkhCvW5zOSE8awDIGpAw==
-
 react-otp-input@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/react-otp-input/-/react-otp-input-3.1.1.tgz#910169629812c40a614e6c175cc2c5f36102bb61"
   integrity sha512-bjPavgJ0/Zmf/AYi4onj8FbH93IjeD+e8pWwxIJreDEWsU1ILR5fs8jEJmMGWSBe/yyvPP6X/W6Mk9UkOCkTPw==
 
+react-razorpay@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-razorpay/-/react-razorpay-2.0.1.tgz#a8b2a5ccb86c2fd92c69e9bf14b4f1f3b26cf000"
+  integrity sha512-eCVTqtAo3Ew6Ie9hjp3+a0BCJ7ZssSF4r2XNeikzXlk8WOD4W58wSSX7x/6R3OhL+yUkhCvW5zOSE8awDIGpAw==
 
 react-redux@^9.1.0:
   version "9.1.0"

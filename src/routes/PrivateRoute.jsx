@@ -5,7 +5,7 @@ import { Navigate } from 'react-router-dom';
 
 const PrivateRoute = ({ children, allowedRoles }) => {
 	const isAuthenticated = useSelector(selectIsAuthenticated);
-	const isAuthorized = isAuthenticated && allowedRoles === (localStorage.getItem('role'));
+	const isAuthorized = isAuthenticated && allowedRoles === localStorage.getItem('role');
 
 	return isAuthorized ? children : <Navigate to="/" replace />;
 };

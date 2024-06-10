@@ -30,7 +30,8 @@ export default {
 				// primary: '#C60000',
 				// primary: '#891652', from Sandesh
 				//primary:"#ea6104" from Abishek
-				primary: '#b4457f',
+				// primary: '#b4457f',
+				primary: '#261f56',
 				primary1: '#556793',
 				theame: '#8c4370',
 				main: {

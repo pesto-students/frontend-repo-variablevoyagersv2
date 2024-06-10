@@ -4,13 +4,17 @@ import FormatPrice from '../FormatPrice';
 import { useNavigate } from 'react-router-dom';
 import { differenceInDays } from 'date-fns';
 
-import { axiosPrivate } from '../../services/axios.service';
 import { selectIsAuthenticated, selectUser } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
+import LoginPage from '../../pages/public/LoginPage';
+import { clearDatabase, db } from '../../dexie/db';
+import Button from '../common/Button';
 
 const PropertyReservation = ({ property }) => {
+	const [showLoginModal, setShowLoginModal] = useState(false);
 	const isAuthenticated = useSelector(selectIsAuthenticated);
 	const user = useSelector(selectUser);
+
 	const navigate = useNavigate();
 	const [totalPrice, setTotalPrice] = useState(property?.price);
 	const [dates, setDates] = useState([]);
@@ -33,28 +37,39 @@ const PropertyReservation = ({ property }) => {
 			}
 		});
 		setDates(dates);
-		console.log(dates);
-		if (dateRange.startDate && dateRange.endDate) {
-			const dayCount = differenceInDays(dateRange.endDate, dateRange.startDate);
-			if (dayCount && property.price) {
-				setTotalPrice(dayCount * property?.price);
-			} else {
-				setTotalPrice(property?.price);
-			}
-		}
-	}, [dateRange, property?.price]);
+	}, [property?.bookings]);
 
-	const bookThisPlace = async () => {
-		if (!isAuthenticated) {
-			navigate(`/login?id=${property.id}`);
+	const calculateTotalPrice = (startDate, endDate) => {
+		if (!startDate || !endDate) return property?.price;
+		const days = differenceInDays(new Date(endDate), new Date(startDate)) + 1;
+		return days * property.price;
+	};
+
+	const handleDatesAndPrice = (ranges) => {
+		const { startDate, endDate } = ranges.selection;
+		setDateRange({ ...dateRange, startDate, endDate });
+		const total = calculateTotalPrice(startDate, endDate);
+		setTotalPrice(total);
+	};
+	const bookThisPlace = async (e) => {
+		console.log(e);
+		e.preventDefault();
+		if (!user) {
+			setShowLoginModal(true);
 			return;
 		}
+
+		const startDate = new Date(dateRange.startDate);
+		startDate.setHours(0, 0, 0, 0);
+		const endDate = new Date(dateRange.endDate);
+		endDate.setHours(0, 0, 0, 0);
+
 		const bookingObj = {
 			totalPrice,
-			startDate: dateRange.startDate.toISOString(),
-			endDate: dateRange.endDate.toISOString(),
+			startDate: startDate.toISOString(),
+			endDate: endDate.toISOString(),
 			userId: user.id,
-			id: property?.id,
+			propertyId: property?.id,
 			propertyName: property?.propertyName,
 			description: property?.description,
 			price: property?.price,
@@ -67,49 +82,54 @@ const PropertyReservation = ({ property }) => {
 			amenities: property?.PropertyTags,
 			propertyTags: property?.PropertyTags,
 		};
-		// };
-		localStorage.setItem('booking', JSON.stringify(bookingObj));
-		navigate(`/payment`);
 
-		// try {
-		// 	const response = await axiosPrivate.post('/booking', {
-		// 		startDate: dateRange.startDate.toISOString(),
-		// 		endDate: dateRange.endDate.toISOString(),
-		// 		propertyId: propertyId,
-		// 		userId: user.id,
-		// 	});
-		// 	const bookingId = response.data;
-		// 	console.log(bookingId);
-		// 	navigate(`/payment/${bookingId.id}`);
-		// } catch (error) {
-		// 	console.error('Error booking property:', error);
-		// 	// Handle error case
-		// }
+		try {
+			const result = await db.bookings.add(bookingObj);
+
+			navigate(`/payment?id=${result}`);
+		} catch (error) {
+			console.error('Failed to save booking:', error);
+		}
 	};
 
 	return (
-		<div className="bg-white rounded-xl shadow-lg border-[1px] border-neutral-200 overflow-hidden">
-			<div className="flex flex-row items-center gap-0 p-4">
-				<div className="text-2xl font-semibold">{<FormatPrice price={property?.price} />}</div>
-				<div className=" text-neutral-600 ml-2 font-normal">Per Day</div>
+		<>
+			<div className="bg-white rounded-xl shadow-lg border-[1px] border-neutral-200 overflow-hidden">
+				<div className="flex flex-row items-center gap-0 p-4">
+					<div className="text-2xl font-semibold">{<FormatPrice price={property?.price} />}</div>
+					<div className=" text-neutral-600 ml-2 font-normal">Per Day</div>
+				</div>
+				<hr />
+				<Calendar value={dateRange} onChange={(value) => handleDatesAndPrice(value)} disabledDates={dates} />
+				<hr />
+				<div className="p-4">
+					<Button
+						buttonType="button"
+						size="md"
+						variant="filled"
+						innerClass="w-[100%] bg-primary"
+						innerTextClass="text-white"
+						onClick={bookThisPlace}
+						disabled={property?.ownerId === user?.id}
+					>
+						Reserve
+					</Button>
+					{property?.ownerId === user?.id && <div className=" text-neutral-600 ml-2 font-normal">Only customers are allowed to book a property</div>}
+				</div>
+				<hr />
+				<div className=" p-4 flex flex-row items-center justify-between font-semibold text-lg">
+					<div>Total</div>
+					<div>{<FormatPrice price={totalPrice} />}</div>
+				</div>
 			</div>
-			<hr />
-			<Calendar value={dateRange} onChange={(value) => setDateRange(value.selection)} disabledDates={dates} />
-			<hr />
-			<div className="p-4">
-				<button
-					className={`relative disabled:opacity-70 disabled:cursor-not-allowed rounded-lg hover:opacity-80 transition w-full bg-primary text-white py-2`}
-					onClick={bookThisPlace}
-				>
-					Reserve
-				</button>
-			</div>
-			<hr />
-			<div className=" p-4 flex flex-row items-center justify-between font-semibold text-lg">
-				<div>Total</div>
-				<div>{<FormatPrice price={totalPrice} />}</div>
-			</div>
-		</div>
+			{showLoginModal && (
+				<div className="flex bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-screen">
+					<div className="p-4 w-full max-w-md max-h-full">
+						<LoginPage isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+					</div>
+				</div>
+			)}
+		</>
 	);
 };
 
