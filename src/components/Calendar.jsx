@@ -1,3 +1,4 @@
+import { addDays } from 'date-fns';
 import React from 'react';
 import { DateRange, Range, RangeKeyDict } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -14,7 +15,7 @@ const DatePicker = ({ value, onChange, disabledDates }) => {
 			showDateDisplay={false}
 			minDate={new Date()}
 			disabledDates={disabledDates}
-			ariaLabels={'asfasgasg'}
+			maxDate={addDays(new Date(), 90)}
 		/>
 	);
 };

@@ -9,12 +9,12 @@ const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const containerStyle = {
 	width: '100%',
-	height: '400px'
+	height: '400px',
 };
 
 const libraries = ['places'];
 
-const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, setInteract, userInteracted }) => {
+const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, setInteract, userInteracted, isLoaded }) => {
 	const {
 		register,
 		formState: { errors, isSubmitting },
@@ -37,12 +37,6 @@ const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, s
 		event.stopPropagation();
 		setShowDrop(!showDrop);
 	};
-
-	const { isLoaded } = useJsApiLoader({
-		id: 'google-map-script',
-		googleMapsApiKey: GOOGLE_KEY,
-		libraries,
-	});
 
 	const onLoad = (autocomplete) => {
 		setAutocomplete(autocomplete);
@@ -117,7 +111,7 @@ const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, s
 									aria-labelledby="listbox-label"
 									onClick={toggleDrop}
 								>
-									<span className="block truncate">{selectedCity || "Select a city"}</span>
+									<span className="block truncate">{selectedCity || 'Select a city'}</span>
 									<span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
 										<svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 											<path
@@ -193,15 +187,13 @@ const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, s
 					{selectedCity && (
 						<div className="col-span-6 sm:col-span-3">
 							{isLoaded ? (
-								<div className='flex flex-col gap-4 p-3 border rounded-md'>
-									<p className="mt-1 text-md text-gray-500">
-										Drag marker to your exact location
-									</p>
+								<div className="flex flex-col gap-4 p-3 border rounded-md">
+									<p className="mt-1 text-md text-gray-500">Drag marker to your exact location</p>
 									<GoogleMap
 										mapContainerStyle={containerStyle}
 										center={position || cordinate}
 										zoom={userInteracted ? 18 : zoomView}
-										onLoad={map => {
+										onLoad={(map) => {
 											setMap(map);
 											if (!userInteracted) {
 												setZoomView(10); // Ensure initial zoom is set correctly
@@ -222,7 +214,9 @@ const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, s
 										/>
 									</GoogleMap>
 								</div>
-							) : <></>}
+							) : (
+								<></>
+							)}
 						</div>
 					)}
 				</div>

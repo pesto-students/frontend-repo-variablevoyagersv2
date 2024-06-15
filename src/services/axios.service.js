@@ -33,21 +33,42 @@ axiosPrivate.interceptors.response.use(
 		return response;
 	},
 	async (error) => {
-		const originalRequest = error.config;
-		if (error.response.status === 401 && !originalRequest._retry) {
-			originalRequest._retry = true;
+		if (error.response && error.response.status === 401) {
+			if (error.config.url.includes('/auth/refreshToken')) {
+				window.location.href = '/session-expired';
+				return;
+			}
 			try {
-				const response = await axiosInstance.post('/auth/refreshToken', {
+				const { data } = await axiosInstance.post('/auth/refreshToken', {
 					crossDomain: true,
 					withCredentials: true,
 				});
+				error.config.headers['Authorization'] = `Bearer ${data.data}`;
 
-				localStorage.setItem('token', JSON.stringify(response.data.accessToken));
-				return axiosPrivate(originalRequest);
+				localStorage.setItem('token', data.data);
+				return axiosPrivate(error.config);
 			} catch (error) {
 				console.log(error);
+				throw error;
 			}
 		}
+
+		// const originalRequest = error.config;
+		// console.log(originalRequest);
+		// if (error.response.status === 401 && !originalRequest._retry) {
+		// 	originalRequest._retry = true;
+		// 	try {
+		// 		const response = await axiosInstance.post('/auth/refreshToken', {
+		// 			crossDomain: true,
+		// 			withCredentials: true,
+		// 		});
+
+		// 		localStorage.setItem('token', JSON.stringify(response.data.accessToken));
+		// 		return axiosPrivate(originalRequest);
+		// 	} catch (error) {
+		// 		console.log(error);
+		// 	}
+		// }
 		return Promise.reject(error);
 	},
 );

@@ -158,8 +158,23 @@ body,
 	/* Rounded corners of the scrollbar thumb */
 }
 
-
 /* Color of the scrollbar thumb on hover */
 ::-webkit-scrollbar-thumb:hover {
-	background-color: #555; 
-  }
+	background-color: #555;
+}
+/* .slick-slide > div {
+	margin: 0 10px;
+}
+.slick-list {
+	margin: 0 -10px;
+} */
+
+.slick-list {
+	padding: 0 20% 0 0 !important;
+}
+
+@media (max-width: 900px) {
+	.slick-list {
+		padding: 0 0 0 0 !important;
+	}
+}

@@ -10,6 +10,7 @@ import PropertyDetails from '../../components/propertyForm/PropertyDetails';
 import PropertyAddress from '../../components/propertyForm/PropertyAddress';
 import PropertyExtra from '../../components/propertyForm/PropertyExtra';
 import PropertyTagsAndAmenities from '../../components/propertyForm/PropertyTagsAndAmenities';
+import { useJsApiLoader } from '@react-google-maps/api';
 const steps = [
 	{ name: 'Property Details', key: 'property-details' },
 	{ name: 'Location Information', key: 'property-address' },
@@ -18,6 +19,9 @@ const steps = [
 	{ name: 'Additional Information', key: 'property-extra' },
 ];
 const views = ['property-details', 'property-address', 'property-images', 'property-tags', 'property-extra'];
+
+const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+
 const AddPropertyPage = () => {
 	const user = useSelector(selectUser);
 	const [propertyImages, setPropertyImages] = useState([]);
@@ -25,7 +29,7 @@ const AddPropertyPage = () => {
 	const [catErr, setCatErr] = useState(false);
 	const [noImgErr, setNoImgErr] = useState(false);
 	const [amenities, setAmenities] = useState([]);
-	const [selectedCity, setSelectedCity] = useState("");
+	const [selectedCity, setSelectedCity] = useState('');
 	const [cordinate, setCordinate] = useState({});
 	const [userInteracted, setUserInteracted] = useState(false);
 
@@ -53,6 +57,12 @@ const AddPropertyPage = () => {
 
 	const [view, setView] = useState('property-details');
 	const [enabledViews, setEnabledViews] = useState(['property-details']);
+
+	const { isLoaded } = useJsApiLoader({
+		id: 'google-map-script',
+		googleMapsApiKey: GOOGLE_KEY,
+		libraries: ['places'],
+	});
 
 	const methods = useForm({
 		defaultValues: {
@@ -188,8 +198,9 @@ const AddPropertyPage = () => {
 							<a
 								key={step.key}
 								onClick={() => handleSetView(step.key)}
-								className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === step.key ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-									} ${!enabledViews.includes(step.key) && 'pointer-events-none opacity-50'}  ${isSubmitting && 'pointer-events-none opacity-50'}`}
+								className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+									view === step.key ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+								} ${!enabledViews.includes(step.key) && 'pointer-events-none opacity-50'}  ${isSubmitting && 'pointer-events-none opacity-50'}`}
 							>
 								<span className="truncate">{step.name}</span>
 							</a>
@@ -201,7 +212,17 @@ const AddPropertyPage = () => {
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
 							{view === 'property-details' && <PropertyDetails />}
-							{view === 'property-address' && <PropertyAddress handleCityChange={handleCityChange} setCord={handCordinateChange} selectedCity={selectedCity} cordinate={cordinate} setInteract={handUserInteracted} userInteracted={userInteracted}/>}
+							{view === 'property-address' && (
+								<PropertyAddress
+									handleCityChange={handleCityChange}
+									setCord={handCordinateChange}
+									selectedCity={selectedCity}
+									cordinate={cordinate}
+									setInteract={handUserInteracted}
+									userInteracted={userInteracted}
+									isLoaded={isLoaded}
+								/>
+							)}
 
 							{view === 'property-images' && (
 								<div className="shadow sm:overflow-hidden sm:rounded-md">

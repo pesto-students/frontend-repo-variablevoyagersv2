@@ -11,7 +11,13 @@ import useRazorpay from 'react-razorpay';
 import { PAYMENT_STATUS } from '../../constants/status';
 import { clearDatabase, db } from '../../dexie/db';
 import FormatPrice from '../../components/FormatPrice';
-import { formatDateRange } from '../../utils';
+import { formatDateRange, formatPrice, getDatesBetween } from '../../utils';
+import Button from '../../components/common/Button';
+import { toast } from 'react-toastify';
+import ConfirmModal from '../../components/common/ConfirmModal';
+import { PiWarningCircleFill } from 'react-icons/pi';
+import Avatar from '../../components/Avatar';
+import placeholder from '/placeholder.jpg';
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
 const Payment = () => {
@@ -21,8 +27,36 @@ const Payment = () => {
 	const user = useSelector(selectUser);
 	const [booking, setBooking] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [bookingDates, setBookingDates] = useState([]);
+	const [termsChecked, setTermsChecked] = useState(false);
 
+	const [showModal, setShowModal] = useState(false);
+	const [selectedBookingId, setSelectedBookingId] = useState(null);
+	const [bookingErrMsg, setBookingErrMsg] = useState('');
+	// useEffect(() => {
+	// 	const preventRefresh = (e) => {
+	// 		const confirmationMessage = 'Are you sure you want to leave this page? Your data may be lost.';
+	// 		e.returnValue = confirmationMessage; // Standard-compliant browsers
+	// 		return confirmationMessage; // Older browsers
+	// 	};
+
+	// 	window.addEventListener('beforeunload', preventRefresh);
+
+	// 	return () => {
+	// 		window.removeEventListener('beforeunload', preventRefresh);
+	// 	};
+	// }, []);
 	useEffect(() => {
+		if (!location.state || !location.state.fromReservation) {
+			navigate('/');
+			return;
+		}
+
+		// const fromReservation = sessionStorage.getItem('fromReservation');
+		// if (!location.state || !location.state.fromReservation || !fromReservation) {
+		// 	navigate('/');
+		// 	return;
+		// }
 		const fetchBooking = async () => {
 			const searchParams = new URLSearchParams(location.search);
 			const bookingId = searchParams.get('id');
@@ -31,8 +65,11 @@ const Payment = () => {
 			}
 
 			const foundBooking = await db.bookings.get(parseInt(bookingId));
-
+			console.log(foundBooking);
 			if (foundBooking) {
+				const allDates = getDatesBetween(foundBooking.startDate, foundBooking.endDate);
+
+				setBookingDates(allDates);
 				setBooking(foundBooking);
 			} else {
 				navigate('/');
@@ -40,12 +77,11 @@ const Payment = () => {
 		};
 
 		fetchBooking();
-	}, [location.search, navigate]);
+	}, [location.search, navigate, location.state]);
 
 	const handlePaymentModalDissmiss = useCallback(async (order) => {
 		try {
 			await axiosPrivate.put(`booking/remove-booking/${order.bookingId}`);
-			clearDatabase();
 		} catch (err) {
 			console.log('Order Dissmiss Removed', err);
 		}
@@ -53,6 +89,10 @@ const Payment = () => {
 
 	const handlePayment = useCallback(async () => {
 		if (!booking) return;
+		if (!termsChecked) {
+			toast.error('You must agree to the terms and conditions before proceeding.');
+			return;
+		}
 		try {
 			const { data } = await axiosPrivate.post('/payment/create-payment-order', {
 				amount: booking.totalPrice,
@@ -79,9 +119,10 @@ const Payment = () => {
 							orderId: response.razorpay_order_id,
 							paymentId: response.razorpay_payment_id,
 							signature: response.razorpay_signature,
+							amount: orderResponse.order.amount,
 							status: PAYMENT_STATUS.SUCCESS,
 						});
-						clearDatabase();
+
 						alert('Payment successful and booking confirmed!');
 					},
 					prefill: {
@@ -104,15 +145,37 @@ const Payment = () => {
 						orderId: orderResponse.order.id,
 						paymentId: res.error.metadata.payment_id,
 						signature: '',
+						amount: orderResponse.order.amount,
 						status: PAYMENT_STATUS.FAILED,
 					});
-					clearDatabase();
+					toast.error('Payment failed, please try again');
 				});
+			} else {
+				console.log(data);
+				// setShowModal(true);
 			}
 		} catch (err) {
 			console.log(err);
+			console.log(err.response.data.error);
+			setBookingErrMsg(err.response.data.error);
+			setShowModal(true);
 		}
-	}, [Razorpay, user?.email, user?.firstName, user?.lastName, booking, handlePaymentModalDissmiss]);
+	}, [Razorpay, user?.email, user?.firstName, user?.lastName, booking, handlePaymentModalDissmiss, termsChecked]);
+
+	const handleGoBack = () => {
+		// sessionStorage.removeItem('fromReservation');
+		navigate(-1);
+	};
+
+	const handleCancel = () => {
+		setShowModal(false);
+		navigate('/');
+		// setSelectedBookingId(null);
+	};
+
+	const handleConfirm = () => {
+		navigate(-1);
+	};
 
 	if (loading) {
 		return <Loader />;
@@ -120,7 +183,212 @@ const Payment = () => {
 
 	return (
 		<>
-			<Container>
+			<div className="sm:mx-2 lg:mx-16 px-4 mt-24 pb-24">
+				<h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Confirm and Pay</h1>{' '}
+				<p className="mt-1 text-md text-gray-500">Review your property and booking information before making your payment.</p>
+				<div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
+					<section className="lg:col-span-7">
+						<ul role="list" className="divide-y divide-gray-200 border-b border-t border-gray-200">
+							<li className=" py-6 sm:py-10">
+								<div className="flex">
+									<div className="flex-shrink-0">
+										<img
+											src={booking?.propertyImages[0].imgUrl}
+											alt="Front of men&#039;s Basic Tee in sienna."
+											className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
+										/>
+									</div>
+									<div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
+										<div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
+											<div>
+												<div className="flex justify-between">
+													<h3 className="text-md">
+														<a href="#" className="font-medium text-gray-700 hover:text-gray-800">
+															{booking?.propertyName}
+														</a>
+													</h3>
+												</div>
+												<div className="mt-1 text-md">
+													<p className="text-gray-500">{booking?.address}</p>
+													<p className=" text-gray-500">
+														{booking?.city}, {booking?.country}
+													</p>
+												</div>
+												<div className="flex flex-col flex-wrap md:flex-nowrap justify-start gap-2 mt-4 w-full">
+													<p className="w-fit bg-primary text-white text-md capitalize px-2.5 py-1.5 rounded-full  ">
+														Checkin: {booking?.checkInTime}
+													</p>
+													<p className="w-fit bg-primary text-white text-md capitalize px-2.5 py-1.5 rounded-full ">
+														Checkout: {booking?.checkOutTime}
+													</p>
+												</div>
+											</div>
+											<div className="mt-4 sm:mt-0 text-left md:text-right">
+												<p className="text-md font-medium text-gray-900"> {formatPrice(booking?.price)} per day</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								{/* <p className="mt-4 text-md  text-gray-900"> {booking?.description} </p> */}
+
+								{/* <div className="flex flex-wrap md:flex-nowrap justify-start gap-2">
+									{booking?.propertyTags?.map((tag, idx) => (
+										<p key={idx + tag} className="w-fit bg-primary text-white text-md capitalize px-2.5 py-1.5 rounded-full mt-4">
+											{tag.replace('-', ' ')}
+										</p>
+									))}
+								</div>
+								{booking?.amenities && booking?.amenities.length > 0 && (
+									<div className="mt-4">
+										<h1 className="font-medium text-md text-gray-700">What this place offers</h1>
+										{booking?.amenities?.map((amenity, index) => (
+											<div key={index} className="flex ml-3 mt-3 gap-2 items-center">
+												<span className="w-1.5 h-1.5 rounded-full bg-gray-900"></span>
+												<p className="text-md text-gray-500">{amenity}</p>
+											</div>
+										))}
+									</div>
+								)} */}
+							</li>
+							<li className="flex py-6 sm:py-10">
+								<div>
+									<h2 className="text-lg font-medium text-gray-900">Owner Information</h2>
+									<p className="text-md text-gray-600">Contact details for the owner</p>
+									<div className="flex gap-4 mt-4">
+										<img
+											className="rounded-full object-cover w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
+											alt="Avatar"
+											src={booking?.owner?.avatar || placeholder}
+										/>
+										<div className="text-md font-medium flex flex-col items-start gap-2">
+											<h3 className="font-medium text-gray-700 hover:text-gray-800">
+												{booking?.owner?.firstName} {booking?.owner?.lastName}
+											</h3>
+											<p className="text-md text-gray-600">{booking?.owner?.email}</p>
+											<p className="text-md text-gray-600">{booking?.owner?.phone}</p>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li className="flex py-6 sm:py-10">
+								<div>
+									<h2 className="text-lg font-medium text-gray-900">Your Information</h2>
+									<p className="text-md text-gray-600">Ensure your details are accurate to receive updates from BookMyVenue</p>
+									<div className="flex gap-4 mt-4">
+										<img
+											className="rounded-full object-cover w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
+											alt="Avatar"
+											src={user?.avatar || placeholder}
+										/>
+										<div className="text-md font-medium flex flex-col items-start gap-2">
+											<h3 className="font-medium text-gray-700 hover:text-gray-800">
+												{user?.firstName} {user?.lastName}
+											</h3>
+											<p className="text-md text-gray-600">{user?.email}</p>
+											<p className="text-md text-gray-600">{user?.phone}</p>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li className="flex py-6 sm:py-10">
+								<div>
+									<h2 className="text-lg font-medium text-gray-900">Cancellation and refund policy</h2>
+									<p className="text-md text-gray-600">Free cancellation for 48 hours. Cancel before 6 May for a partial refund.</p>
+									<p className="underline font-bold mt-1">Learn More</p>
+								</div>
+							</li>
+						</ul>
+					</section>
+
+					{/* <!-- Booking summary --> */}
+					<section className="order-first md:order-last sticky top-32 overflow-hidden mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
+						<h2 className="text-lg font-medium text-gray-900">Booking summary</h2>
+
+						<dl className="mt-6 space-y-4">
+							<div className="flex items-center justify-between">
+								<dt className="text-md text-gray-600">Booking dates</dt>
+								<dd className="text-md font-medium text-gray-900">{booking && formatDateRange(booking.startDate, booking.endDate)}</dd>
+							</div>
+							<div className="flex items-center justify-between border-t border-gray-200 pt-4">
+								<dt className="flex items-center text-md text-gray-600">
+									<span>Booking cost</span>
+								</dt>
+								<dd className="text-md font-medium text-gray-900">
+									{formatPrice(booking?.price)} x {bookingDates?.length} {bookingDates?.length > 1 ? 'days' : 'day'}
+								</dd>
+							</div>
+
+							<div className="flex items-center justify-between border-t border-gray-200 pt-4">
+								<dt className="text-base font-medium text-gray-900">Total cost</dt>
+								<dd className="text-base font-medium text-gray-900">{formatPrice(booking?.totalPrice)}</dd>
+							</div>
+						</dl>
+						<div className="mt-6 flex items-start">
+							<input
+								id="terms"
+								type="checkbox"
+								checked={termsChecked}
+								onChange={(e) => {
+									console.log(e);
+									setTermsChecked(e.target.checked);
+								}}
+								className="h-5 w-5 mt-[5px] rounded border-gray-300 text-indigo-500 focus:ring-indigo-500"
+							/>
+							<div className="ml-2">
+								<label htmlFor="terms" className="text-md font-medium text-gray-900">
+									I have read and understood the <span className="text-indigo-500 underline underline-offset-3">privacy policy </span> and the{' '}
+									<span className="text-indigo-500 underline underline-offset-3">terms & condition.</span>
+								</label>
+							</div>
+						</div>
+
+						<div className="py-3 mt-6 gap-2 flex flex-col md:flex-row items-center justify-center">
+							<Button
+								buttonType="button"
+								size="md"
+								variant="filled"
+								onClick={handleGoBack}
+								innerClass="w-[100%] lg:w-[50%] bg-white"
+								innerTextClass="text-primary"
+								disabled={loading}
+							>
+								Go back
+							</Button>
+
+							<Button
+								buttonType="button"
+								size="md"
+								variant="filled"
+								innerClass="w-[100%] lg:w-[50%] bg-primary"
+								innerTextClass="text-white"
+								onClick={handlePayment}
+								disabled={loading}
+							>
+								Pay now
+							</Button>
+						</div>
+					</section>
+				</div>
+				{/* </div> */}
+			</div>
+
+			{showModal && (
+				<ConfirmModal
+					modalId="booking-err-modal"
+					title="Booking Error"
+					message={bookingErrMsg}
+					confirmText={'Choose new dates'}
+					onConfirm={handleConfirm}
+					// cancelText="Select new property"
+					onCancel={handleCancel}
+					confirmDisabled={loading}
+					cancelDisabled={loading}
+					btnClass={'text-white !w-[100%] bg-warning-600 hover:bg-warning-800 focus:ring-warning-300 border-warning-600'}
+					icon={<PiWarningCircleFill className="w-10 h-10 text-warning-500" />}
+				/>
+			)}
+
+			{/* <Container>
 				<div className="mt-32">
 					<h1>{booking?.propertyName}</h1>
 					<h1>Property price: {booking?.price}/day</h1>
@@ -128,89 +396,6 @@ const Payment = () => {
 					<button onClick={handlePayment} className="text-3xl px-4 py-2 rounded-md bg-primary text-white">
 						Confirm and Pay
 					</button>
-				</div>
-			</Container>
-			{/* <Container>
-				<div className="mt-32">
-					<h1 className="text-4xl  font-semibold mb-10 sm:mb-10">Confirm And Pay</h1>
-					<div className="grid grid-cols-1 md:grid-cols-7 md:gap-28">
-						<div className="col-span-4 flex flex-col">
-							<p className="font-medium text-2xl">Your Booking</p>
-							<p className="mt-6 font-mediumd text-xl">Dates</p>
-							<div className="mt-2 mb-9 flex justify-between">
-								<p className="text-lg">{booking && formatDateRange(booking.startDate, booking.endDate)}</p>
-								<p className="text-lg font-medium underline cursor-pointer">Edit</p>
-							</div>
-							<hr />
-							<p className="mt-10 mb-10 font-medium text-2xl">Pay With</p>
-							<hr />
-							<div className="mt-10 mb-10">
-								<p className="font-medium text-2xl">Required for your trip</p>
-								<div className="flex justify-between">
-									<p className="mt-1 font-medium text-xl">Phone number</p>
-									<button className="rounded-md p-2 bg-white border font-medium">Add</button>
-								</div>
-							</div>
-							<hr />
-							<div className="mt-10 mb-10">
-								<p className="font-medium text-2xl">Cancellation policy</p>
-								<span>Free cancellation for 48 hours. Cancel before 6 May for a partial refund.</span>
-								<p className=" underline font-bold">Learn More</p>
-							</div>
-							<hr />
-							<div className="mt-10 mb-10">
-								<p className="font-medium text-2xl">Ground rules</p>
-								<span>We ask every guest to remember a few simple things about what makes a great guest.</span>
-								<p className="font-bold">1. Treat your Host’s home like your own</p>
-								<p className="font-bold">2. Follow the house rules</p>
-							</div>
-							<hr />
-						</div>
-						<div className="order-first mb-10 md:order-last md:col-span-3">
-							<div className="bg-white flex flex-col gap-5  sticky top-32 rounded-xl shadow-lg border-[1px] p-4 border-neutral-200 overflow-hidden">
-								<div className="flex flex-row items-center mt-3">
-									<div className="flex gap-5 items-center">
-										<img src={booking?.property?.propertyImages[0].imgUrl} alt="" className="rounded-md w-[100px] h-[100px]" />
-										<div className="font-medium text-2xl">
-											{booking?.property?.propertyName}
-											<div className="flex items-center text-base">
-												<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1">
-													<path
-														fillRule="evenodd"
-														d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												4.90 (21 Review)
-											</div>
-										</div>
-									</div>
-								</div>
-								<hr />
-								<div className="flex flex-col">
-									<p className="font-medium text-2xl">Price Details</p>
-									<div className="flex justify-between">
-										<div>
-											<FormatPrice price={50000} />
-											<span> x 3 Nights</span>
-										</div>
-										<div>
-											<FormatPrice price={150000} />
-										</div>
-									</div>
-								</div>
-								<hr />
-								<div className="flex justify-between">
-									<p className="font-medium text-2xl">Total</p>
-									<div className="font-medium text-2xl">
-										<FormatPrice price={150000} />
-									</div>
-								</div>
-								<button className="text-3xl px-4 py-2 rounded-md bg-primary text-white">Confirm and Pay</button>
-								<div className="w-max"></div>
-							</div>
-						</div>
-					</div>
 				</div>
 			</Container> */}
 		</>

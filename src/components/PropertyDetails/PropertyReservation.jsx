@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import LoginPage from '../../pages/public/LoginPage';
 import { clearDatabase, db } from '../../dexie/db';
 import Button from '../common/Button';
+import { getDatesBetween } from '../../utils';
+import { ROLES } from '../../constants/roles';
 
 const PropertyReservation = ({ property }) => {
 	const [showLoginModal, setShowLoginModal] = useState(false);
@@ -25,18 +27,11 @@ const PropertyReservation = ({ property }) => {
 	});
 
 	useEffect(() => {
-		let dates = [];
-		property?.bookings?.forEach((ele) => {
-			const start = new Date(ele.startDate);
-			const end = new Date(ele.endDate);
-			let currentDate = start;
-
-			while (currentDate <= end) {
-				dates.push(new Date(currentDate));
-				currentDate.setDate(currentDate.getDate() + 1);
-			}
-		});
-		setDates(dates);
+		if (property?.bookings?.length > 0) {
+			const allDates = property?.bookings?.map((booking) => getDatesBetween(booking.startDate, booking.endDate)).flat();
+			console.log(allDates);
+			setDates(allDates);
+		}
 	}, [property?.bookings]);
 
 	const calculateTotalPrice = (startDate, endDate) => {
@@ -79,14 +74,18 @@ const PropertyReservation = ({ property }) => {
 			city: property?.city,
 			country: property?.country,
 			propertyImages: property?.propertyImages,
-			amenities: property?.PropertyTags,
-			propertyTags: property?.PropertyTags,
+			amenities: property?.amenities,
+			propertyTags: property?.propertyTags,
+			owner: property?.owner,
 		};
 
 		try {
 			const result = await db.bookings.add(bookingObj);
 
-			navigate(`/payment?id=${result}`);
+			// navigate(`/payment?id=${result}`);
+			// sessionStorage.setItem('fromReservation', 'true');
+			navigate(`/payment?id=${result}`, { state: { fromReservation: true } });
+			// navigate(`/payment?id=${result}`);
 		} catch (error) {
 			console.error('Failed to save booking:', error);
 		}
@@ -99,9 +98,9 @@ const PropertyReservation = ({ property }) => {
 					<div className="text-2xl font-semibold">{<FormatPrice price={property?.price} />}</div>
 					<div className=" text-neutral-600 ml-2 font-normal">Per Day</div>
 				</div>
-				<hr />
+				<hr className="bg-gray-50" />
 				<Calendar value={dateRange} onChange={(value) => handleDatesAndPrice(value)} disabledDates={dates} />
-				<hr />
+				<hr className="bg-gray-50" />
 				<div className="p-4">
 					<Button
 						buttonType="button"
@@ -110,13 +109,15 @@ const PropertyReservation = ({ property }) => {
 						innerClass="w-[100%] bg-primary"
 						innerTextClass="text-white"
 						onClick={bookThisPlace}
-						disabled={property?.ownerId === user?.id}
+						disabled={property?.ownerId === user?.id || user?.role === ROLES.OWNER}
 					>
 						Reserve
 					</Button>
-					{property?.ownerId === user?.id && <div className=" text-neutral-600 ml-2 font-normal">Only customers are allowed to book a property</div>}
+					{(property?.ownerId === user?.id || user?.role === ROLES.OWNER) && (
+						<div className=" text-neutral-600 ml-2 font-normal">Only customers are allowed to book a property</div>
+					)}
 				</div>
-				<hr />
+				<hr className="bg-gray-50" />
 				<div className=" p-4 flex flex-row items-center justify-between font-semibold text-lg">
 					<div>Total</div>
 					<div>{<FormatPrice price={totalPrice} />}</div>

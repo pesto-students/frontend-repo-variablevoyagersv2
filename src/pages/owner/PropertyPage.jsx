@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { selectUser } from '../../redux/slices/authSlice';
@@ -13,16 +13,21 @@ import { FaEye, FaPenToSquare, FaPlus, FaTrash } from 'react-icons/fa6';
 import { RxEyeOpen, RxPencil2 } from 'react-icons/rx';
 import ImagePlaceholder from '../../assets/ImagePlaceholder.jpeg';
 import { toast } from 'react-toastify';
+import EmptyState from '../../components/common/EmptyState';
+import { RiCalendarCloseLine } from 'react-icons/ri';
+import { PiBuildingsFill, PiWarningCircleFill } from 'react-icons/pi';
+import { format, formatDate } from 'date-fns';
+import { formatPrice } from '../../utils';
+import ConfirmModal from '../../components/common/ConfirmModal';
 const PropertyPage = () => {
 	const navigate = useNavigate();
+	const user = useSelector(selectUser);
 	const [loading, setLoading] = useState(false);
 	const [properties, setProperties] = useState([]);
-	const user = useSelector(selectUser);
-	useEffect(() => {
-		getOwnerProperties();
-	}, []);
+	const [showModal, setShowModal] = useState(false);
+	const [selectedPropertyId, setSelectedPropertyId] = useState(null);
 
-	const getOwnerProperties = async () => {
+	const getOwnerProperties = useCallback(async () => {
 		try {
 			setLoading(true);
 			const { data } = await axiosPrivate.get(`/property/owner-property/${user?.id}`);
@@ -33,28 +38,61 @@ const PropertyPage = () => {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [user?.id]);
+
+	useEffect(() => {
+		getOwnerProperties();
+	}, [getOwnerProperties]);
 	const deleteProperty = async (id) => {
-		if (confirm('Are you sure to delete?')) {
-			console.log(id);
-			try {
-				const { data } = await axiosPrivate.put(`/property/delete/${id}`);
-				console.log(data);
-				if (data.success) {
-					toast.success('Property is deleted');
-					getOwnerProperties();
-				} else {
-					toast.success('Something went wrong');
-				}
-			} catch (error) {
-				console.log(error);
-				toast.error('Something went wrong');
-			}
-		}
+		console.log('here');
+		setSelectedPropertyId(id);
+		setShowModal(true);
+		// if (confirm('Are you sure to delete?')) {
+		// 	console.log(id);
+		// 	try {
+		// 		const { data } = await axiosPrivate.put(`/property/delete/${id}`);
+		// 		console.log(data);
+		// 		if (data.success) {
+		// 			toast.success('Property is deleted');
+		// 			getOwnerProperties();
+		// 		} else {
+		// 			toast.success('Something went wrong');
+		// 		}
+		// 	} catch (error) {
+		// 		console.log(error);
+		// 		toast.error('Something went wrong');
+		// 	}
+		// }
 	};
 
 	const goto = (id) => {
 		navigate(`/owner/edit-property/${id}`);
+	};
+
+	const handleConfirm = async () => {
+		try {
+			setLoading(true);
+
+			const { data } = await axiosPrivate.put(`/property/delete/${selectedPropertyId}`);
+			if (data.success) {
+				toast.success('Property deleted');
+				getOwnerProperties();
+			} else {
+				toast.error(data.message);
+			}
+		} catch (error) {
+			console.error('Error deleteing property:', error);
+			toast.error('Something went wrong');
+		} finally {
+			setLoading(false);
+			setShowModal(false);
+			setSelectedPropertyId(null);
+		}
+	};
+
+	const handleCancel = () => {
+		setShowModal(false);
+		setSelectedPropertyId(null);
 	};
 
 	if (loading) {
@@ -75,12 +113,13 @@ const PropertyPage = () => {
 					</Link>
 				</div>
 			</div>
-			<div className="shadow sm:overflow-hidden sm:rounded-md">
-				<div className="space-y-6 bg-white px-4 py-6 sm:p-6">
-					<div className="flow-root">
-						<div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-							<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-								{properties.length > 0 ? (
+
+			{properties.length > 0 ? (
+				<div className="shadow sm:overflow-hidden sm:rounded-md">
+					<div className="space-y-6 bg-white px-4 py-6 sm:p-6">
+						<div className="flow-root">
+							<div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+								<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
 									<table className="min-w-full divide-y divide-gray-300">
 										<thead>
 											<tr>
@@ -106,54 +145,78 @@ const PropertyPage = () => {
 										</thead>
 										<tbody className="divide-y divide-gray-200 bg-white">
 											{properties.map((property) => (
-												<tr key={property.id}>
+												<tr key={property?.id}>
 													<td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-														<div className="flex items-center">
+														<Link to={`/property-detail/${property?.id}`} className="flex items-center">
 															<div className="h-14 w-14 flex-shrink-0">
 																<img
 																	className="h-14 w-14 rounded-md"
-																	src={property.propertyImages[0]?.imgUrl ? property.propertyImages[0]?.imgUrl : ImagePlaceholder}
-																	alt={property.propertyName}
+																	src={property?.propertyImages[0]?.imgUrl ? property?.propertyImages[0]?.imgUrl : ImagePlaceholder}
+																	alt={property?.propertyName}
 																/>
 															</div>
 
 															<div className="ml-4">
-																<div className="font-medium text-gray-900">{property.propertyName}</div>
-																{/* <div className="mt-1 text-gray-500">{property.description}</div> */}
+																<div className="font-medium text-gray-900">{property?.propertyName}</div>
+																<div className="mt-1 text-gray-500">{property?.address}</div>
 															</div>
-														</div>
+														</Link>
 													</td>
-													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{property.price}</td>
-													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{property.capacity}</td>
+													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{formatPrice(property?.price)} per day</td>
+													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{property?.capacity}</td>
 													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-														<div className="text-gray-900">{property.city}</div>
-														<div className="mt-1 text-gray-500">{property.country}</div>
+														<div className="text-gray-900">{property?.city}</div>
+														{/* <div className="mt-1 text-gray-500">{property?.country}</div> */}
 													</td>
 
-													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{moment(property.updatedAt).format('MMMM Do YYYY')}</td>
-													<td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 flex item-center justify-between">
-														<div className="text-indigo-600 hover:text-indigo-900" onClick={() => goto(property.id)}>
-															<FaPenToSquare className="h-5 w-5 text-primary" />
-														</div>
-														<div className="text-indigo-600 hover:text-indigo-900" onClick={() => deleteProperty(property.id)}>
-															<FaTrash className="h-5 w-5 text-red-600" />
-														</div>
-														<div className="text-indigo-600 hover:text-indigo-900">
+													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+														{format(new Date(property?.updatedAt), 'dd MMMM yyyy')}
+													</td>
+													<td className="whitespace-nowrap  px-3 py-5 text-right text-sm font-medium sm:pr-0 ">
+														<div className="flex item-center  gap-4">
+															<div className="text-indigo-600 hover:text-indigo-900" onClick={() => goto(property?.id)}>
+																<FaPenToSquare className="h-5 w-5 text-primary" />
+															</div>
+															<div className="text-indigo-600 hover:text-indigo-900" onClick={() => deleteProperty(property?.id)}>
+																<FaTrash className="h-5 w-5 text-red-600" />
+															</div>
+															{/* <div className="text-indigo-600 hover:text-indigo-900">
 															<FaEye className="h-5 w-5 text-primary" />
+															</div> */}
 														</div>
 													</td>
 												</tr>
 											))}
 										</tbody>
 									</table>
-								) : (
-									<h1>No property</h1>
-								)}
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			) : (
+				<EmptyState
+					title="No Properties"
+					subtitle="You haven't added any property yet."
+					icon={<PiBuildingsFill className="w-16 h-16 text-white" />}
+				/>
+			)}
+
+			{showModal && (
+				<ConfirmModal
+					modalId="delete-action-modal"
+					title="Confirm Property Deletion"
+					message="Are you sure you want to delete this property? This action cannot be undone."
+					confirmText="Yes, Delete Property"
+					cancelText="No, Keep Property"
+					onConfirm={handleConfirm}
+					onCancel={handleCancel}
+					confirmDisabled={loading}
+					cancelDisabled={loading}
+					btnClass={'text-white bg-red-600 hover:bg-red-800 focus:ring-red-300 border-red-600'}
+					icon={<FaTrash className="w-10 h-10 text-red-600" />}
+				/>
+			)}
 		</>
 	);
 };
