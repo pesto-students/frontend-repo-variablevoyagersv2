@@ -17,7 +17,7 @@ const position = [18.521428, 73.8544541];
 
 const PropertyDescriptions = ({ ownerName, capacity, description, avatar, address, tags, amenities }) => {
     return (
-        <div className="col-span-4 flex flex-col gap-8">
+        <div className="col-span-3 flex flex-col gap-8">
             <div className="flex flex-col gap-5">
                 <div className="flex flex-row">
                     {tags?.map((tag) => (
@@ -33,7 +33,7 @@ const PropertyDescriptions = ({ ownerName, capacity, description, avatar, addres
                     </div>
                     <div>
                         <div className="text-xl font-medium flex flex-row items-center gap-2">
-                            {ownerName && <div>Hosted By {ownerName}</div>}
+                            {ownerName && <div>Owned By {ownerName}</div>}
                         </div>
                         <div className="flex flex-row items-center gap-4 text-md text-neutral-600">{capacity && <div>{capacity} Capacity</div>}</div>
                     </div>

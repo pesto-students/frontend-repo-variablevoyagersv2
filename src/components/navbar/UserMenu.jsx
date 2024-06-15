@@ -15,7 +15,6 @@ export default function UserMenu() {
 	const buttonRef = useRef(null);
 	const [showLoginModal, setShowLoginModal] = useState(false);
 
-
 	const handleLogout = async () => {
 		try {
 			const { data } = await axiosPrivate.post('/auth/logout', {});
@@ -86,8 +85,6 @@ export default function UserMenu() {
 		event.stopPropagation(); // Prevents event bubbling to body
 	};
 
-
-
 	return (
 		<div ref={buttonRef} className="relative ml-3">
 			{isAuthenticated && user ? (
@@ -97,8 +94,8 @@ export default function UserMenu() {
 						onClick={toggleMenu}
 						className="  rounded-full  text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 hover:opacity-70 flex items-center space-x-1.5 transition-opacity"
 					>
-						{user.avatar ? (
-							<img src={user.avatar} alt="Profile photo" className="inline-block h-10 w-10 rounded-full object-cover  " />
+						{!!user?.avatar ? (
+							<img src={user?.avatar} alt="Profile photo" className="inline-block h-10 w-10 rounded-full object-cover" />
 						) : (
 							<div className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-gray-200 font-semibold uppercase text-gray-700  ">
 								{getInitials(user)}
@@ -115,7 +112,7 @@ export default function UserMenu() {
 						<div className="space-y-3 bg-gray-25 p-4">
 							<div>
 								<p className="text-lg font-semibold break-words">
-									{user.firstName} {user.lastName}
+									{user?.firstName} {user?.lastName}
 								</p>
 								<p className="text-sm capitalize text-base-secondary-text"> {user?.role.toLowerCase()} </p>
 							</div>

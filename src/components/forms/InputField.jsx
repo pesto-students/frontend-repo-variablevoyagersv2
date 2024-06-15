@@ -1,7 +1,7 @@
 // InputField.js
 import React from 'react';
 
-const InputField = ({ label, id, name, register, required, error, type, disabled, readOnly }) => {
+const InputField = ({ label, id, name, register, required, error, type, disabled, readOnly, placeholder, value }) => {
 	return (
 		<>
 			<label htmlFor={id} className="block text-sm font-medium text-gray-700">
@@ -47,6 +47,8 @@ const InputField = ({ label, id, name, register, required, error, type, disabled
 				<input
 					type={type ? type : 'text'}
 					id={id}
+					value={value}
+					placeholder={placeholder}
 					name={name}
 					{...register(name, {
 						required,
