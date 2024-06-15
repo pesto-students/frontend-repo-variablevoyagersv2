@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated, selectUser } from '../../redux/slices/authSlice';
 import { ROLES } from '../../constants/roles';
-import Logo from './Logo'
+import Logo from './Logo';
 
 import MenuLink from './MenuLink';
 
@@ -37,7 +37,7 @@ const PrivateNav = () => {
 	return (
 		<div>
 			<div className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white lg:hidden md:hidden">
-				<button type="button" onClick={toggleMenu} className={`${user ? "" : "hidden"}`}>
+				<button type="button" onClick={toggleMenu} className={`${user ? '' : 'hidden'}`}>
 					<svg
 						className={`h-6 w-6 ${isMenuOpen ? 'hidden' : 'block'}`}
 						fill="none"
@@ -59,18 +59,23 @@ const PrivateNav = () => {
 						<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
 					</svg>
 				</button>
-				<Link to="/" className={`cursor-pointer rounded-3xl ${user ? "hidden" : ""}`}>
+				<Link to="/" className={`cursor-pointer rounded-3xl ${user ? 'hidden' : ''}`}>
 					{/* <img src={logo}  height="180" width="180" alt="Logo" /> */}
-					<div className='text-xl  font-bold  text-primary'>BookMyVenue</div>
+					<div className="text-xl  font-bold  text-primary">BookMyVenue</div>
 				</Link>
 			</div>
-			<div className={`absolute md:hidden sm:left-[-6%] h-screen bg-white mt-3 left-[-3%] w-60 transform transition-transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} z-10`} onClick={handleMenuClick}>
+			<div
+				className={`absolute md:hidden sm:left-[-6%] h-screen bg-white mt-3 left-[-3%] w-60 transform transition-transform ${
+					isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+				} z-10`}
+				onClick={handleMenuClick}
+			>
 				{isAuthenticated && user?.role === ROLES.OWNER && (
 					<>
 						<MenuLink to="/">Home</MenuLink>
-						<MenuLink to="/owner/dashboard" onClick={toggleMenu}>
+						{/* <MenuLink to="/owner/dashboard" onClick={toggleMenu}>
 							Dashboard
-						</MenuLink>
+						</MenuLink> */}
 						<MenuLink to="/owner/bookings" onClick={toggleMenu}>
 							Booking
 						</MenuLink>
@@ -84,9 +89,15 @@ const PrivateNav = () => {
 				)}
 				{isAuthenticated && user?.role === ROLES.CUSTOMER && (
 					<>
-						<MenuLink to="/" onClick={toggleMenu}>Home</MenuLink>
-						<MenuLink to="/customer/my-bookings" onClick={toggleMenu}>My Booking</MenuLink>
-						<MenuLink to="/customer/profile" onClick={toggleMenu}>Profile</MenuLink>
+						<MenuLink to="/" onClick={toggleMenu}>
+							Home
+						</MenuLink>
+						<MenuLink to="/customer/my-bookings" onClick={toggleMenu}>
+							My Booking
+						</MenuLink>
+						<MenuLink to="/customer/profile" onClick={toggleMenu}>
+							Profile
+						</MenuLink>
 					</>
 				)}
 			</div>
@@ -94,7 +105,7 @@ const PrivateNav = () => {
 				<div className="flex space-x-4">
 					{isAuthenticated && user?.role === ROLES.OWNER && (
 						<>
-							<MenuLink to="/owner/dashboard">Dashboard</MenuLink>
+							{/* <MenuLink to="/owner/dashboard">Dashboard</MenuLink> */}
 							<MenuLink to="/owner/bookings">Booking</MenuLink>
 							<MenuLink to="/owner/property">Property</MenuLink>
 							<MenuLink to="/owner/profile">Profile</MenuLink>
@@ -109,7 +120,6 @@ const PrivateNav = () => {
 				</div>
 			</div>
 		</div>
-
 	);
 };
 

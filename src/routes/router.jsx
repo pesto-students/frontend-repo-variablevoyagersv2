@@ -17,6 +17,7 @@ import OwnerLayout from '../layouts/OwnerLayout';
 import CustomerLayout from '../layouts/CustomerLayout';
 import Payment from '../pages/payment/Payment';
 import EditPropertyPage from '../pages/owner/EditPropertyPage';
+import SessionExpiredPage from '../pages/public/SessionExpiredPage';
 
 export const router = createBrowserRouter([
 	{
@@ -133,5 +134,9 @@ export const router = createBrowserRouter([
 	{
 		path: '*',
 		element: <NotFoundPage />,
+	},
+	{
+		path: '/session-expired',
+		element: <SessionExpiredPage />,
 	},
 ]);

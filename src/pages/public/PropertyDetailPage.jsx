@@ -17,7 +17,7 @@ const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 const containerStyle = {
 	width: '100%',
 	height: '400px',
-	borderRadius: "0.375rem"
+	borderRadius: '0.375rem',
 };
 
 const mapOptions = {
@@ -28,7 +28,8 @@ const mapOptions = {
 		{
 			featureType: 'poi.park',
 			stylers: [{ visibility: 'off' }], // Hide POI labels
-		}, {
+		},
+		{
 			featureType: 'road',
 			elementType: 'labels',
 			stylers: [{ visibility: 'off' }], // Hide road labels
@@ -46,10 +47,8 @@ const mapOptions = {
 			featureType: 'transit',
 			stylers: [{ visibility: 'off' }], // Hide transit lines and stations
 		},
-
-	]
-
-}
+	],
+};
 
 const PropertyDetailPage = () => {
 	const [loading, setLoading] = useState(null);
@@ -58,7 +57,7 @@ const PropertyDetailPage = () => {
 	const { isLoaded } = useJsApiLoader({
 		id: 'google-map-script',
 		googleMapsApiKey: GOOGLE_KEY,
-		libraries: ["maps", "places"],
+		libraries: ['maps', 'places'],
 	});
 
 	const { id } = useParams();
@@ -95,21 +94,24 @@ const PropertyDetailPage = () => {
 					country={property?.country}
 					propertyImages={property?.propertyImages}
 				/>
-				<div className="grid grid-cols-1 md:grid-cols-6 md:gap-24 mt-2">
-					<PropertyDescriptions
-						ownerName={property?.owner?.firstName}
-						avatar={property?.owner?.avatar}
-						capacity={property?.capacity}
-						description={property?.description}
-						address={property?.address}
-						tags={tags}
-						amenities={property?.amenities}
-					/>
+				<div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-7 md:gap-24 mt-2">
+					<div className="col-span-3 lg:col-span-4 flex flex-col gap-8 ">
+						<PropertyDescriptions
+							ownerName={property?.owner?.firstName}
+							avatar={property?.owner?.avatar}
+							capacity={property?.capacity}
+							description={property?.description}
+							address={property?.address}
+							tags={tags}
+							amenities={property?.amenities}
+						/>
+					</div>
 					<div className="order-first mb-10 md:order-last md:col-span-3">
 						<PropertyReservation
-							price={property?.price}
-							propertyId={property?.id}
-							queryId={id}
+							property={property}
+							// price={property?.price}
+							// propertyId={property?.id}
+							// queryId={id}
 							// totalPrice={totalPrice}
 							// dateRange={dateRange}
 							// onChangeDate={(value) => setDateRange(value)}
@@ -119,33 +121,29 @@ const PropertyDetailPage = () => {
 				<hr />
 				{!isLoaded ? (
 					<h1>Loading...</h1>
-				) :
-					(
-
-						property?.lat ? (<>
-							<GoogleMap
-								mapContainerStyle={containerStyle}
-								center={{ lat: Number(property?.lat), lng: Number(property?.lng) }}
-								zoom={16}
-								options={
-									mapOptions
-								}
-							>
-								<MarkerF
-									position={{ lat: Number(property?.lat), lng: Number(property?.lng) }}
-									icon={{
-										url: customMarkerIcon,
-										// scaledSize: new window.google.maps.Size(40, 40), // size in pixels
-										origin: new window.google.maps.Point(0, 0), // origin of the image
-										anchor: new window.google.maps.Point(20, 40), // anchor point (bottom center)
-									}}
-								/>
-							</GoogleMap>
-							<hr />
-						</>
-						) : (<></>)
-					)}
-
+				) : property?.lat ? (
+					<>
+						<GoogleMap
+							mapContainerStyle={containerStyle}
+							center={{ lat: Number(property?.lat), lng: Number(property?.lng) }}
+							zoom={16}
+							options={mapOptions}
+						>
+							<MarkerF
+								position={{ lat: Number(property?.lat), lng: Number(property?.lng) }}
+								icon={{
+									url: customMarkerIcon,
+									// scaledSize: new window.google.maps.Size(40, 40), // size in pixels
+									origin: new window.google.maps.Point(0, 0), // origin of the image
+									anchor: new window.google.maps.Point(20, 40), // anchor point (bottom center)
+								}}
+							/>
+						</GoogleMap>
+						<hr />
+					</>
+				) : (
+					<></>
+				)}
 
 				<Reviews />
 				{/* <UserReviews /> */}

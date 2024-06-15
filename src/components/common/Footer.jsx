@@ -1,37 +1,46 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
+	const currentYear = new Date().getFullYear();
 	return (
-
-
-
-
-		<footer class="bg-white mt-10 shadow md:px-8 lg:px-20 border-t">
-			<div class="w-full  p-4 md:p-0 md:py-8">
-				<div class="sm:flex sm:items-center sm:justify-between">
-					<span class="block text-sm text-gray-500 sm:text-center ">© 2024 <a href="https://flowbite.com/" class="hover:underline">BookMyVenue</a>. All Rights Reserved.</span>
-					<ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 ">
+		<footer className="bg-white mt-10 shadow md:px-8 lg:px-20 border-t border-gray-50">
+			<div className="w-full  p-4 md:p-0 md:py-8">
+				<div className="sm:flex sm:items-center sm:justify-between">
+					<span className="block text-sm text-gray-500 sm:text-center ">
+						© {currentYear}{' '}
+						<Link to="/" className="hover:underline">
+							BookMyVenue
+						</Link>
+						. All Rights Reserved.
+					</span>
+					<ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 ">
 						<li>
-							<a href="#" class="hover:underline me-4 md:me-6">About</a>
+							<a href="#" className="hover:underline me-4 md:me-6">
+								About
+							</a>
 						</li>
 						<li>
-							<a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
+							<a href="#" className="hover:underline me-4 md:me-6">
+								Privacy Policy
+							</a>
 						</li>
 						<li>
-							<a href="#" class="hover:underline me-4 md:me-6">Licensing</a>
+							<a href="#" className="hover:underline me-4 md:me-6">
+								Terms & conditions
+							</a>
 						</li>
 						<li>
-							<a href="#" class="hover:underline">Contact</a>
+							<a href="#" className="hover:underline">
+								Contact
+							</a>
 						</li>
 					</ul>
 				</div>
-				{/* <hr class="my-6 border-gray-200 sm:mx-auto  lg:my-8" /> */}
-				{/* <span class="block text-sm text-gray-500 sm:text-center ">© 2023 <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>. All Rights Reserved.</span> */}
+				{/* <hr className="my-6 border-gray-200 sm:mx-auto  lg:my-8" /> */}
+				{/* <span className="block text-sm text-gray-500 sm:text-center ">© 2023 <a href="https://flowbite.com/" className="hover:underline">Flowbite™</a>. All Rights Reserved.</span> */}
 			</div>
 		</footer>
-
-
-
 
 		// <footer className=" mt-6">
 		// 	<div className="mx-auto max-w-7xl overflow-hidden mt-5 px-0 py-1 sm:py-23 lg:px-1">
