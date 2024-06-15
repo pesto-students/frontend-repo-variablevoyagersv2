@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ImageUpload from '../../components/forms/ImageUpload';
 import { toast } from 'react-toastify';
 import { selectUser } from '../../redux/slices/authSlice';
@@ -25,7 +25,17 @@ const AddPropertyPage = () => {
 	const [catErr, setCatErr] = useState(false);
 	const [noImgErr, setNoImgErr] = useState(false);
 	const [amenities, setAmenities] = useState([]);
-	const [selectedCity, setSelectedCity] = useState('Delhi');
+	const [selectedCity, setSelectedCity] = useState("");
+	const [cordinate, setCordinate] = useState({});
+	const [userInteracted, setUserInteracted] = useState(false);
+
+	const handUserInteracted = (event) => {
+		setUserInteracted(event);
+	};
+	const handCordinateChange = (newCordinate) => {
+		setCordinate(newCordinate);
+	};
+
 	const handleSetCategories = (eventValue) => {
 		console.log(categories);
 		setCategories(eventValue);
@@ -66,9 +76,11 @@ const AddPropertyPage = () => {
 		fd.append('price', data.price);
 		fd.append('address', data.address);
 		fd.append('city', selectedCity);
+		fd.append('pincode', data.pincode);
+		fd.append('lat', cordinate.lat);
+		fd.append('lng', cordinate.lng);
 		fd.append('country', data.country);
 		fd.append('extraInfo', data.extraInfo ?? '');
-		fd.append('pincode', '');
 		fd.append('ownerId', user?.id);
 		fd.append('checkInTime', data?.checkInTime);
 		fd.append('checkOutTime', data?.checkOutTime);
@@ -176,9 +188,8 @@ const AddPropertyPage = () => {
 							<a
 								key={step.key}
 								onClick={() => handleSetView(step.key)}
-								className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-									view === step.key ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-								} ${!enabledViews.includes(step.key) && 'pointer-events-none opacity-50'}  ${isSubmitting && 'pointer-events-none opacity-50'}`}
+								className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === step.key ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+									} ${!enabledViews.includes(step.key) && 'pointer-events-none opacity-50'}  ${isSubmitting && 'pointer-events-none opacity-50'}`}
 							>
 								<span className="truncate">{step.name}</span>
 							</a>
@@ -190,7 +201,7 @@ const AddPropertyPage = () => {
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
 							{view === 'property-details' && <PropertyDetails />}
-							{view === 'property-address' && <PropertyAddress handleCityChange={handleCityChange} selectedCity={selectedCity} />}
+							{view === 'property-address' && <PropertyAddress handleCityChange={handleCityChange} setCord={handCordinateChange} selectedCity={selectedCity} cordinate={cordinate} setInteract={handUserInteracted} userInteracted={userInteracted}/>}
 
 							{view === 'property-images' && (
 								<div className="shadow sm:overflow-hidden sm:rounded-md">

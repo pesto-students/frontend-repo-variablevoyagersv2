@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { debounce } from '../../utils';
 
-const VenueSearch = ({ onCitySelect, onSearchVenues }) => {
+const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 	const [selectedCity, setSelectedCity] = useState('');
-	const [searchQuery, setSearchQuery] = useState('');
+
+	useEffect(() => {
+		setSelectedCity(city);
+	}, [city]);
 
 	const handleCityChange = (event) => {
-		setSelectedCity(event.target.value);
 		onCitySelect(event.target.value);
 	};
-	console.log(selectedCity);
 
 	const handleSearchChange = (event) => {
-		setSearchQuery(event.target.value);
-		onSearchVenues(event.target.value);
+		const query = event.target.value;
+		onSearchVenues(query); // Call the onSearchVenues callback with the updated query
 	};
-	console.log(searchQuery);
+
+	const searchProp = debounce(handleSearchChange, 1000);
 
 	const indianCities = ['Mumbai', 'Delhi', 'Bengaluru', 'Hyderabad', 'Ahmedabad', 'Chennai', 'Kolkata', 'Surat', 'Pune', 'Jaipur'];
 
@@ -27,7 +30,7 @@ const VenueSearch = ({ onCitySelect, onSearchVenues }) => {
 					onChange={handleCityChange}
 					className="border-none appearance-none w-full py-4 px-6 rounded-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 				>
-					<option value="">Select City</option>
+					<option value="">All Cities</option>
 					{indianCities.map((city) => (
 						<option key={city} value={city}>
 							{city}
@@ -40,8 +43,8 @@ const VenueSearch = ({ onCitySelect, onSearchVenues }) => {
 					{/* <input type="search" id="search" className="shadow appearance-none w-full py-2 px-3 bg-white leading-tight focus:outline-none focus:shadow-outline rounded-none  " placeholder="Search venues..." /> */}
 					<input
 						type="text"
-						value={searchQuery}
-						onChange={handleSearchChange}
+						defaultValue={search}
+						onKeyUp={searchProp}
 						className="block w-full !py-4 !px-6 bg-white leading-tight focus:outline-none focus:shadow-outline !rounded-full !border-none "
 						placeholder="Search venues..."
 					/>

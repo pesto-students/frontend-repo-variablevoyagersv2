@@ -1,41 +1,109 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Autocomplete, GoogleMap, LoadScript, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import { useFormContext } from 'react-hook-form';
 import InputField from '../forms/InputField';
 import TextAreaField from '../forms/TextAreaField';
 import useOutsideClick from '../../hooks/useOutsideClick';
-const cityList = ['Delhi', 'Mumbai', 'Bangalore', 'Kolkata', 'Chennai', 'Pune', 'Hyderabad'];
-const PropertyAddress = ({ handleCityChange, selectedCity }) => {
+import { cityList } from '../../constants/city';
+const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+
+const containerStyle = {
+	width: '100%',
+	height: '400px'
+};
+
+const libraries = ['places'];
+
+const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, setInteract, userInteracted }) => {
 	const {
 		register,
 		formState: { errors, isSubmitting },
+		setValue,
 	} = useFormContext();
 
+	const [zoomView, setZoomView] = useState(10);
+	const [map, setMap] = useState(null);
+	const [autocomplete, setAutocomplete] = useState(null);
+	const [position, setPosition] = useState(null);
 	const [showDrop, setShowDrop] = useState(false);
 
 	const closeDrop = useCallback(() => {
 		setShowDrop(false);
 	}, []);
+
 	const dropRef = useOutsideClick(showDrop, closeDrop);
+
 	const toggleDrop = (event) => {
 		event.stopPropagation();
 		setShowDrop(!showDrop);
 	};
 
+	const { isLoaded } = useJsApiLoader({
+		id: 'google-map-script',
+		googleMapsApiKey: GOOGLE_KEY,
+		libraries,
+	});
+
+	const onLoad = (autocomplete) => {
+		setAutocomplete(autocomplete);
+	};
+
+	const onPlaceChanged = () => {
+		if (autocomplete !== null) {
+			const place = autocomplete.getPlace();
+			console.log(place);
+			if (place.geometry) {
+				const lat = place.geometry.location.lat();
+				const lng = place.geometry.location.lng();
+				const newPosition = { lat, lng };
+				setPosition(newPosition);
+				setCord(newPosition);
+				map.panTo(newPosition);
+				setZoomView(18);
+				setInteract(true);
+				const addressComponents = place.address_components;
+				let postalCode = '';
+				for (let component of addressComponents) {
+					if (component.types.includes('postal_code')) {
+						postalCode = component.long_name;
+						break;
+					}
+				}
+				// Update the form with the postal code
+				console.log('pincode', postalCode);
+				if (postalCode) {
+					setValue('pincode', postalCode);
+				}
+			}
+		}
+	};
+
+	const handleCitySelection = (city) => {
+		handleCityChange(city.name);
+		const newPosition = { lat: city.lat, lng: city.lng };
+		setPosition(newPosition);
+		setCord(newPosition);
+		if (!userInteracted) {
+			setZoomView(10); // Set zoom to 10 initially
+		}
+		closeDrop();
+	};
+
+	useEffect(() => {
+		if (map && position) {
+			map.panTo(position);
+		}
+	}, [map, position]);
+
 	return (
 		<div className="shadow sm:overflow-hidden sm:rounded-md">
-			<div className="space-y-6 bg-white px-4 py-6 sm:p-6">
+			<div className="space-y-6 bg-white px-4 py-6 sm:p-6 ">
 				<div>
 					<h3 className="text-base font-semibold leading-6 text-gray-900">Location Information</h3>
 					<p className="mt-1 text-sm text-gray-500">Enter the address and location details of the property.</p>
 				</div>
-				<div className="grid grid-cols-6 gap-6">
-					<div className="col-span-6 sm:col-span-3">
-						<div>
-							<InputField label="Country" id="country" name="country" register={register} required={true} error={errors?.country} disabled={true} />
-							{errors?.country && <span className="text-red-500 text-sm">Country is required</span>}
-						</div>
-					</div>
-					<div className="col-span-6 sm:col-span-3">
+				<div className="grid grid-cols-1 md:grid-cols-6 gap-6 ">
+					<div className="col-span-3 flex flex-col gap-4">
 						<div>
 							<label id="listbox-label" className="block text-sm font-medium leading-6 text-gray-900">
 								City
@@ -43,13 +111,13 @@ const PropertyAddress = ({ handleCityChange, selectedCity }) => {
 							<div className="relative mt-1">
 								<button
 									type="button"
-									className="relative w-full cursor-default  bg-white  py-2 px-3 rounded-md text-left text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500 sm:text-sm "
+									className="relative w-full cursor-default bg-white py-2 px-3 rounded-md text-left text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500 sm:text-sm"
 									aria-haspopup="listbox"
 									aria-expanded="true"
 									aria-labelledby="listbox-label"
 									onClick={toggleDrop}
 								>
-									<span className="block truncate">{selectedCity}</span>
+									<span className="block truncate">{selectedCity || "Select a city"}</span>
 									<span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
 										<svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 											<path
@@ -64,22 +132,22 @@ const PropertyAddress = ({ handleCityChange, selectedCity }) => {
 								{showDrop && (
 									<ul
 										ref={dropRef}
-										className="absolute z-10 max-h-52 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+										className=" z-10 max-h-52 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
 										tabIndex="-1"
 										role="listbox"
 										aria-labelledby="listbox-label"
 										aria-activedescendant="listbox-option-3"
 									>
-										{cityList.map((c, idx) => (
+										{cityList.map((city, idx) => (
 											<li
-												key={`${idx}-c`}
+												key={`${idx}-${city.name}`}
 												className="text-gray-900 relative cursor-default select-none py-2 pl-8 pr-4 hover:bg-indigo-600 hover:text-white"
 												id="listbox-option-0"
 												role="option"
-												onClick={() => handleCityChange(c)}
+												onClick={() => handleCitySelection(city)}
 											>
-												<span className="font-normal block truncate">{c}</span>
-												{selectedCity === c && (
+												<span className="font-normal block truncate">{city.name}</span>
+												{selectedCity === city.name && (
 													<span className="text-indigo-600 absolute inset-y-0 left-0 flex items-center pl-1.5 hover:text-white">
 														<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 															<path
@@ -96,12 +164,67 @@ const PropertyAddress = ({ handleCityChange, selectedCity }) => {
 								)}
 							</div>
 						</div>
-					</div>
 
-					<div className="col-span-6 sm:col-span-6">
-						<TextAreaField label="Address" id="address" name="address" register={register} required={true} />
-						{errors?.address && <span className="text-red-500 text-sm">Address is required</span>}
+						{selectedCity && (
+							<>
+								{isLoaded && (
+									<Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+										<InputField
+											label="Search Area"
+											placeholder="Search street or area..."
+											id="area"
+											name="area"
+											register={register}
+											required={true}
+										/>
+									</Autocomplete>
+								)}
+								<div>
+									<TextAreaField label="Full Address" id="address" name="address" register={register} required={true} />
+									{errors?.address && <span className="text-red-500 text-sm">Address is required</span>}
+								</div>
+								<div>
+									<InputField label="Pin Code" id="pincode" name="pincode" register={register} required={true} error={errors?.pincode} />
+									{errors?.pincode && <span className="text-red-500 text-sm">Pin Code is required</span>}
+								</div>
+							</>
+						)}
 					</div>
+					{selectedCity && (
+						<div className="col-span-6 sm:col-span-3">
+							{isLoaded ? (
+								<div className='flex flex-col gap-4 p-3 border rounded-md'>
+									<p className="mt-1 text-md text-gray-500">
+										Drag marker to your exact location
+									</p>
+									<GoogleMap
+										mapContainerStyle={containerStyle}
+										center={position || cordinate}
+										zoom={userInteracted ? 18 : zoomView}
+										onLoad={map => {
+											setMap(map);
+											if (!userInteracted) {
+												setZoomView(10); // Ensure initial zoom is set correctly
+											}
+										}}
+									>
+										<MarkerF
+											position={position || cordinate}
+											draggable={true}
+											onDragEnd={(e) => {
+												const newLat = e.latLng.lat();
+												const newLng = e.latLng.lng();
+												const newPosition = { lat: newLat, lng: newLng };
+												setPosition(newPosition);
+												setCord(newPosition);
+												setInteract(true);
+											}}
+										/>
+									</GoogleMap>
+								</div>
+							) : <></>}
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

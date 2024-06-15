@@ -10,10 +10,56 @@ import Loader from '../../components/common/Loader';
 import Reviews from '../../components/PropertyDetails/Reviews';
 import UserReviews from '../../components/PropertyDetails/UserReviews';
 import { CATEGORIES } from '../../constants/categories';
+import { GoogleMap, MarkerF, StreetViewService, useJsApiLoader } from '@react-google-maps/api';
+import customMarkerIcon from '/MapMarker2.png';
+const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+
+const containerStyle = {
+	width: '100%',
+	height: '400px',
+	borderRadius: "0.375rem"
+};
+
+const mapOptions = {
+	// disableDefaultUI: true,
+	// mapTypeControl: false,
+	streetViewControl: false,
+	styles: [
+		{
+			featureType: 'poi.park',
+			stylers: [{ visibility: 'off' }], // Hide POI labels
+		}, {
+			featureType: 'road',
+			elementType: 'labels',
+			stylers: [{ visibility: 'off' }], // Hide road labels
+		},
+		{
+			featureType: 'administrative',
+			elementType: 'geometry',
+			stylers: [{ visibility: 'off' }], // Hide administrative borders
+		},
+		{
+			featureType: 'poi.business',
+			stylers: [{ visibility: 'off' }], // Hide business POIs
+		},
+		{
+			featureType: 'transit',
+			stylers: [{ visibility: 'off' }], // Hide transit lines and stations
+		},
+
+	]
+
+}
+
 const PropertyDetailPage = () => {
 	const [loading, setLoading] = useState(null);
 	const [property, setProperty] = useState(null);
 	const [tags, setTags] = useState([]);
+	const { isLoaded } = useJsApiLoader({
+		id: 'google-map-script',
+		googleMapsApiKey: GOOGLE_KEY,
+		libraries: ["maps", "places"],
+	});
 
 	const { id } = useParams();
 	useEffect(() => {
@@ -41,7 +87,7 @@ const PropertyDetailPage = () => {
 	}
 
 	return (
-		<div className=" w-auto mx-20 mt-24	">
+		<div className=" w-auto mx-3 md:mx-20 mt-24	">
 			<div className="flex flex-col gap-6">
 				<PropertyHead
 					propertyName={property?.propertyName}
@@ -49,7 +95,7 @@ const PropertyDetailPage = () => {
 					country={property?.country}
 					propertyImages={property?.propertyImages}
 				/>
-				<div className="grid grid-cols-1 md:grid-cols-7 md:gap-36 mt-2">
+				<div className="grid grid-cols-1 md:grid-cols-6 md:gap-24 mt-2">
 					<PropertyDescriptions
 						ownerName={property?.owner?.firstName}
 						avatar={property?.owner?.avatar}
@@ -61,20 +107,48 @@ const PropertyDetailPage = () => {
 					/>
 					<div className="order-first mb-10 md:order-last md:col-span-3">
 						<PropertyReservation
-							property={property}
-							// price={property?.price}
-							// propertyId={property?.id}
-							// queryId={id}
+							price={property?.price}
+							propertyId={property?.id}
+							queryId={id}
 							// totalPrice={totalPrice}
 							// dateRange={dateRange}
 							// onChangeDate={(value) => setDateRange(value)}
 						/>
 					</div>
 				</div>
-
 				<hr />
+				{!isLoaded ? (
+					<h1>Loading...</h1>
+				) :
+					(
+
+						property?.lat ? (<>
+							<GoogleMap
+								mapContainerStyle={containerStyle}
+								center={{ lat: Number(property?.lat), lng: Number(property?.lng) }}
+								zoom={16}
+								options={
+									mapOptions
+								}
+							>
+								<MarkerF
+									position={{ lat: Number(property?.lat), lng: Number(property?.lng) }}
+									icon={{
+										url: customMarkerIcon,
+										// scaledSize: new window.google.maps.Size(40, 40), // size in pixels
+										origin: new window.google.maps.Point(0, 0), // origin of the image
+										anchor: new window.google.maps.Point(20, 40), // anchor point (bottom center)
+									}}
+								/>
+							</GoogleMap>
+							<hr />
+						</>
+						) : (<></>)
+					)}
+
+
 				<Reviews />
-				<UserReviews />
+				{/* <UserReviews /> */}
 			</div>
 		</div>
 	);

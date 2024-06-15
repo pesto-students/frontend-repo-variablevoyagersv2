@@ -32,6 +32,8 @@ const EditPropertyPage = () => {
 	const [noImgErr, setNoImgErr] = useState(false);
 	const [amenities, setAmenities] = useState([]);
 	const [selectedCity, setSelectedCity] = useState('Mumbai');
+	const [cordinate, setCordinate] = useState({ lat: 18.52043, lng: 73.856743 });
+	const [userInteracted, setUserInteracted] = useState(true);
 
 	useEffect(() => {
 		getProperty();
@@ -47,6 +49,7 @@ const EditPropertyPage = () => {
 			reset(data);
 			setSelectedCity(data.city);
 			setPropertyImages(data.propertyImages);
+			setCordinate({lat: Number(data.lat), lng:  Number(data.lng)});
 			setCategories(
 				CATEGORIES.filter((category) => data.propertyTags.includes(category.tagName)).map(({ id, tagName }) => ({
 					id,
@@ -59,6 +62,13 @@ const EditPropertyPage = () => {
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const handUserInteracted = (event) => {
+		setUserInteracted(event);
+	};
+	const handCordinateChange = (newCordinate) => {
+		setCordinate(newCordinate);
 	};
 
 	const handleSetCategories = (eventValue) => {
@@ -241,7 +251,7 @@ const EditPropertyPage = () => {
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
 							{view === 'property-details' && <PropertyDetails />}
-							{view === 'property-address' && <PropertyAddress handleCityChange={handleCityChange} selectedCity={selectedCity} />}
+							{view === 'property-address' && <PropertyAddress handleCityChange={handleCityChange} setCord={handCordinateChange} selectedCity={selectedCity} cordinate={cordinate} setInteract={handUserInteracted} userInteracted={userInteracted} />}
 
 							{view === 'property-images' && (
 								<div className="shadow sm:overflow-hidden sm:rounded-md">
