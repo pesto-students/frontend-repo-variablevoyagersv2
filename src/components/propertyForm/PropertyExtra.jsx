@@ -7,6 +7,7 @@ const PropertyExtra = () => {
 	const {
 		register,
 		formState: { errors, isSubmitting },
+		watch,
 	} = useFormContext();
 	return (
 		<div className="shadow sm:overflow-hidden sm:rounded-md">
@@ -17,7 +18,7 @@ const PropertyExtra = () => {
 				</div>
 				<div className="grid grid-cols-6 gap-6">
 					<div className="col-span-6 sm:col-span-6">
-						<TextAreaField label="Extra Information" id="extraInfo" name="extraInfo" register={register} />
+						<TextAreaField label="Extra Information" id="extraInfo" name="extraInfo" register={register} maxLength="300" watch={watch} />
 						{/* {errors?.extraInfo && <span className="text-red-500 text-sm">Description is required</span>} */}
 					</div>
 				</div>

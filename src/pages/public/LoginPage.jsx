@@ -23,6 +23,7 @@ const LoginPage = ({ isOpen, onClose }) => {
 
 	const [isOtpSent, setIsOtpSent] = useState(false);
 	const [isNewUser, setIsNewUser] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [newUser, setNewUser] = useState({});
 	const [email, setEmail] = useState('');
 	const navigate = useNavigate();
@@ -30,7 +31,7 @@ const LoginPage = ({ isOpen, onClose }) => {
 
 	// useRedirect(id);
 
-	const {
+	let {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
@@ -54,6 +55,7 @@ const LoginPage = ({ isOpen, onClose }) => {
 	};
 
 	const handleGoogleLogin = async (response) => {
+		setLoading(true);
 		try {
 			const { email, family_name, given_name, picture } = jwtDecode(response.credential);
 			// console.log(response.credential);
@@ -85,6 +87,8 @@ const LoginPage = ({ isOpen, onClose }) => {
 			} else {
 				setGeneralError('Login failed');
 			}
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -135,8 +139,8 @@ const LoginPage = ({ isOpen, onClose }) => {
 										variant="filled"
 										innerClass="w-[100%] bg-primary"
 										innerTextClass="text-white"
-										disabled={isSubmitting}
-										loading={isSubmitting}
+										disabled={isSubmitting || loading}
+										loading={isSubmitting || loading}
 									>
 										{isSubmitting ? 'Loading' : 'Continue'}
 									</Button>

@@ -60,8 +60,14 @@ body,
 }
 
 .bg-gradient {
+	/* background: rgb(2, 0, 36);
+	background: linear-gradient(51deg, rgba(2, 0, 36, 1) 0%, rgba(85, 103, 147, 1) 100%); */
 	background: rgb(2, 0, 36);
-	background: linear-gradient(51deg, rgba(2, 0, 36, 1) 0%, rgba(85, 103, 147, 1) 100%);
+	background: linear-gradient(51deg, #8c4370 0%, rgba(85, 103, 147, 1) 100%);
+
+	/* background: #b4457f;
+	background: -webkit-linear-gradient(51deg, #8c4370 0%, #b4457f 100%);
+	background: linear-gradient(51deg, #8c4370 0%, #b4457f 100%); */
 }
 
 .rdrMonth {

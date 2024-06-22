@@ -7,6 +7,7 @@ const PropertyDetails = () => {
 	const {
 		register,
 		formState: { errors, isSubmitting },
+		watch,
 	} = useFormContext();
 
 	return (
@@ -73,7 +74,15 @@ const PropertyDetails = () => {
 						</div>
 					</div>
 					<div className="col-span-6 sm:col-span-6">
-						<TextAreaField label="Description" id="description" name="description" register={register} required={true} />
+						<TextAreaField
+							label="Description"
+							id="description"
+							name="description"
+							register={register}
+							required={true}
+							maxLength="500"
+							watch={watch}
+						/>
 						{errors?.description && <span className="text-red-500 text-sm">Description is required</span>}
 					</div>
 				</div>

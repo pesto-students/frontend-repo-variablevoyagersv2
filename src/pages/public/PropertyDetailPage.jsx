@@ -144,9 +144,9 @@ const PropertyDetailPage = () => {
 				) : (
 					<></>
 				)}
+				{/* {property?.reviews && property?.reviews.length > 0 && <Reviews reviews={property?.reviews} />}0 */}
 
-				<Reviews />
-				{/* <UserReviews /> */}
+				<Reviews reviews={property?.reviews} />
 			</div>
 		</div>
 	);

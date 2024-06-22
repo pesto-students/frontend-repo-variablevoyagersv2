@@ -161,7 +161,7 @@ const AccountForm = () => {
 					</div>
 				</div>
 				<div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-					<Button buttonType="submit" size="md" variant="filled" loading={isSubmitting} disabled={isSubmitting} innerClass="w-36">
+					<Button buttonType="submit" size="md" variant="filled" loading={isSubmitting} disabled={isSubmitting} innerClass="w-40">
 						{isSubmitting ? 'Loading...' : 'Save Changes'}
 					</Button>
 				</div>

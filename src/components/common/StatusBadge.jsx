@@ -7,7 +7,9 @@ const StatusBadge = ({ status, type }) => {
 	const statusColor = getStatusColor(status, isBookingStatus);
 
 	return (
-		<span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset ${statusColor.bg} ${statusColor.text}`}>
+		<span
+			className={`inline-flex items-center rounded-full px-2  lg:px-3 lg:py-1 text-sm lg:text-xs font-medium ring-1 ring-inset ${statusColor.bg} ${statusColor.text}`}
+		>
 			{status}
 		</span>
 	);
@@ -20,8 +22,8 @@ const getStatusColor = (status, isBookingStatus) => {
 			text: 'text-yellow-800 ring-yellow-600/20',
 		},
 		[BOOKING_STATUS.AWAITING_OWNER_APPROVAL]: {
-			bg: 'bg-blue-50',
-			text: 'text-blue-800 ring-blue-600/20',
+			bg: 'bg-yellow-50',
+			text: 'text-yellow-800 ring-yellow-600/20',
 		},
 		[BOOKING_STATUS.FAILED]: {
 			bg: 'bg-red-50',

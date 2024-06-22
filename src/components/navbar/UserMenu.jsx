@@ -5,6 +5,8 @@ import { clearUser, selectIsAuthenticated, selectUser } from '../../redux/slices
 import { axiosPrivate } from '../../services/axios.service';
 import { FaAngleDown, FaArrowRightFromBracket } from 'react-icons/fa6';
 import LoginPage from '../../pages/public/LoginPage';
+import Button from '../common/Button';
+import { PiUserCircle } from 'react-icons/pi';
 
 export default function UserMenu() {
 	const navigate = useNavigate();
@@ -105,8 +107,9 @@ export default function UserMenu() {
 					</button>
 
 					<div
-						className={`absolute right-0 top-full z-20 w-48 origin-top-right overflow-hidden rounded-lg bg-white shadow-lg transition-opacity duration-200 opacity- pointer-events-auto ${isMenuOpen ? '' : 'hidden'
-							}`}
+						className={`absolute right-0 top-full z-20 w-48 origin-top-right overflow-hidden rounded-lg bg-white shadow-lg transition-opacity duration-200 opacity- pointer-events-auto ${
+							isMenuOpen ? '' : 'hidden'
+						}`}
 						onClick={handleMenuClick}
 					>
 						<div className="space-y-3 bg-gray-25 p-4">
@@ -128,26 +131,49 @@ export default function UserMenu() {
 					</div>
 				</>
 			) : (
-				<div className="flex flex-row items-center gap-3 overflow-hidden">
-					<button className="hover:shadow-md bg-white text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
+				<div className="flex flex-row items-center gap-2 ">
+					<Button
+						buttonType="button"
+						size="sm"
+						variant="outline"
+						innerClass="w-full md:w-28  border border-white "
+						innerTextClass="text-primary"
+						onClick={() => setShowLoginModal(true)}
+					>
+						Log In
+					</Button>
+					{/* <button
+						className="hover:shadow-md bg-white text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
 						onClick={() => setShowLoginModal(true)}
 					>
 						Sign Up
-					</button>
-					<button className="hover:shadow-md bg-white text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
+					</button> */}
+					{/* <button
+						className="hover:shadow-md bg-white text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
 						onClick={() => setShowLoginModal(true)}
 					>
 						Sign In
-					</button>
+					</button> */}
+					<Button
+						startIcon={<PiUserCircle className="!w-5 !h-5" />}
+						buttonType="button"
+						size="sm"
+						variant="outline"
+						innerClass="w-full md:w-32  border border-primary"
+						innerTextClass="text-primary"
+						onClick={() => setShowLoginModal(true)}
+					>
+						Sign Up
+					</Button>
 				</div>
 			)}
-			{showLoginModal &&
+			{showLoginModal && (
 				<div className="flex bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-screen">
 					<div className="p-4 w-full max-w-md max-h-full">
 						<LoginPage isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
 					</div>
 				</div>
-			}
+			)}
 		</div>
 	);
 }

@@ -20,7 +20,7 @@ import Avatar from '../../components/Avatar';
 import placeholder from '/placeholder.jpg';
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
-const Payment = () => {
+const PaymentPage = () => {
 	const location = useLocation();
 	const [Razorpay] = useRazorpay();
 	const navigate = useNavigate();
@@ -123,7 +123,9 @@ const Payment = () => {
 							status: PAYMENT_STATUS.SUCCESS,
 						});
 
-						alert('Payment successful and booking confirmed!');
+						// navigate(`/payment-success?` orderResponse.bookingId,');
+						navigate(`/payment-success?id=${orderResponse.bookingId}`, { state: { fromPayment: true } });
+						// alert('Payment successful and booking confirmed!');
 					},
 					prefill: {
 						name: `${user.firstName} ${user.lastName}`,
@@ -375,11 +377,11 @@ const Payment = () => {
 			{showModal && (
 				<ConfirmModal
 					modalId="booking-err-modal"
-					title="Booking Error"
-					message={bookingErrMsg}
+					title="Booking Unsuccessful"
+					subtitle="Please Try Again in 30 Minutes"
+					message="Unfortunately, your booking could not be completed at this time. Please wait for 30 minutes and try again."
 					confirmText={'Choose new dates'}
 					onConfirm={handleConfirm}
-					// cancelText="Select new property"
 					onCancel={handleCancel}
 					confirmDisabled={loading}
 					cancelDisabled={loading}
@@ -387,19 +389,8 @@ const Payment = () => {
 					icon={<PiWarningCircleFill className="w-10 h-10 text-warning-500" />}
 				/>
 			)}
-
-			{/* <Container>
-				<div className="mt-32">
-					<h1>{booking?.propertyName}</h1>
-					<h1>Property price: {booking?.price}/day</h1>
-					<h1>Total price: {booking?.totalPrice}</h1>
-					<button onClick={handlePayment} className="text-3xl px-4 py-2 rounded-md bg-primary text-white">
-						Confirm and Pay
-					</button>
-				</div>
-			</Container> */}
 		</>
 	);
 };
 
-export default Payment;
+export default PaymentPage;
