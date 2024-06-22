@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { LuLoader2 } from 'react-icons/lu';
 import { PiWarningCircle } from 'react-icons/pi';
-const ConfirmModal = ({ modalId, title, message, confirmText, cancelText, onConfirm, onCancel, confirmDisabled, cancelDisabled, btnClass, icon }) => {
+const ConfirmModal = ({
+	modalId,
+	title,
+	subtitle,
+	message,
+	confirmText,
+	cancelText,
+	onConfirm,
+	onCancel,
+	confirmDisabled,
+	cancelDisabled,
+	btnClass,
+	icon,
+}) => {
 	const [showModal, setShowModal] = useState(false);
 
 	useEffect(() => {
@@ -53,8 +66,8 @@ const ConfirmModal = ({ modalId, title, message, confirmText, cancelText, onConf
 					</button>
 					<div className="p-4 md:p-5 text-center">
 						<div className="flex items-center justify-center mb-5">{icon}</div>
-
 						<h3 className="mb-5 text-lg font-normal text-gray-500">{title}</h3>
+						{subtitle && <p className="mb-5 text-gray-700">{subtitle}</p>}
 						<p className="mb-5 text-gray-700">{message}</p>
 						<div className="flex justify-center items-center">
 							<button

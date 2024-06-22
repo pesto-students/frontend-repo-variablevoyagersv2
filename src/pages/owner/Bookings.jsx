@@ -13,11 +13,11 @@ import StatusBadge from '../../components/common/StatusBadge';
 import Pagination from '../../components/common/Pagination';
 import Loader from '../../components/common/Loader';
 import ConfirmModal from '../../components/common/ConfirmModal';
-import { PiWarningCircleFill, PiCheckSquareFill } from 'react-icons/pi';
+import { PiCheckSquareFill } from 'react-icons/pi';
 import { toast } from 'react-toastify';
 import EmptyState from '../../components/common/EmptyState';
 import { RiCalendarCloseLine } from 'react-icons/ri';
-
+import { MdOutlineCancel } from 'react-icons/md';
 const Bookings = () => {
 	const user = useSelector(selectUser);
 	const [loading, setLoading] = useState(false);
@@ -178,7 +178,7 @@ const Bookings = () => {
 			</div>
 
 			{bookings.length > 0 ? (
-				<ul role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8 ">
+				<ul role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 ">
 					{bookings.map((ele, idx) => (
 						<li key={idx} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
 							<Link to={`/property-detail/${ele?.property?.id}`}>
@@ -188,7 +188,10 @@ const Bookings = () => {
 										alt={ele?.property?.propertyName}
 										className="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10"
 									/>
-									<div className="text-sm font-medium leading-6 text-gray-900">{ele?.property?.propertyName}</div>
+									<div className="text-md font-medium leading-6 text-gray-900">
+										{ele?.property?.propertyName}
+										<div className="font-normal text-gray-500">{formatPrice(ele?.payments[0].amount)} per day</div>
+									</div>
 								</div>
 							</Link>
 							<dl className=" px-6 py-3 ">
@@ -215,12 +218,12 @@ const Bookings = () => {
 											</dd>
 										</div>
 
-										<div className="flex justify-between gap-x-4 py-2">
+										{/* <div className="flex justify-between gap-x-4 py-2">
 											<dt className="text-gray-500">Property Price</dt>
 											<dd className="text-gray-700">
 												<time>{formatPrice(ele?.property?.price)} per day</time>
 											</dd>
-										</div>
+										</div> */}
 										<div className="flex justify-between gap-x-4 py-2">
 											<dt className="text-gray-500">Amount Paid</dt>
 											<dd className="flex items-start gap-x-2">
@@ -268,8 +271,8 @@ const Bookings = () => {
 											buttonType="button"
 											size="sm"
 											variant="filled"
-											innerClass="w-36 !bg-green-400 border-0"
-											innerTextClass="text-white"
+											innerClass="w-36 bg-white !border !border-green-500"
+											innerTextClass="text-green-500"
 											onClick={() => handleAcceptReject(ele.id, BOOKING_STATUS.CONFIRMED, PAYMENT_STATUS.SUCCESS)}
 											disabled={ele?.bookingStatus === BOOKING_STATUS.CONFIRMED}
 										>
@@ -278,9 +281,9 @@ const Bookings = () => {
 										<Button
 											buttonType="button"
 											size="sm"
-											variant="filled"
-											innerClass="w-36 !bg-error-400 border-0"
-											innerTextClass="text-white"
+											variant="outline"
+											innerClass="w-36  border !border-error-500"
+											innerTextClass="!text-red-500"
 											onClick={() => handleAcceptReject(ele.id, BOOKING_STATUS.CANCELLED, PAYMENT_STATUS.REFUNDED)}
 											disabled={ele?.bookingStatus === BOOKING_STATUS.CANCELLED}
 										>
@@ -322,7 +325,7 @@ const Bookings = () => {
 				// </div>
 			)}
 			<div className="mt-5">
-				<Pagination totalCount={totalCount} page={page} limit={limit} onPageChange={setPage} />
+				<Pagination totalCount={totalCount} page={page} limit={limit} onPageChange={setPage} pageClass={'justify-center'} />
 			</div>
 			{showModal && (
 				<ConfirmModal
@@ -341,12 +344,12 @@ const Bookings = () => {
 					cancelDisabled={loading}
 					btnClass={
 						bookingStatus === BOOKING_STATUS.CANCELLED
-							? 'text-white bg-warning-600 hover:bg-warning-800 focus:ring-warning-300 border-warning-600'
+							? 'text-white bg-error-600 hover:bg-error-800 focus:ring-error-300 border-error-600'
 							: ' text-white bg-green-600 hover:bg-green-800 focus:ring-green-300 border-green-600'
 					}
 					icon={
 						bookingStatus === BOOKING_STATUS.CANCELLED ? (
-							<PiWarningCircleFill className="w-10 h-10 text-warning-500" />
+							<MdOutlineCancel className="w-10 h-10 text-error-600" />
 						) : (
 							<PiCheckSquareFill className="w-10 h-10 text-green-500" />
 						)

@@ -9,8 +9,8 @@ const PublicLayout = () => {
 	return (
 		<div className="flex flex-col justify-between">
 			<Navbar />
-			
-			<div >
+
+			<div>
 				<Outlet />
 			</div>
 			<Footer />

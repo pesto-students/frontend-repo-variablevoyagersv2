@@ -1,7 +1,7 @@
 // src/Pagination.js
 import React from 'react';
 
-const Pagination = ({ totalCount, page, limit, onPageChange }) => {
+const Pagination = ({ totalCount, page, limit, onPageChange, pageClass }) => {
 	const totalPages = Math.ceil(totalCount / limit);
 	if (totalPages <= 1) return null;
 	const getPageNumbers = () => {
@@ -44,7 +44,7 @@ const Pagination = ({ totalCount, page, limit, onPageChange }) => {
 					Next
 				</button>
 			</div>
-			<div className="hidden sm:flex sm:flex-1 sm:items-center justify-center">
+			<div className={`hidden sm:flex sm:flex-1 sm:items-center ${pageClass}`}>
 				<nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
 					<button
 						onClick={() => onPageChange(page - 1)}

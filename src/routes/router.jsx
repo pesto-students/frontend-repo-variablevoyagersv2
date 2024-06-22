@@ -1,7 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import HomePage from '../pages/public/HomePage';
-import LoginPage from '../pages/public/LoginPage';
-import RegisterPage from '../pages/public/RegisterPage';
+
 import PrivateRoute from './PrivateRoute';
 import DashboardPage from '../pages/owner/DashboardPage';
 import AddPropertyPage from '../pages/owner/AddPropertyPage';
@@ -15,9 +14,10 @@ import PropertyPage from '../pages/owner/PropertyPage';
 import PublicLayout from '../layouts/PublicLayout';
 import OwnerLayout from '../layouts/OwnerLayout';
 import CustomerLayout from '../layouts/CustomerLayout';
-import Payment from '../pages/payment/Payment';
 import EditPropertyPage from '../pages/owner/EditPropertyPage';
 import SessionExpiredPage from '../pages/public/SessionExpiredPage';
+import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
+import PaymentPage from '../pages/payment/PaymentPage';
 
 export const router = createBrowserRouter([
 	{
@@ -30,7 +30,15 @@ export const router = createBrowserRouter([
 				path: 'payment',
 				element: (
 					<PrivateRoute allowedRoles={ROLES.CUSTOMER}>
-						<Payment />
+						<PaymentPage />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'payment-success',
+				element: (
+					<PrivateRoute allowedRoles={ROLES.CUSTOMER}>
+						<PaymentSuccessPage />
 					</PrivateRoute>
 				),
 			},

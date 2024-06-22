@@ -10,65 +10,65 @@ import Rating from 'react-rating';
 // import 'node_modules/slick-carousel/slick/slick-theme.css';
 
 // Dummy data for reviews
-const reviews = [
-	{
-		id: 1,
-		name: 'John Doe',
-		rating: 4,
-		review:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi auctor convallis mi, ac aliquet dui malesuada et. Nunc auctor dignissim nibh eu commodo. Proin eu elementum lectus. Mauris laoreet a augue in accumsan. Sed euismod augue ac lacus vivamus.',
-	},
-	{
-		id: 2,
-		name: 'Jane Smith',
-		rating: 4,
-		review: 'I love this! It exceeded my expectations.I love this! It exceeded my expectations.I love this! It exceeded my expectations.',
-	},
-	{
-		id: 3,
-		name: 'Bob Johnson',
-		rating: 4,
-		review:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est. ',
-	},
-	{
-		id: 4,
-		name: 'Bob Johnson',
-		rating: 4,
-		review: 'Excellent service and quality. ',
-	},
-	{
-		id: 5,
-		name: 'Bob Johnson',
-		rating: 1,
-		review:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est. ',
-	},
-	{
-		id: 6,
-		name: 'Bob Johnson',
-		rating: 2,
-		review:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est.',
-	},
-	{
-		id: 7,
-		name: 'Bob Johnson',
-		rating: 3,
-		review:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est.',
-	},
-	{
-		id: 8,
-		name: 'Bob Johnson',
-		rating: 5,
-		review:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est.',
-	},
-	// Add more reviews as needed
-];
+// const reviews = [
+// 	{
+// 		id: 1,
+// 		name: 'John Doe',
+// 		rating: 4,
+// 		review:
+// 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi auctor convallis mi, ac aliquet dui malesuada et. Nunc auctor dignissim nibh eu commodo. Proin eu elementum lectus. Mauris laoreet a augue in accumsan. Sed euismod augue ac lacus vivamus.',
+// 	},
+// 	{
+// 		id: 2,
+// 		name: 'Jane Smith',
+// 		rating: 4,
+// 		review: 'I love this! It exceeded my expectations.I love this! It exceeded my expectations.I love this! It exceeded my expectations.',
+// 	},
+// 	{
+// 		id: 3,
+// 		name: 'Bob Johnson',
+// 		rating: 4,
+// 		review:
+// 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est. ',
+// 	},
+// 	{
+// 		id: 4,
+// 		name: 'Bob Johnson',
+// 		rating: 4,
+// 		review: 'Excellent service and quality. ',
+// 	},
+// 	{
+// 		id: 5,
+// 		name: 'Bob Johnson',
+// 		rating: 1,
+// 		review:
+// 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est. ',
+// 	},
+// 	{
+// 		id: 6,
+// 		name: 'Bob Johnson',
+// 		rating: 2,
+// 		review:
+// 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est.',
+// 	},
+// 	{
+// 		id: 7,
+// 		name: 'Bob Johnson',
+// 		rating: 3,
+// 		review:
+// 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est.',
+// 	},
+// 	{
+// 		id: 8,
+// 		name: 'Bob Johnson',
+// 		rating: 5,
+// 		review:
+// 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin aliquam mauris, at porta dolor bibendum sed. Donec laoreet pharetra augue sit amet pellentesque. Nulla facilisi. Praesent eu mi consectetur, mollis risus nec, mattis felis est.',
+// 	},
+// 	// Add more reviews as needed
+// ];
 
-const Reviews = () => {
+const Reviews = ({ reviews }) => {
 	let sliderRef = useRef(null);
 	const next = () => {
 		sliderRef.slickNext();
@@ -79,7 +79,7 @@ const Reviews = () => {
 
 	const settings = {
 		className: 'center',
-
+		infinite: false,
 		centerMode: true,
 		// centerPadding: '60px',
 		slidesToShow: 3,
@@ -91,7 +91,6 @@ const Reviews = () => {
 				settings: {
 					slidesToShow: 2,
 					slidesToScroll: 2,
-					infinite: true,
 				},
 			},
 			{
@@ -130,7 +129,7 @@ const Reviews = () => {
 				{...settings}
 				className="slider-container"
 			>
-				{reviews.map((review) => (
+				{reviews?.map((review) => (
 					<div key={review.id} className="flex flex-1 col-span-1 h-100">
 						<div className="border border-gray-200 rounded-3xl  p-5 flex flex-col sm:mx-6 sm:p-6 h-[400px] ">
 							<div className="flex gap-4 mb-5">

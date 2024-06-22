@@ -174,7 +174,7 @@ const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, s
 									</Autocomplete>
 								)}
 								<div>
-									<TextAreaField label="Full Address" id="address" name="address" register={register} required={true} />
+									<TextAreaField label="Full Address" id="address" name="address" register={register} required={true} watch={null} />
 									{errors?.address && <span className="text-red-500 text-sm">Address is required</span>}
 								</div>
 								<div>

@@ -14,10 +14,10 @@ import ConfirmModal from '../../components/common/ConfirmModal';
 import { toast } from 'react-toastify';
 import Pagination from '../../components/common/Pagination';
 import Loader from '../../components/common/Loader';
-import { PiWarningCircleFill } from 'react-icons/pi';
 import { RiCalendarCloseLine } from 'react-icons/ri';
 import EmptyState from '../../components/common/EmptyState';
-
+import { MdOutlineCancel } from 'react-icons/md';
+import ReviewModal from '../../components/common/ReviewModal';
 const MyBookings = () => {
 	const user = useSelector(selectUser);
 	const [loading, setLoading] = useState(false);
@@ -25,15 +25,20 @@ const MyBookings = () => {
 
 	const [page, setPage] = useState(1);
 	const [totalCount, setTotalCount] = useState(0);
-	const limit = 10;
+	const limit = 5;
 
 	const [showModal, setShowModal] = useState(false);
 	const [selectedBookingId, setSelectedBookingId] = useState(null);
+	const [showReviewModal, setShowReviewModal] = useState(false);
+	const [selectedBooking, setSelectedBooking] = useState(null);
+	const [reviewLoading, setReviewLoading] = useState(false);
+
+	const [view, setView] = useState(BOOKING_STATUS.AWAITING_OWNER_APPROVAL);
 
 	const getUserBookings = useCallback(async () => {
 		try {
 			setLoading(true);
-			const { data } = await axiosPrivate.get(`/booking/customer-bookings/${user?.id}?page=${page}&limit=${limit}`);
+			const { data } = await axiosPrivate.get(`/booking/customer-bookings/${user?.id}?page=${page}&limit=${limit}&status=${view}`);
 			console.log(data);
 
 			setTotalCount(data.totalCount);
@@ -43,25 +48,13 @@ const MyBookings = () => {
 		} finally {
 			setLoading(false);
 		}
-	}, [page, user?.id]);
+	}, [page, user?.id, view]);
 
 	useEffect(() => {
 		getUserBookings();
 	}, [getUserBookings, page, user?.id]);
 
 	const [hoveredRowIndex, setHoveredRowIndex] = useState(null);
-	// const handleAcceptReject = async (id, bookingStatus, paymentStatus) => {
-	// 	console.log(id);
-	// 	const reqObj = {
-	// 		bookingStatus,
-	// 		paymentStatus,
-	// 		role: ROLES.CUSTOMER,
-	// 	};
-	// 	const {
-	// 		data: { data },
-	// 	} = await axiosPrivate.put(`/booking/${id}`, reqObj);
-	// 	console.log(data);
-	// };
 
 	const handleAcceptReject = (bookingId) => {
 		console.log('here');
@@ -98,27 +91,57 @@ const MyBookings = () => {
 		setShowModal(false);
 		setSelectedBookingId(null);
 	};
+	const handleReviewCancel = () => {
+		setSelectedBooking(null);
+		setShowReviewModal(false);
+	};
 
-	const addReview = async (id) => {
-		console.log(id);
-
+	const handleReviewConfirm = async (rating, review, type, id = null) => {
+		console.log(rating, review, type);
+		setReviewLoading(true);
 		try {
-			const reqObj = {
-				rating: 3,
-				review: 'It was a good experience',
-				userId: user?.id,
-				propertyId: id,
-			};
-			const { data } = await axiosPrivate.post(`/review`, reqObj);
-			console.log(data);
-			// if (data.success) {
-			// 	toast.success('Review added');
-			// } else {
-			// 	toast.error(data.message);
-			// }
+			let reqObj = { rating, review };
+			if (type === 'add') {
+				reqObj.cusId = user?.id;
+				reqObj.propertyId = selectedBooking?.property.id;
+				reqObj.bId = selectedBooking?.id;
+				const { data: adddata } = await axiosPrivate.post(`/review`, reqObj);
+				console.log(adddata);
+				if (adddata.success) {
+					toast.success('Review added');
+					setSelectedBooking(null);
+					setShowReviewModal(false);
+				} else {
+					toast.error(adddata.message);
+				}
+			} else {
+				const { data } = await axiosPrivate.put(`/review/${id}`, reqObj);
+				if (data.success) {
+					toast.success('Review updated');
+					setSelectedBooking(null);
+					setShowReviewModal(false);
+				} else {
+					toast.error(data.message);
+				}
+				console.log(data);
+			}
 		} catch (err) {
 			console.error(err);
+			toast.error('Something went wrong');
+		} finally {
+			setReviewLoading(false);
 		}
+	};
+
+	const addReview = async (booking) => {
+		setSelectedBooking(booking);
+		setShowReviewModal(true);
+	};
+
+	const handleFilter = (status) => {
+		console.log(status);
+		setView(status);
+		setPage(1);
 	};
 
 	if (loading) {
@@ -133,154 +156,190 @@ const MyBookings = () => {
 					<p className="mt-1 text-sm text-gray-50">A list of all the bookings in your account.</p>
 				</div>
 			</div>
+
+			<div className="lg:grid lg:grid-cols-12 lg:gap-x-5 mb-5">
+				{/* <div className="px-2 py-6 lg:col-span-3 lg:px-0 lg:py-0"> */}
+				<nav className="flex flex-wrap lg:flex-nowrap gap-2">
+					<a
+						onClick={() => handleFilter(BOOKING_STATUS.AWAITING_OWNER_APPROVAL)}
+						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium  ${
+							view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50 '
+						}`}
+					>
+						<span className="truncate">Awaiting approval</span>
+					</a>
+					<a
+						onClick={() => handleFilter(BOOKING_STATUS.CONFIRMED)}
+						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+							view === BOOKING_STATUS.CONFIRMED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+						}`}
+					>
+						<span className="truncate">Confirmed</span>
+					</a>
+					<a
+						onClick={() => handleFilter(BOOKING_STATUS.CANCELLED)}
+						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+							view === BOOKING_STATUS.CANCELLED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+						}`}
+					>
+						<span className="truncate">Cancelled</span>
+					</a>
+
+					<a
+						onClick={() => handleFilter(BOOKING_STATUS.COMPLETED)}
+						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+							view === BOOKING_STATUS.COMPLETED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+						}`}
+					>
+						<span className="truncate">Completed</span>
+					</a>
+				</nav>
+				{/* </div> */}
+			</div>
+
 			{bookings.length > 0 ? (
-				<div className="shadow sm:overflow-hidden sm:rounded-md">
-					<div className="space-y-6 bg-white px-4 py-6 sm:p-6">
-						<div className="flow-root">
-							<div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-								<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-									<table className="min-w-full divide-y divide-gray-300 overflow-hidden">
-										<thead>
-											<tr>
-												<th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-													Property Name
-												</th>
-												<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-													Event Date
-												</th>
-												<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-													Date Placed
-												</th>
-												<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-													Property Price
-												</th>
-												<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-													Amount Paid
-												</th>
-												<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-													Booking Status
-												</th>
-												<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-													Payment Status
-												</th>
-												<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-													Actions
-												</th>
-											</tr>
-										</thead>
-										<tbody className="divide-y divide-gray-200 bg-white">
-											{bookings.map((ele, idx) => (
-												<tr key={idx}>
-													<td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-														<Link to={`/property-detail/${ele?.property?.id}`}>
-															<div className="flex items-center">
-																<div className="h-14 w-14 flex-shrink-0">
-																	<img
-																		className="h-14 w-14 rounded-md"
-																		src={ele?.property?.propertyImages[0]?.imgUrl}
-																		alt={ele?.property?.propertyName}
-																	/>
-																</div>
-
-																<div className="ml-4">
-																	<div className="font-medium text-gray-900">{ele?.property?.propertyName}</div>
-																	{/* <div className="mt-1 text-gray-500">{property.description}</div> */}
-																</div>
-															</div>
-														</Link>
-													</td>
-													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{formatDateRange(ele?.startDate, ele?.endDate)}</td>
-													<td className="whites pace-nowrap px-3 py-5 text-sm text-gray-500">{format(new Date(ele?.bookingDate), 'dd MMMM yyyy')}</td>
-													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-														<div className="text-gray-500">{formatPrice(ele?.property?.price)} per day</div>
-													</td>
-													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-														<div className="text-gray-500">{formatPrice(ele?.payments[0]?.amount)}</div>
-													</td>
-
-													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+				<dev aria-labelledby="recent-heading" className="mt-16">
+					{bookings.map((ele, idx) => (
+						<div key={ele?.id} className="mb-4">
+							<div className="space-y-8 sm:px-4 lg:px-0">
+								<div className="border-b border-t border-gray-500 bg-white  shadow-sm rounded-lg border overflow-hidden">
+									<div className="bg-gray-25 p-4 sm:p-6 ">
+										<div className="flex  items-center md:items-start justify-between  gap-8">
+											<div className="flex items-center  justify-between flex-wrap gap-4 md:gap-8 w-full">
+												<dl className="flex items-center justify-between flex-wrap gap-4 md:gap-8 md:w-auto w-full">
+													<div>
+														<dt className="font-medium text-gray-900">Amount Paid</dt>
+														<dd className="mt-1 font-medium text-gray-900">
+															{formatPrice(ele?.payments[0].amount)} <StatusBadge status={ele?.payments[0].status} type="payment" />
+														</dd>
+													</div>
+													<div>
+														<dt className="font-medium text-gray-900">Event Date</dt>
+														<dd className="mt-1 text-gray-500">{formatDateRange(ele?.startDate, ele?.endDate)}</dd>
+													</div>
+												</dl>
+												<div className=" flex items-start justify-between flex-wrap gap-4 md:gap-8 md:w-auto w-full">
+													<div className="">
+														<dt className="font-medium text-gray-900">Booked On</dt>
+														<dd className="mt-1 text-gray-500">
+															<time>{format(new Date(ele?.bookingDate), 'dd MMMM yyyy')}</time>
+														</dd>
+													</div>
+													<div>
+														<dt className="font-medium text-gray-900">Booking Id</dt>
+														<dd className="mt-1 text-gray-500">{ele?.id.substring(0, 8).toUpperCase()}</dd>
+													</div>
+													{/* <p className="ml-2 text-sm font-medium text-gray-500">{ele?.id.substring(0, 8).toUpperCase()}</p> */}
+													{/* <div className="flex flex-row md:flex-col gap-2">
+													<div>
+														<span className="font-medium text-gray-900">Booking Status:</span>{' '}
 														<StatusBadge status={ele?.bookingStatus} type="booking" />
-													</td>
-
-													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+													</div>
+													<div>
+														<span className="font-medium text-gray-900">Payment Status:</span>{' '}
 														<StatusBadge status={ele?.payments[0].status} type="payment" />
-													</td>
-													{(ele?.bookingStatus === BOOKING_STATUS.AWAITING_OWNER_APPROVAL || ele?.bookingStatus === BOOKING_STATUS.CONFIRMED) && (
-														<td>
-															<Button
-																buttonType="button"
-																size="sm"
-																variant="filled"
-																innerClass="w-36 !bg-error-400 border-0"
-																innerTextClass="text-white"
-																onClick={() => handleAcceptReject(ele.id, BOOKING_STATUS.CANCELLED, PAYMENT_STATUS.REFUNDED)}
-															>
-																Cancel
-															</Button>
-														</td>
-													)}
+													</div>
+												</div> */}
+												</div>
+											</div>
+										</div>
+									</div>
 
-													{ele?.bookingStatus === BOOKING_STATUS.COMPLETED && (
-														<td>
-															<Button
-																buttonType="button"
-																size="sm"
-																variant="filled"
-																innerClass="w-36"
-																innerTextClass="text-white"
-																onClick={() => addReview(ele?.property?.id)}
-															>
-																Add review
-															</Button>
-														</td>
-													)}
+									{/* <!-- Products --> */}
 
-													{/* <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-														<div
-															className="flex justify-center relative z-2"
-															onMouseEnter={() => setHoveredRowIndex(idx)}
-															onMouseLeave={() => setHoveredRowIndex(null)}
+									<ul role="list" className="divide-y divide-gray-200">
+										<li className="p-4 sm:p-6">
+											<div className="flex items-center">
+												<div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-20 sm:w-20">
+													<img
+														src={ele?.property?.propertyImages[0]?.imgUrl}
+														alt={ele?.property?.propertyName}
+														className="h-full w-full object-cover object-center"
+													/>
+												</div>
+												<div className="ml-6 flex-1 ">
+													<div className="font-medium text-md text-gray-900 sm:flex sm:justify-between">
+														<h5>
+															{ele?.property?.propertyName}
+															<p className="mt-1 text-gray-500 text-sm">{formatPrice(ele?.property?.price)} per day</p>
+														</h5>
+													</div>
+													{/* <p className="hidden text-gray-500 sm:mt-2 sm:block">{formatDateRange(ele?.startDate, ele?.endDate)}</p> */}
+												</div>
+											</div>
+
+											<div className="mt-6 sm:flex sm:justify-between">
+												<div className="flex items-center">
+													<span className="mr-2 font-medium">Booking:</span> <StatusBadge status={ele?.bookingStatus} type="booking" />
+													{/* <p className="ml-2 text-sm font-medium text-gray-500">{ele?.id.substring(0, 8).toUpperCase()}</p> */}
+												</div>
+
+												{(ele?.bookingStatus === BOOKING_STATUS.AWAITING_OWNER_APPROVAL || ele?.bookingStatus === BOOKING_STATUS.CONFIRMED) && (
+													<div className="flex items-center justify-center  pt-6 pb-2 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
+														<Button
+															buttonType="button"
+															size="sm"
+															variant="outline"
+															innerClass="w-full md:w-36  border !border-error-500"
+															innerTextClass="!text-red-500"
+															onClick={() => handleAcceptReject(ele.id, BOOKING_STATUS.CANCELLED, PAYMENT_STATUS.REFUNDED)}
 														>
-															<FaEllipsisVertical className="text-indigo-600 hover:text-indigo-900" />
+															Cancel
+														</Button>
+													</div>
+												)}
 
-															{hoveredRowIndex === idx && (
-																<div
-																	className="absolute top-[-10px] right-[-10px]  bg-white border rounded-md z-1 animate-slideIn opacity-0"
-																	style={{ '--delay': idx * 0 + 's' }}
-																>
-																	<ul className="flex ">
-																		<li className="p-3 hover:bg-gray-100 cursor-pointer flex items-center">
-																			<FaEye />
-																		</li>
-																		<li className="p-3 hover:bg-gray-100 cursor-pointer flex items-center">
-																			<FaPenToSquare />
-																		</li>
-																		<li className="p-3 hover:bg-gray-100 cursor-pointer flex items-center">
-																			<FaTrash className="text-error-500" />
-																		</li>
-																	</ul>
-																</div>
-															)}
-														</div>
-													</td> */}
-												</tr>
-											))}
-										</tbody>
-									</table>
+												{ele?.bookingStatus === BOOKING_STATUS.COMPLETED && (
+													<div className="flex items-center justify-center  pt-6 pb-2 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
+														<Button
+															buttonType="button"
+															size="sm"
+															variant="outline"
+															innerClass="w-full md:w-36  border border-primary"
+															innerTextClass="text-primary"
+															onClick={() => addReview(ele)}
+														>
+															{ele?.review.length > 0 ? 'Edit Review' : 'Add Review'}
+														</Button>
+													</div>
+												)}
+											</div>
+										</li>
+									</ul>
 								</div>
 							</div>
 						</div>
-					</div>
-				</div>
+					))}
+				</dev>
 			) : (
 				<EmptyState
-					title="No Bookings"
-					subtitle="You haven't made any bookings yet."
+					title={
+						view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL
+							? 'No Bookings Awaiting Approval'
+							: view === BOOKING_STATUS.CONFIRMED
+							? 'No Confirmed Bookings'
+							: view === BOOKING_STATUS.CANCELLED
+							? 'No Cancelled Bookings'
+							: view === BOOKING_STATUS.COMPLETED
+							? 'No Completed Bookings'
+							: 'No Bookings'
+					}
+					subtitle={
+						view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL
+							? 'There are no bookings awaiting your approval at the moment.'
+							: view === BOOKING_STATUS.CONFIRMED
+							? 'There are no confirmed bookings at the moment.'
+							: view === BOOKING_STATUS.CANCELLED
+							? 'There are no cancelled bookings at the moment.'
+							: view === BOOKING_STATUS.COMPLETED
+							? 'There are no completed bookings at the moment.'
+							: 'There are no bookings at the moment.'
+					}
 					icon={<RiCalendarCloseLine className="w-16 h-16 text-white" />}
 				/>
 			)}
 			<div className="mt-5">
-				<Pagination totalCount={totalCount} page={page} limit={limit} onPageChange={setPage} />
+				<Pagination totalCount={totalCount} page={page} limit={limit} onPageChange={setPage} pageClass={'justify-end'} />
 			</div>
 			{showModal && (
 				<ConfirmModal
@@ -293,8 +352,20 @@ const MyBookings = () => {
 					onCancel={handleCancel}
 					confirmDisabled={loading}
 					cancelDisabled={loading}
-					btnClass={'text-white bg-warning-600 hover:bg-warning-800 focus:ring-warning-300 border-warning-600'}
-					icon={<PiWarningCircleFill className="w-10 h-10 text-warning-500" />}
+					btnClass={'text-white bg-error-600 hover:bg-error-800 focus:ring-error-300 border-error-600'}
+					icon={<MdOutlineCancel className="w-10 h-10 text-error-600" />}
+				/>
+			)}
+			{showReviewModal && (
+				<ReviewModal
+					modalId="booking-review-modal"
+					onConfirm={handleReviewConfirm}
+					onCancel={handleReviewCancel}
+					confirmDisabled={loading}
+					cancelDisabled={loading}
+					btnClass={''}
+					reviewLoading={reviewLoading}
+					reviewData={selectedBooking?.review[0]}
 				/>
 			)}
 		</>

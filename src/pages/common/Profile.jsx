@@ -24,20 +24,20 @@ const Profile = () => {
 						>
 							<span className="truncate">Account</span>
 						</a>
-						<a
+						{/* <a
 							onClick={() => setView('password')}
 							className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
 								view === 'password' ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
 							}`}
 						>
 							<span className="truncate">Change Password</span>
-						</a>
+						</a> */}
 					</nav>
 				</aside>
 
 				<div className="space-y-6 sm:px-6 lg:col-span-9 lg:px-0">
 					{view === 'account' && <AccountForm />}
-					{view === 'password' && <ChangePasswordForm />}
+					{/* {view === 'password' && <ChangePasswordForm />} */}
 				</div>
 			</div>
 		</>

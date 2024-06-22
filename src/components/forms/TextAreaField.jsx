@@ -1,13 +1,17 @@
 // TextAreaField.js
 import React from 'react';
+import { useForm } from 'react-hook-form';
 
-const TextAreaField = ({ label, id, name, register, required, error }) => {
+const TextAreaField = ({ label, id, name, register, required, error, placeholder, maxLength, watch }) => {
+	// const { watch } = useForm();
 	return (
 		<>
 			<label htmlFor={id} className="block text-sm font-medium text-gray-700">
 				{label}
 			</label>
 			<textarea
+				maxLength={maxLength}
+				placeholder={placeholder}
 				id={id}
 				name={name}
 				{...register(name, { required })}
@@ -16,6 +20,11 @@ const TextAreaField = ({ label, id, name, register, required, error }) => {
 					error ? 'border-red-500' : ''
 				}`}
 			></textarea>
+			{watch && (
+				<div className="text-sm text-gray-500 text-right">
+					{watch(name)?.length > 0 ? watch(name)?.length : 0}/{maxLength}
+				</div>
+			)}
 		</>
 	);
 };
