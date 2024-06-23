@@ -12,6 +12,8 @@ import PropertyExtra from '../../components/propertyForm/PropertyExtra';
 import PropertyTagsAndAmenities from '../../components/propertyForm/PropertyTagsAndAmenities';
 import { useParams } from 'react-router-dom';
 import Loader from '../../components/common/Loader';
+import { useJsApiLoader } from '@react-google-maps/api';
+const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 import { CATEGORIES } from '../../constants/categories';
 const steps = [
@@ -21,6 +23,7 @@ const steps = [
 	{ name: 'Categories and Amenities', key: 'property-tags' },
 	{ name: 'Additional Information', key: 'property-extra' },
 ];
+
 const views = ['property-details', 'property-address', 'property-images', 'property-tags', 'property-extra'];
 const EditPropertyPage = () => {
 	const { id } = useParams();
@@ -49,7 +52,7 @@ const EditPropertyPage = () => {
 			reset(data);
 			setSelectedCity(data.city);
 			setPropertyImages(data.propertyImages);
-			setCordinate({lat: Number(data.lat), lng:  Number(data.lng)});
+			setCordinate({ lat: Number(data.lat), lng: Number(data.lng) });
 			setCategories(
 				CATEGORIES.filter((category) => data.propertyTags.includes(category.tagName)).map(({ id, tagName }) => ({
 					id,
@@ -85,7 +88,11 @@ const EditPropertyPage = () => {
 	const handleCityChange = (cityValue) => {
 		setSelectedCity(cityValue);
 	};
-
+	const { isLoaded } = useJsApiLoader({
+		id: 'google-map-script',
+		googleMapsApiKey: GOOGLE_KEY,
+		libraries: ['places'],
+	});
 	const [view, setView] = useState('property-details');
 	const [enabledViews, setEnabledViews] = useState(['property-details']);
 
@@ -114,8 +121,8 @@ const EditPropertyPage = () => {
 		fd.append('country', data.country);
 		fd.append('extraInfo', data.extraInfo ?? '');
 		fd.append('pincode', '');
-		fd.append('lat', '');
-		fd.append('lan', '');
+		fd.append('lat', cordinate.lat);
+		fd.append('lan', cordinate.lng);
 		fd.append('ownerId', user?.id);
 		fd.append('checkInTime', data?.checkInTime);
 		fd.append('checkOutTime', data?.checkOutTime);
@@ -237,9 +244,8 @@ const EditPropertyPage = () => {
 							<a
 								key={step.key}
 								onClick={() => handleSetView(step.key)}
-								className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-									view === step.key ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-								} ${!enabledViews.includes(step.key) && 'pointer-events-none opacity-50'}  ${isSubmitting && 'pointer-events-none opacity-50'}`}
+								className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === step.key ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+									} ${!enabledViews.includes(step.key) && 'pointer-events-none opacity-50'}  ${isSubmitting && 'pointer-events-none opacity-50'}`}
 							>
 								<span className="truncate">{step.name}</span>
 							</a>
@@ -251,7 +257,16 @@ const EditPropertyPage = () => {
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
 							{view === 'property-details' && <PropertyDetails />}
-							{view === 'property-address' && <PropertyAddress handleCityChange={handleCityChange} setCord={handCordinateChange} selectedCity={selectedCity} cordinate={cordinate} setInteract={handUserInteracted} userInteracted={userInteracted} />}
+							{view === 'property-address' &&
+								<PropertyAddress
+									handleCityChange={handleCityChange}
+									setCord={handCordinateChange}
+									selectedCity={selectedCity}
+									cordinate={cordinate}
+									setInteract={handUserInteracted}
+									userInteracted={userInteracted}
+									isLoaded={isLoaded}
+								/>}
 
 							{view === 'property-images' && (
 								<div className="shadow sm:overflow-hidden sm:rounded-md">
