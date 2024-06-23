@@ -90,6 +90,7 @@ const ReviewModal = ({ onConfirm, onCancel, reviewLoading, reviewData }) => {
 									reviewLoading ? 'cursor-not-allowed bg-gray-200' : 'bg-primary'
 								}`}
 								onClick={reviewData?.review ? handleSubmit(onSubmitEdit) : handleSubmit(onSubmit)}
+								// onClick={handleSubmit(onSubmit)}
 							>
 								{reviewLoading ? <LuLoader2 className="w-6 h-6 text-white animate-spin" /> : 'Submit'}
 							</button>

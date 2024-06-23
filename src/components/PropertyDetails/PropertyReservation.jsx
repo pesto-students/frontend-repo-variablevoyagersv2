@@ -4,17 +4,16 @@ import FormatPrice from '../FormatPrice';
 import { useNavigate } from 'react-router-dom';
 import { differenceInDays } from 'date-fns';
 
-import { selectIsAuthenticated, selectUser } from '../../redux/slices/authSlice';
+import { selectUser } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
 import LoginPage from '../../pages/public/LoginPage';
-import { clearDatabase, db } from '../../dexie/db';
+import { db } from '../../dexie/db';
 import Button from '../common/Button';
 import { getDatesBetween } from '../../utils';
 import { ROLES } from '../../constants/roles';
 
 const PropertyReservation = ({ property }) => {
 	const [showLoginModal, setShowLoginModal] = useState(false);
-	const isAuthenticated = useSelector(selectIsAuthenticated);
 	const user = useSelector(selectUser);
 
 	const navigate = useNavigate();
@@ -82,10 +81,7 @@ const PropertyReservation = ({ property }) => {
 		try {
 			const result = await db.bookings.add(bookingObj);
 
-			// navigate(`/payment?id=${result}`);
-			// sessionStorage.setItem('fromReservation', 'true');
 			navigate(`/payment?id=${result}`, { state: { fromReservation: true } });
-			// navigate(`/payment?id=${result}`);
 		} catch (error) {
 			console.error('Failed to save booking:', error);
 		}

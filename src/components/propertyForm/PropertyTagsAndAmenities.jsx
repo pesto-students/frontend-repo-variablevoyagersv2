@@ -55,7 +55,7 @@ const PropertyTagsAndAmenities = ({ handleSetCategories, categories, catErr, han
 						<p className="text-sm text-gray-500">Select up to {MAX_CATEGORIES} categories that match your property.</p>
 					</div>
 					<div className="flex flex-1 w-100 flex-wrap gap-4">
-						{CATEGORIES.map((event) => (
+						{CATEGORIES.slice(1).map((event) => (
 							<TagButton
 								key={event.tagName}
 								event={event}
