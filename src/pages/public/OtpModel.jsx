@@ -105,7 +105,7 @@ const OtpModel = ({ email, onPrev, onClose }) => {
 				handleLoginSuccess(data);
 				//
 				if (data.role === ROLES.OWNER) {
-					navigate('/owner/dashboard');
+					navigate('/owner/property');
 				} else {
 					closeAll();
 				}

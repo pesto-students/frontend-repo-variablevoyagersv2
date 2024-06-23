@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import Container from '../../components/Container';
 import { axiosPrivate } from '../../services/axios.service';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -9,14 +8,14 @@ import { selectUser } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
 import useRazorpay from 'react-razorpay';
 import { PAYMENT_STATUS } from '../../constants/status';
-import { clearDatabase, db } from '../../dexie/db';
-import FormatPrice from '../../components/FormatPrice';
+import { db } from '../../dexie/db';
+
 import { formatDateRange, formatPrice, getDatesBetween } from '../../utils';
 import Button from '../../components/common/Button';
 import { toast } from 'react-toastify';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import { PiWarningCircleFill } from 'react-icons/pi';
-import Avatar from '../../components/Avatar';
+
 import placeholder from '/placeholder.jpg';
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
@@ -31,32 +30,15 @@ const PaymentPage = () => {
 	const [termsChecked, setTermsChecked] = useState(false);
 
 	const [showModal, setShowModal] = useState(false);
-	const [selectedBookingId, setSelectedBookingId] = useState(null);
+
 	const [bookingErrMsg, setBookingErrMsg] = useState('');
-	// useEffect(() => {
-	// 	const preventRefresh = (e) => {
-	// 		const confirmationMessage = 'Are you sure you want to leave this page? Your data may be lost.';
-	// 		e.returnValue = confirmationMessage; // Standard-compliant browsers
-	// 		return confirmationMessage; // Older browsers
-	// 	};
 
-	// 	window.addEventListener('beforeunload', preventRefresh);
-
-	// 	return () => {
-	// 		window.removeEventListener('beforeunload', preventRefresh);
-	// 	};
-	// }, []);
 	useEffect(() => {
 		if (!location.state || !location.state.fromReservation) {
 			navigate('/');
 			return;
 		}
 
-		// const fromReservation = sessionStorage.getItem('fromReservation');
-		// if (!location.state || !location.state.fromReservation || !fromReservation) {
-		// 	navigate('/');
-		// 	return;
-		// }
 		const fetchBooking = async () => {
 			const searchParams = new URLSearchParams(location.search);
 			const bookingId = searchParams.get('id');
@@ -123,9 +105,7 @@ const PaymentPage = () => {
 							status: PAYMENT_STATUS.SUCCESS,
 						});
 
-						// navigate(`/payment-success?` orderResponse.bookingId,');
 						navigate(`/payment-success?id=${orderResponse.bookingId}`, { state: { fromPayment: true } });
-						// alert('Payment successful and booking confirmed!');
 					},
 					prefill: {
 						name: `${user.firstName} ${user.lastName}`,
@@ -154,7 +134,6 @@ const PaymentPage = () => {
 				});
 			} else {
 				console.log(data);
-				// setShowModal(true);
 			}
 		} catch (err) {
 			console.log(err);
@@ -162,17 +141,15 @@ const PaymentPage = () => {
 			setBookingErrMsg(err.response.data.error);
 			setShowModal(true);
 		}
-	}, [Razorpay, user?.email, user?.firstName, user?.lastName, booking, handlePaymentModalDissmiss, termsChecked]);
+	}, [Razorpay, user?.email, user?.firstName, user?.lastName, booking, handlePaymentModalDissmiss, termsChecked, navigate]);
 
 	const handleGoBack = () => {
-		// sessionStorage.removeItem('fromReservation');
 		navigate(-1);
 	};
 
 	const handleCancel = () => {
 		setShowModal(false);
 		navigate('/');
-		// setSelectedBookingId(null);
 	};
 
 	const handleConfirm = () => {
@@ -231,26 +208,6 @@ const PaymentPage = () => {
 										</div>
 									</div>
 								</div>
-								{/* <p className="mt-4 text-md  text-gray-900"> {booking?.description} </p> */}
-
-								{/* <div className="flex flex-wrap md:flex-nowrap justify-start gap-2">
-									{booking?.propertyTags?.map((tag, idx) => (
-										<p key={idx + tag} className="w-fit bg-primary text-white text-md capitalize px-2.5 py-1.5 rounded-full mt-4">
-											{tag.replace('-', ' ')}
-										</p>
-									))}
-								</div>
-								{booking?.amenities && booking?.amenities.length > 0 && (
-									<div className="mt-4">
-										<h1 className="font-medium text-md text-gray-700">What this place offers</h1>
-										{booking?.amenities?.map((amenity, index) => (
-											<div key={index} className="flex ml-3 mt-3 gap-2 items-center">
-												<span className="w-1.5 h-1.5 rounded-full bg-gray-900"></span>
-												<p className="text-md text-gray-500">{amenity}</p>
-											</div>
-										))}
-									</div>
-								)} */}
 							</li>
 							<li className="flex py-6 sm:py-10">
 								<div>
@@ -371,7 +328,6 @@ const PaymentPage = () => {
 						</div>
 					</section>
 				</div>
-				{/* </div> */}
 			</div>
 
 			{showModal && (

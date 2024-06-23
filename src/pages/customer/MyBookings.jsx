@@ -102,9 +102,11 @@ const MyBookings = () => {
 		try {
 			let reqObj = { rating, review };
 			if (type === 'add') {
-				reqObj.cusId = user?.id;
+				// reqObj.userId = user?.id;
+				reqObj.fullName = user?.firstName + ' ' + user?.lastName;
+				reqObj.avatar = user?.avatar;
 				reqObj.propertyId = selectedBooking?.property.id;
-				reqObj.bId = selectedBooking?.id;
+				reqObj.bookingId = selectedBooking?.id;
 				const { data: adddata } = await axiosPrivate.post(`/review`, reqObj);
 				console.log(adddata);
 				if (adddata.success) {
@@ -299,7 +301,7 @@ const MyBookings = () => {
 															innerTextClass="text-primary"
 															onClick={() => addReview(ele)}
 														>
-															{ele?.review.length > 0 ? 'Edit Review' : 'Add Review'}
+															{ele?.reviews?.length > 0 ? 'Edit Review' : 'Add Review'}
 														</Button>
 													</div>
 												)}
@@ -326,7 +328,7 @@ const MyBookings = () => {
 					}
 					subtitle={
 						view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL
-							? 'There are no bookings awaiting your approval at the moment.'
+							? 'There are no bookings awaiting for approval at the moment.'
 							: view === BOOKING_STATUS.CONFIRMED
 							? 'There are no confirmed bookings at the moment.'
 							: view === BOOKING_STATUS.CANCELLED
@@ -365,7 +367,7 @@ const MyBookings = () => {
 					cancelDisabled={loading}
 					btnClass={''}
 					reviewLoading={reviewLoading}
-					reviewData={selectedBooking?.review[0]}
+					reviewData={selectedBooking?.reviews[0]}
 				/>
 			)}
 		</>

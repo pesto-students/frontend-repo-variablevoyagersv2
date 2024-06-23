@@ -5,6 +5,7 @@ import Avatar from '../Avatar';
 import placeholder from '/placeholder.jpg';
 import StarRating from './StarRating';
 import Rating from 'react-rating';
+import { formatDistance, parseISO } from 'date-fns';
 
 // import 'slick-carousel/slick/slick.css';
 // import 'node_modules/slick-carousel/slick/slick-theme.css';
@@ -79,7 +80,7 @@ const Reviews = ({ reviews }) => {
 
 	const settings = {
 		className: 'center',
-		infinite: false,
+		infinite: true,
 		centerMode: true,
 		// centerPadding: '60px',
 		slidesToShow: 3,
@@ -136,11 +137,13 @@ const Reviews = ({ reviews }) => {
 								<img
 									className="rounded-full object-cover w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
 									alt="Avatar"
-									src={'https://lh3.googleusercontent.com/a/ACg8ocLqj4MvDD7AcXNn8miJBGuLp0TT9Cvg-qU22DcMeJZxbgJnAS5rhg=s96-c' || placeholder}
+									src={review?.avatar || placeholder}
 								/>
 								<div className="flex flex-col justify-center w-full">
-									<h1 className="text-sm sm:text-base lg:text-xl md:text-medium">Mehul Vadgama</h1>
-									<div className="text-xs sm:text-sm text-gray-500">Week ago</div>
+									<h1 className="text-sm sm:text-base lg:text-xl md:text-medium">{review?.fullName}</h1>
+									<div className="text-xs sm:text-sm text-gray-500">
+										{formatDistance(new Date(review?.createdAt), new Date(), { addSuffix: true })}
+									</div>
 								</div>
 							</div>
 							<StarRating rating={review.rating} size={6} />

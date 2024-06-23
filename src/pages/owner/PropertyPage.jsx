@@ -19,6 +19,7 @@ import { PiBuildingsFill, PiWarningCircleFill } from 'react-icons/pi';
 import { format, formatDate } from 'date-fns';
 import { formatPrice } from '../../utils';
 import ConfirmModal from '../../components/common/ConfirmModal';
+import Pagination from '../../components/common/Pagination';
 const PropertyPage = () => {
 	const navigate = useNavigate();
 	const user = useSelector(selectUser);
@@ -26,43 +27,30 @@ const PropertyPage = () => {
 	const [properties, setProperties] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [selectedPropertyId, setSelectedPropertyId] = useState(null);
-
+	const [page, setPage] = useState(1);
+	const [totalCount, setTotalCount] = useState(0);
+	const limit = 10;
 	const getOwnerProperties = useCallback(async () => {
 		try {
 			setLoading(true);
-			const { data } = await axiosPrivate.get(`/property/owner-property/${user?.id}`);
+			const { data } = await axiosPrivate.get(`/property/owner-property/${user?.id}?page=${page}&limit=${limit}`);
 			console.log(data);
+			setTotalCount(data.totalCount);
 			setProperties(data.data);
 		} catch (error) {
 			console.log(error);
 		} finally {
 			setLoading(false);
 		}
-	}, [user?.id]);
+	}, [page, user?.id]);
 
 	useEffect(() => {
 		getOwnerProperties();
-	}, [getOwnerProperties]);
+	}, [getOwnerProperties, page]);
+
 	const deleteProperty = async (id) => {
-		console.log('here');
 		setSelectedPropertyId(id);
 		setShowModal(true);
-		// if (confirm('Are you sure to delete?')) {
-		// 	console.log(id);
-		// 	try {
-		// 		const { data } = await axiosPrivate.put(`/property/delete/${id}`);
-		// 		console.log(data);
-		// 		if (data.success) {
-		// 			toast.success('Property is deleted');
-		// 			getOwnerProperties();
-		// 		} else {
-		// 			toast.success('Something went wrong');
-		// 		}
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 		toast.error('Something went wrong');
-		// 	}
-		// }
 	};
 
 	const goto = (id) => {
@@ -201,6 +189,10 @@ const PropertyPage = () => {
 					icon={<PiBuildingsFill className="w-16 h-16 text-white" />}
 				/>
 			)}
+
+			<div className="mt-5">
+				<Pagination totalCount={totalCount} page={page} limit={limit} onPageChange={setPage} pageClass={'justify-end'} />
+			</div>
 
 			{showModal && (
 				<ConfirmModal
