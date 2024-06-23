@@ -59,9 +59,9 @@ const OnboardingModal = ({ user, onClose }) => {
 			handleLoginSuccess(data);
 			dispatch(setUser(data));
 			if (data.role === ROLES.OWNER) {
-				navigate('/owner/dashboard');
+				navigate('/owner/property');
 			} else {
-				navigate('/');
+				onClose();
 			}
 		} catch (error) {
 			if (error.response && error.response.status >= 400 && error.response.status < 500) {
