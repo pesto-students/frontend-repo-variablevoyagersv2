@@ -6,7 +6,7 @@ import TextAreaField from '../forms/TextAreaField';
 const PropertyDetails = () => {
 	const {
 		register,
-		formState: { errors, isSubmitting },
+		formState: { errors },
 		watch,
 	} = useFormContext();
 

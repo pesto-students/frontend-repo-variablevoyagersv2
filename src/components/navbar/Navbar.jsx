@@ -1,16 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import Container from '../Container';
+import React, { useState, useEffect } from 'react';
+
 import Logo from './Logo';
-import Search from './Search';
+
 import UserMenu from './UserMenu';
 import PrivateNav from './PrivateNav';
-import venue from '/venue2.png';
-import { useLocation } from 'react-router-dom';
-import VenueSearch from './Search';
 
 export default function Navbar() {
 	const [isScrolled, setIsScrolled] = useState(false);
-	const location = useLocation();
 
 	useEffect(() => {
 		const handleScroll = () => {

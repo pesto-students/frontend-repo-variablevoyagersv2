@@ -51,7 +51,7 @@ export default function UserMenu() {
 	const getScrollbarWidth = () => {
 		const outer = document.createElement('div');
 		outer.style.visibility = 'hidden';
-		outer.style.overflow = 'scroll'; // Force scrollbar to appear
+		outer.style.overflow = 'scroll';
 		outer.style.width = '100px';
 		outer.style.position = 'absolute';
 		outer.style.top = '-9999px';
@@ -79,12 +79,12 @@ export default function UserMenu() {
 	}, [showLoginModal]);
 
 	const toggleMenu = (event) => {
-		event.stopPropagation(); // Prevents event bubbling to body
+		event.stopPropagation();
 		setIsMenuOpen(!isMenuOpen);
 	};
 
 	const handleMenuClick = (event) => {
-		event.stopPropagation(); // Prevents event bubbling to body
+		event.stopPropagation();
 	};
 
 	return (
@@ -142,18 +142,7 @@ export default function UserMenu() {
 					>
 						Log In
 					</Button>
-					{/* <button
-						className="hover:shadow-md bg-white text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
-						onClick={() => setShowLoginModal(true)}
-					>
-						Sign Up
-					</button> */}
-					{/* <button
-						className="hover:shadow-md bg-white text-theame border border-gray-500 rounded-full px-3 py-2 hover:text-white hover:bg-theame "
-						onClick={() => setShowLoginModal(true)}
-					>
-						Sign In
-					</button> */}
+
 					<Button
 						startIcon={<PiUserCircle className="!w-5 !h-5" />}
 						buttonType="button"

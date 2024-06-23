@@ -1,8 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import HomePage from '../pages/public/HomePage';
-
 import PrivateRoute from './PrivateRoute';
-import DashboardPage from '../pages/owner/DashboardPage';
 import AddPropertyPage from '../pages/owner/AddPropertyPage';
 import Profile from '../pages/common/Profile';
 import NotFoundPage from '../pages/public/NotFoundPage';
@@ -49,14 +47,6 @@ export const router = createBrowserRouter([
 		path: '/owner/',
 		element: <OwnerLayout />,
 		children: [
-			{
-				path: 'dashboard',
-				element: (
-					<PrivateRoute allowedRoles={ROLES.OWNER}>
-						<DashboardPage />
-					</PrivateRoute>
-				),
-			},
 			{
 				path: 'property',
 				element: (

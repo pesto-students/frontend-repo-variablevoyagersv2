@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../services/axios.service';
-import useRedirect from '../../hooks/useRedirect';
+
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import OtpModel from './OtpModel';
@@ -15,12 +15,6 @@ import { setUser } from '../../redux/slices/authSlice';
 import { ROLES } from '../../constants/roles';
 
 const LoginPage = ({ isOpen, onClose }) => {
-	const location = useLocation();
-	const [searchParams] = useSearchParams();
-	const id = searchParams.get('id');
-
-	// useRedirect(id);
-
 	const [isOtpSent, setIsOtpSent] = useState(false);
 	const [isNewUser, setIsNewUser] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -29,16 +23,12 @@ const LoginPage = ({ isOpen, onClose }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	// useRedirect(id);
-
 	let {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm();
 	const [generalError, setGeneralError] = useState('');
-
-	const redirectUrl = new URLSearchParams(location.search).get('redirect');
 
 	const onSubmit = async (values) => {
 		try {
@@ -58,7 +48,7 @@ const LoginPage = ({ isOpen, onClose }) => {
 		setLoading(true);
 		try {
 			const { email, family_name, given_name, picture } = jwtDecode(response.credential);
-			// console.log(response.credential);
+
 			console.log(jwtDecode(response.credential));
 			const {
 				data: { data },
@@ -78,7 +68,6 @@ const LoginPage = ({ isOpen, onClose }) => {
 					navigate('/owner/property');
 				} else {
 					onClose();
-					// navigate('/');
 				}
 			}
 		} catch (error) {
@@ -122,7 +111,6 @@ const LoginPage = ({ isOpen, onClose }) => {
 											register={register}
 											required="Email is required"
 											error={errors?.email}
-											// innerClass={"text-gray-800"}
 										/>
 										<p className="text-red-500">{errors.email?.message}</p>
 									</div>
@@ -149,8 +137,6 @@ const LoginPage = ({ isOpen, onClose }) => {
 									shape="pill"
 									width="380"
 									useOneTap
-									// type='icon'
-									// theme='filled_blue'
 								/>
 							</div>
 						</>

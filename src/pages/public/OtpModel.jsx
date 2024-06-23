@@ -12,7 +12,7 @@ import { handleLoginSuccess } from '../../services/user.service';
 import { ROLES } from '../../constants/roles';
 
 const OtpModel = ({ email, onPrev, onClose }) => {
-	const { register, handleSubmit, setValue } = useForm();
+	const { handleSubmit, setValue } = useForm();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [otp, setOtp] = useState('');
 	const [showOnboarding, setShowOnboarding] = useState(false);
@@ -21,7 +21,7 @@ const OtpModel = ({ email, onPrev, onClose }) => {
 	const [newUser, setNewUser] = useState({});
 	const dispatch = useDispatch();
 
-	const [count, setCount] = useState(120); // Initial count (2 minutes in seconds)
+	const [count, setCount] = useState(120);
 	const [countdownInterval, setCountdownInterval] = useState(null);
 
 	useEffect(() => {
@@ -45,9 +45,9 @@ const OtpModel = ({ email, onPrev, onClose }) => {
 		try {
 			await axiosInstance.post('/auth/otp', { email });
 			setOtp('');
-			setCount(120); // Reset the count to 2 minutes
+			setCount(120);
 			setResend(false);
-			clearInterval(countdownInterval); // Clear the previous interval
+			clearInterval(countdownInterval);
 			const newInterval = setInterval(() => {
 				setCount((prevCount) => {
 					if (prevCount === 1) {
@@ -58,7 +58,7 @@ const OtpModel = ({ email, onPrev, onClose }) => {
 					return prevCount - 1;
 				});
 			}, 1000);
-			setCountdownInterval(newInterval); // Set the new interval
+			setCountdownInterval(newInterval);
 		} catch (error) {
 			console.log(error.message);
 		}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LuLoader2 } from 'react-icons/lu';
-import { PiWarningCircle } from 'react-icons/pi';
+
 const ConfirmModal = ({
 	modalId,
 	title,
@@ -46,7 +46,7 @@ const ConfirmModal = ({
 				});
 			}
 		};
-	}, [modalId]);
+	}, [modalId, showModal]);
 
 	return (
 		<>

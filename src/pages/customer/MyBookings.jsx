@@ -5,7 +5,7 @@ import { axiosPrivate } from '../../services/axios.service';
 import Button from '../../components/common/Button';
 import { BOOKING_STATUS, PAYMENT_STATUS } from '../../constants/status';
 import { ROLES } from '../../constants/roles';
-import { Link } from 'react-router-dom';
+
 import { format } from 'date-fns';
 import { formatDateRange, formatPrice } from '../../utils';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -54,8 +54,6 @@ const MyBookings = () => {
 		getUserBookings();
 	}, [getUserBookings, page, user?.id]);
 
-	const [hoveredRowIndex, setHoveredRowIndex] = useState(null);
-
 	const handleAcceptReject = (bookingId) => {
 		console.log('here');
 		setSelectedBookingId(bookingId);
@@ -102,7 +100,6 @@ const MyBookings = () => {
 		try {
 			let reqObj = { rating, review };
 			if (type === 'add') {
-				// reqObj.userId = user?.id;
 				reqObj.fullName = user?.firstName + ' ' + user?.lastName;
 				reqObj.avatar = user?.avatar;
 				reqObj.propertyId = selectedBooking?.property.id;
@@ -113,6 +110,7 @@ const MyBookings = () => {
 					toast.success('Review added');
 					setSelectedBooking(null);
 					setShowReviewModal(false);
+					getUserBookings();
 				} else {
 					toast.error(adddata.message);
 				}
@@ -122,6 +120,7 @@ const MyBookings = () => {
 					toast.success('Review updated');
 					setSelectedBooking(null);
 					setShowReviewModal(false);
+					getUserBookings();
 				} else {
 					toast.error(data.message);
 				}
@@ -160,7 +159,6 @@ const MyBookings = () => {
 			</div>
 
 			<div className="lg:grid lg:grid-cols-12 lg:gap-x-5 mb-5">
-				{/* <div className="px-2 py-6 lg:col-span-3 lg:px-0 lg:py-0"> */}
 				<nav className="flex flex-wrap lg:flex-nowrap gap-2">
 					<a
 						onClick={() => handleFilter(BOOKING_STATUS.AWAITING_OWNER_APPROVAL)}
@@ -196,7 +194,6 @@ const MyBookings = () => {
 						<span className="truncate">Completed</span>
 					</a>
 				</nav>
-				{/* </div> */}
 			</div>
 
 			{bookings.length > 0 ? (
@@ -231,23 +228,10 @@ const MyBookings = () => {
 														<dt className="font-medium text-gray-900">Booking Id</dt>
 														<dd className="mt-1 text-gray-500">{ele?.id.substring(0, 8).toUpperCase()}</dd>
 													</div>
-													{/* <p className="ml-2 text-sm font-medium text-gray-500">{ele?.id.substring(0, 8).toUpperCase()}</p> */}
-													{/* <div className="flex flex-row md:flex-col gap-2">
-													<div>
-														<span className="font-medium text-gray-900">Booking Status:</span>{' '}
-														<StatusBadge status={ele?.bookingStatus} type="booking" />
-													</div>
-													<div>
-														<span className="font-medium text-gray-900">Payment Status:</span>{' '}
-														<StatusBadge status={ele?.payments[0].status} type="payment" />
-													</div>
-												</div> */}
 												</div>
 											</div>
 										</div>
 									</div>
-
-									{/* <!-- Products --> */}
 
 									<ul role="list" className="divide-y divide-gray-200">
 										<li className="p-4 sm:p-6">
@@ -266,14 +250,12 @@ const MyBookings = () => {
 															<p className="mt-1 text-gray-500 text-sm">{formatPrice(ele?.property?.price)} per day</p>
 														</h5>
 													</div>
-													{/* <p className="hidden text-gray-500 sm:mt-2 sm:block">{formatDateRange(ele?.startDate, ele?.endDate)}</p> */}
 												</div>
 											</div>
 
 											<div className="mt-6 sm:flex sm:justify-between">
 												<div className="flex items-center">
 													<span className="mr-2 font-medium">Booking:</span> <StatusBadge status={ele?.bookingStatus} type="booking" />
-													{/* <p className="ml-2 text-sm font-medium text-gray-500">{ele?.id.substring(0, 8).toUpperCase()}</p> */}
 												</div>
 
 												{(ele?.bookingStatus === BOOKING_STATUS.AWAITING_OWNER_APPROVAL || ele?.bookingStatus === BOOKING_STATUS.CONFIRMED) && (

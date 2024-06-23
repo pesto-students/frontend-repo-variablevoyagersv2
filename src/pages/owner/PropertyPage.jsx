@@ -4,19 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { selectUser } from '../../redux/slices/authSlice';
 import { axiosPrivate } from '../../services/axios.service';
 import Loader from '../../components/common/Loader';
-import EditIcon from '../../assets/icons/edit.png';
-import TrashIcon from '../../assets/icons/trash.png';
-import EyeIcon from '../../assets/icons/eye.png';
-import moment from 'moment';
 import Button from '../../components/common/Button';
-import { FaEye, FaPenToSquare, FaPlus, FaTrash } from 'react-icons/fa6';
-import { RxEyeOpen, RxPencil2 } from 'react-icons/rx';
+import { FaPenToSquare, FaPlus, FaTrash } from 'react-icons/fa6';
 import ImagePlaceholder from '../../assets/ImagePlaceholder.jpeg';
 import { toast } from 'react-toastify';
 import EmptyState from '../../components/common/EmptyState';
-import { RiCalendarCloseLine } from 'react-icons/ri';
-import { PiBuildingsFill, PiWarningCircleFill } from 'react-icons/pi';
-import { format, formatDate } from 'date-fns';
+import { PiBuildingsFill } from 'react-icons/pi';
+import { format } from 'date-fns';
 import { formatPrice } from '../../utils';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import Pagination from '../../components/common/Pagination';
@@ -154,7 +148,6 @@ const PropertyPage = () => {
 													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{property?.capacity}</td>
 													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
 														<div className="text-gray-900">{property?.city}</div>
-														{/* <div className="mt-1 text-gray-500">{property?.country}</div> */}
 													</td>
 
 													<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
@@ -168,9 +161,6 @@ const PropertyPage = () => {
 															<div className="text-indigo-600 hover:text-indigo-900" onClick={() => deleteProperty(property?.id)}>
 																<FaTrash className="h-5 w-5 text-red-600" />
 															</div>
-															{/* <div className="text-indigo-600 hover:text-indigo-900">
-															<FaEye className="h-5 w-5 text-primary" />
-															</div> */}
 														</div>
 													</td>
 												</tr>

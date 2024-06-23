@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Heading from './Heading';
-import ImagePlaceholder from '../../assets/ImagePlaceholder.jpeg';
 import Slider from 'react-slick';
-// import { FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6';
 
 const NextArrow = (props) => {
 	const { className, style, onClick } = props;
@@ -11,8 +9,7 @@ const NextArrow = (props) => {
 			className={`${className} absolute right-4 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer`}
 			style={{ ...style }}
 			onClick={onClick}
-		>
-		</div>
+		></div>
 	);
 };
 
@@ -23,8 +20,7 @@ const PrevArrow = (props) => {
 			className={`${className} absolute left-4 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer`}
 			style={{ ...style }}
 			onClick={onClick}
-		>
-		</div>
+		></div>
 	);
 };
 
@@ -36,7 +32,7 @@ const PropertyHead = ({ propertyName, city, country, propertyImages }) => {
 	};
 
 	if (!propertyImages || propertyImages.length === 0) {
-		return null; // or display a placeholder image or message
+		return null;
 	}
 
 	const settings = {
@@ -57,8 +53,9 @@ const PropertyHead = ({ propertyName, city, country, propertyImages }) => {
 				<Heading name={propertyName || ''} city={city} country={country} />
 			</div>
 			<div
-				className={`hidden lg:flex justify-end gap-2 w-full h-[60vh] overflow-hidden rounded-xl relative cursor-pointer ${isFullScreen ? 'hidden' : ''
-					}`}
+				className={`hidden lg:flex justify-end gap-2 w-full h-[60vh] overflow-hidden rounded-xl relative cursor-pointer ${
+					isFullScreen ? 'hidden' : ''
+				}`}
 			>
 				{propertyImages.length < 5 ? (
 					<img className="object-cover w-full" src={propertyImages[0].imgUrl} alt="Img" />
@@ -86,10 +83,10 @@ const PropertyHead = ({ propertyName, city, country, propertyImages }) => {
 					Show All Photos
 				</button>
 			</div>
-			<div className='flex lg:hidden justify-center items-center w-full h-full overflow-hidden rounded-sm relative cursor-pointer'>
-				<Slider {...settings} className='w-full'>
+			<div className="flex lg:hidden justify-center items-center w-full h-full overflow-hidden rounded-sm relative cursor-pointer">
+				<Slider {...settings} className="w-full">
 					{propertyImages.map((img, index) => (
-						<div key={index} className='w-full '>
+						<div key={index} className="w-full ">
 							<img className="w-full object-cover" src={img.imgUrl} alt="Img" />
 						</div>
 					))}
@@ -97,10 +94,7 @@ const PropertyHead = ({ propertyName, city, country, propertyImages }) => {
 			</div>
 			{isFullScreen && (
 				<div className="fixed inset-0 z-50 overflow-hidden bg-gray-900 flex justify-center items-center">
-					<button
-						className="absolute w-20 h-10 z-10 right-2 top-2 rounded-lg bg-white"
-						onClick={toggleFullScreen}
-					>
+					<button className="absolute w-20 h-10 z-10 right-2 top-2 rounded-lg bg-white" onClick={toggleFullScreen}>
 						Close
 					</button>
 					<Slider {...settings} className="w-screen h-screen">

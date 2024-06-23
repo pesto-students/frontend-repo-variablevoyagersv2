@@ -1,23 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Autocomplete, GoogleMap, LoadScript, MarkerF, useJsApiLoader } from '@react-google-maps/api';
+import { Autocomplete, GoogleMap, MarkerF } from '@react-google-maps/api';
 import { useFormContext } from 'react-hook-form';
 import InputField from '../forms/InputField';
 import TextAreaField from '../forms/TextAreaField';
 import useOutsideClick from '../../hooks/useOutsideClick';
 import { cityList } from '../../constants/city';
-const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const containerStyle = {
 	width: '100%',
 	height: '400px',
 };
 
-const libraries = ['places'];
-
 const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, setInteract, userInteracted, isLoaded }) => {
 	const {
 		register,
-		formState: { errors, isSubmitting },
+		formState: { errors },
 		setValue,
 	} = useFormContext();
 
@@ -169,7 +166,7 @@ const PropertyAddress = ({ handleCityChange, selectedCity, setCord, cordinate, s
 											id="area"
 											name="area"
 											register={register}
-											required={true}
+											required={false}
 										/>
 									</Autocomplete>
 								)}

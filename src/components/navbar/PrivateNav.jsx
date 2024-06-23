@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated, selectUser } from '../../redux/slices/authSlice';
 import { ROLES } from '../../constants/roles';
-import Logo from './Logo';
 
 import MenuLink from './MenuLink';
 
@@ -27,12 +26,12 @@ const PrivateNav = () => {
 	}, [isMenuOpen]);
 
 	const toggleMenu = (event) => {
-		event.stopPropagation(); // Prevents event bubbling to body
+		event.stopPropagation();
 		setIsMenuOpen(!isMenuOpen);
 	};
 
 	const handleMenuClick = (event) => {
-		event.stopPropagation(); // Prevents event bubbling to body
+		event.stopPropagation();
 	};
 	return (
 		<div>
@@ -60,7 +59,6 @@ const PrivateNav = () => {
 					</svg>
 				</button>
 				<Link to="/" className={`cursor-pointer rounded-3xl ${user ? 'hidden' : ''}`}>
-					{/* <img src={logo}  height="180" width="180" alt="Logo" /> */}
 					<div className="text-xl  font-bold  text-primary">BookMyVenue</div>
 				</Link>
 			</div>
@@ -73,9 +71,7 @@ const PrivateNav = () => {
 				{isAuthenticated && user?.role === ROLES.OWNER && (
 					<>
 						<MenuLink to="/">Home</MenuLink>
-						{/* <MenuLink to="/owner/dashboard" onClick={toggleMenu}>
-							Dashboard
-						</MenuLink> */}
+
 						<MenuLink to="/owner/bookings" onClick={toggleMenu}>
 							Booking
 						</MenuLink>
@@ -105,7 +101,6 @@ const PrivateNav = () => {
 				<div className="flex space-x-4">
 					{isAuthenticated && user?.role === ROLES.OWNER && (
 						<>
-							{/* <MenuLink to="/owner/dashboard">Dashboard</MenuLink> */}
 							<MenuLink to="/owner/bookings">Booking</MenuLink>
 							<MenuLink to="/owner/property">Property</MenuLink>
 							<MenuLink to="/owner/profile">Profile</MenuLink>

@@ -1,19 +1,6 @@
 import React from 'react';
-import placeholder from '../../../public/placeholder.jpg';
 import Avatar from '../Avatar';
 import { FaLocationDot } from 'react-icons/fa6';
-// import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import mappin from '../../../public/mappin.png';
-import { CATEGORIES } from '../../constants/categories';
-
-const icon = L.icon({
-	iconUrl: mappin,
-	iconSize: [38, 38], // size
-});
-
-const position = [18.521428, 73.8544541];
 
 const PropertyDescriptions = ({ ownerName, capacity, description, avatar, address, tags, amenities }) => {
 	return (
@@ -26,7 +13,7 @@ const PropertyDescriptions = ({ ownerName, capacity, description, avatar, addres
 						</span>
 					))}
 				</div>
-				{/* {console.log(tags)} */}
+
 				<div className="flex">
 					<div className="mr-4 mt-0.5">
 						<Avatar src={avatar} h="40" w="45" />
@@ -59,19 +46,6 @@ const PropertyDescriptions = ({ ownerName, capacity, description, avatar, addres
 							{amenity}
 						</div>
 					))}
-					{/* <h1 className="text-black font-medium mb-2">Location</h1>
-					<MapContainer center={position} zoom={17} className="w-full h-[300px] rounded-md">
-						<TileLayer
-							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-							// url="https://api.maptiler.com/maps/basic-v2/256/{z}/{x}/{y}.png?key=cAmD7YTjS0s4a0eyZVqx"
-							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-						/>
-						<Marker position={position}>
-							<Popup>
-								A pretty CSS3 popup. <br /> Easily customizable.
-							</Popup>
-						</Marker>
-					</MapContainer> */}
 				</div>
 			</div>
 		</>

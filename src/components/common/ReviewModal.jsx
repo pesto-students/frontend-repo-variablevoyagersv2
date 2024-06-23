@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { LuLoader2 } from 'react-icons/lu';
-import { PiWarningCircle } from 'react-icons/pi';
 import TextAreaField from '../forms/TextAreaField';
 import Rating from 'react-rating';
 import { RiStarFill } from 'react-icons/ri';
 const ReviewModal = ({ onConfirm, onCancel, reviewLoading, reviewData }) => {
 	const {
 		register,
-		formState: { errors, isSubmitting },
+		formState: { errors },
 		handleSubmit,
 		setValue,
 		watch,
@@ -53,7 +52,7 @@ const ReviewModal = ({ onConfirm, onCancel, reviewLoading, reviewData }) => {
 							className="end-2.5 text-gray-400 bg-transparent hover:bg-primary hover:text-white rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
 						>
 							<svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-								<path stroke="currentColor" strokeLinecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+								<path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
 							</svg>
 							<span className="sr-only">Close modal</span>
 						</button>
@@ -80,7 +79,7 @@ const ReviewModal = ({ onConfirm, onCancel, reviewLoading, reviewData }) => {
 							maxLength="250"
 							watch={watch}
 						/>
-						{/* <h1>0/{review.length}</h1> */}
+
 						{errors?.review && <span className="text-red-500 text-sm">Review is required</span>}
 						<div className="flex justify-center items-center mt-5">
 							<button
@@ -90,7 +89,6 @@ const ReviewModal = ({ onConfirm, onCancel, reviewLoading, reviewData }) => {
 									reviewLoading ? 'cursor-not-allowed bg-gray-200' : 'bg-primary'
 								}`}
 								onClick={reviewData?.review ? handleSubmit(onSubmitEdit) : handleSubmit(onSubmit)}
-								// onClick={handleSubmit(onSubmit)}
 							>
 								{reviewLoading ? <LuLoader2 className="w-6 h-6 text-white animate-spin" /> : 'Submit'}
 							</button>

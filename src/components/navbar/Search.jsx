@@ -14,7 +14,7 @@ const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 
 	const handleSearchChange = (event) => {
 		const query = event.target.value;
-		onSearchVenues(query); // Call the onSearchVenues callback with the updated query
+		onSearchVenues(query);
 	};
 
 	const searchProp = debounce(handleSearchChange, 1000);
@@ -40,7 +40,6 @@ const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 			</div>
 			<div className="md:col-span-8 col-span-8">
 				<div className="relative">
-					{/* <input type="search" id="search" className="shadow appearance-none w-full py-2 px-3 bg-white leading-tight focus:outline-none focus:shadow-outline rounded-none  " placeholder="Search venues..." /> */}
 					<input
 						type="text"
 						defaultValue={search}
