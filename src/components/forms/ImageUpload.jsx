@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaCircleXmark } from 'react-icons/fa6';
 const ImageUpload = ({ onImagesChange, propertyImages }) => {
@@ -9,7 +9,6 @@ const ImageUpload = ({ onImagesChange, propertyImages }) => {
 				caption: '',
 			}));
 
-			// Combine new images with existing ones and limit to 5
 			const combinedImages = [...propertyImages, ...newImages].slice(0, 5);
 
 			onImagesChange(combinedImages);

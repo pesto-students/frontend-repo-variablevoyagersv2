@@ -4,11 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import TextAreaField from '../forms/TextAreaField';
 
 const PropertyExtra = () => {
-	const {
-		register,
-		formState: { errors, isSubmitting },
-		watch,
-	} = useFormContext();
+	const { register, watch } = useFormContext();
 	return (
 		<div className="shadow sm:overflow-hidden sm:rounded-md">
 			<div className="space-y-6 bg-white px-4 py-6 sm:p-6">
@@ -19,7 +15,6 @@ const PropertyExtra = () => {
 				<div className="grid grid-cols-6 gap-6">
 					<div className="col-span-6 sm:col-span-6">
 						<TextAreaField label="Extra Information" id="extraInfo" name="extraInfo" register={register} maxLength="300" watch={watch} />
-						{/* {errors?.extraInfo && <span className="text-red-500 text-sm">Description is required</span>} */}
 					</div>
 				</div>
 			</div>

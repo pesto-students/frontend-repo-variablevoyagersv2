@@ -73,7 +73,7 @@ const AddPropertyPage = () => {
 
 	const {
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { isSubmitting },
 		trigger,
 		reset,
 	} = methods;

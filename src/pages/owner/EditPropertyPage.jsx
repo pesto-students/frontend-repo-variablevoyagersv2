@@ -105,7 +105,7 @@ const EditPropertyPage = () => {
 
 	const {
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { isSubmitting },
 		trigger,
 		reset,
 	} = methods;
@@ -155,13 +155,6 @@ const EditPropertyPage = () => {
 			});
 
 			if (res.data.success) {
-				// reset();
-				// setPropertyImages([]);
-				// setCategories([]);
-				// setAmenities([]);
-				// setSelectedCity('Delhi');
-				// setView('property-details');
-				// setEnabledViews(['property-details']);
 				toast.success('Property is updated');
 			} else {
 				toast.error('Something went wrong');
@@ -244,8 +237,9 @@ const EditPropertyPage = () => {
 							<a
 								key={step.key}
 								onClick={() => handleSetView(step.key)}
-								className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === step.key ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-									} ${!enabledViews.includes(step.key) && 'pointer-events-none opacity-50'}  ${isSubmitting && 'pointer-events-none opacity-50'}`}
+								className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+									view === step.key ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+								} ${!enabledViews.includes(step.key) && 'pointer-events-none opacity-50'}  ${isSubmitting && 'pointer-events-none opacity-50'}`}
 							>
 								<span className="truncate">{step.name}</span>
 							</a>
@@ -257,7 +251,7 @@ const EditPropertyPage = () => {
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
 							{view === 'property-details' && <PropertyDetails />}
-							{view === 'property-address' &&
+							{view === 'property-address' && (
 								<PropertyAddress
 									handleCityChange={handleCityChange}
 									setCord={handCordinateChange}
@@ -266,7 +260,8 @@ const EditPropertyPage = () => {
 									setInteract={handUserInteracted}
 									userInteracted={userInteracted}
 									isLoaded={isLoaded}
-								/>}
+								/>
+							)}
 
 							{view === 'property-images' && (
 								<div className="shadow sm:overflow-hidden sm:rounded-md">

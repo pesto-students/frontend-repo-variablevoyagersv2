@@ -1,51 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { axiosPrivate } from '../../services/axios.service';
-import { differenceInDays } from 'date-fns';
-import Container from '../../components/Container';
-import PropertyHead from '../../components/PropertyDetails/PropertyHead';
-import PropertyDescriptions from '../../components/PropertyDetails/PropertyDescriptions';
-import PropertyReservation from '../../components/PropertyDetails/PropertyReservation';
+import PropertyHead from '../../components/propertyDetails/PropertyHead';
+import PropertyDescriptions from '../../components/propertyDetails/PropertyDescriptions';
+import PropertyReservation from '../../components/propertyDetails/PropertyReservation';
 import Loader from '../../components/common/Loader';
-import Reviews from '../../components/PropertyDetails/Reviews';
-import UserReviews from '../../components/PropertyDetails/UserReviews';
+import Reviews from '../../components/propertyDetails/Reviews';
+
 import { CATEGORIES } from '../../constants/categories';
-import { GoogleMap, MarkerF, StreetViewService, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import customMarkerIcon from '/MapMarker2.png';
 const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
-const containerStyle = {
-	width: '100%',
-	height: '400px',
-	borderRadius: '0.375rem',
-};
-
 const mapOptions = {
-	// disableDefaultUI: true,
-	// mapTypeControl: false,
 	streetViewControl: false,
 	styles: [
 		{
 			featureType: 'poi.park',
-			stylers: [{ visibility: 'off' }], // Hide POI labels
+			stylers: [{ visibility: 'off' }],
 		},
 		{
 			featureType: 'road',
 			elementType: 'labels',
-			stylers: [{ visibility: 'off' }], // Hide road labels
+			stylers: [{ visibility: 'off' }],
 		},
 		{
 			featureType: 'administrative',
 			elementType: 'geometry',
-			stylers: [{ visibility: 'off' }], // Hide administrative borders
+			stylers: [{ visibility: 'off' }],
 		},
 		{
 			featureType: 'poi.business',
-			stylers: [{ visibility: 'off' }], // Hide business POIs
+			stylers: [{ visibility: 'off' }],
 		},
 		{
 			featureType: 'transit',
-			stylers: [{ visibility: 'off' }], // Hide transit lines and stations
+			stylers: [{ visibility: 'off' }],
 		},
 	],
 };
@@ -107,15 +97,7 @@ const PropertyDetailPage = () => {
 						/>
 					</div>
 					<div className="order-first mb-10 md:order-last md:col-span-3">
-						<PropertyReservation
-							property={property}
-							// price={property?.price}
-							// propertyId={property?.id}
-							// queryId={id}
-							// totalPrice={totalPrice}
-							// dateRange={dateRange}
-							// onChangeDate={(value) => setDateRange(value)}
-						/>
+						<PropertyReservation property={property} />
 					</div>
 				</div>
 				<hr />
@@ -124,7 +106,11 @@ const PropertyDetailPage = () => {
 				) : property?.lat ? (
 					<>
 						<GoogleMap
-							mapContainerStyle={containerStyle}
+							mapContainerStyle={{
+								width: '100%',
+								height: '400px',
+								borderRadius: '0.375rem',
+							}}
 							center={{ lat: Number(property?.lat), lng: Number(property?.lng) }}
 							zoom={16}
 							options={mapOptions}
@@ -133,9 +119,9 @@ const PropertyDetailPage = () => {
 								position={{ lat: Number(property?.lat), lng: Number(property?.lng) }}
 								icon={{
 									url: customMarkerIcon,
-									// scaledSize: new window.google.maps.Size(40, 40), // size in pixels
-									origin: new window.google.maps.Point(0, 0), // origin of the image
-									anchor: new window.google.maps.Point(20, 40), // anchor point (bottom center)
+
+									origin: new window.google.maps.Point(0, 0),
+									anchor: new window.google.maps.Point(20, 40),
 								}}
 							/>
 						</GoogleMap>
@@ -145,7 +131,6 @@ const PropertyDetailPage = () => {
 					<></>
 				)}
 				{property?.reviews && property?.reviews.length > 0 && <Reviews reviews={property?.reviews} />}
-				{/* <Reviews reviews={property?.reviews} /> */}
 			</div>
 		</div>
 	);

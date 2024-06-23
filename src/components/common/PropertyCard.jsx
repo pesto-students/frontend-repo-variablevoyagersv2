@@ -1,8 +1,6 @@
 import React from 'react';
 import ImagePlaceholder from '../../assets/ImagePlaceholder.jpeg';
-// import Heading from '../PropertyDetails/Heading'
-import FormatPrice from '../FormatPrice';
-import placeholderImage from '/placeholder.jpg';
+import { formatPrice } from '../../utils';
 
 const PropertyCard = ({ property }) => {
 	return (
@@ -19,11 +17,9 @@ const PropertyCard = ({ property }) => {
 				<h2 className="text-gray-500">
 					{property?.city}, {property?.country}
 				</h2>
-				{/* <Heading name={property?.propertyName} city={property?.city} country={property?.country}/> */}
+
 				<div className="mt-1">
-					<span className="font-medium ">
-						<FormatPrice price={property.price} />
-					</span>{' '}
+					<span className="font-medium mr-1">{formatPrice(property.price)}</span>
 					per day
 				</div>
 			</div>

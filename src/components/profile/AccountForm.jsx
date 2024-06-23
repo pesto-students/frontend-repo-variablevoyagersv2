@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Input from '../forms/Input';
 import { useForm } from 'react-hook-form';
 import InputField from '../forms/InputField';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +6,7 @@ import { selectUser, setUser } from '../../redux/slices/authSlice';
 import { toast } from 'react-toastify';
 import { updateUser } from '../../services/user.service';
 import Button from '../common/Button';
-import EyeIcon from '../../assets/icons/eye.png';
+
 const AccountForm = () => {
 	const dispatch = useDispatch();
 	const user = useSelector(selectUser);
@@ -19,7 +18,6 @@ const AccountForm = () => {
 	const {
 		register,
 		handleSubmit,
-		reset,
 		setValue,
 		formState: { errors, isSubmitting },
 	} = useForm();

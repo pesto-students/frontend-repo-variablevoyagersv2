@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Calendar from '../Calendar';
-import FormatPrice from '../FormatPrice';
 import { useNavigate } from 'react-router-dom';
-import { differenceInDays } from 'date-fns';
+import { differenceInDays, isSameDay } from 'date-fns';
 
 import { selectUser } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
 import LoginPage from '../../pages/public/LoginPage';
 import { db } from '../../dexie/db';
 import Button from '../common/Button';
-import { getDatesBetween } from '../../utils';
+import { formatPrice, getDatesBetween } from '../../utils';
 import { ROLES } from '../../constants/roles';
 
 const PropertyReservation = ({ property }) => {
@@ -29,7 +28,21 @@ const PropertyReservation = ({ property }) => {
 		if (property?.bookings?.length > 0) {
 			const allDates = property?.bookings?.map((booking) => getDatesBetween(booking.startDate, booking.endDate)).flat();
 			console.log(allDates);
+
 			setDates(allDates);
+			const currentDate = new Date();
+			if (allDates.some((date) => isSameDay(date, currentDate))) {
+				let nextAvailableDate = new Date(currentDate);
+				while (allDates.some((date) => isSameDay(date, nextAvailableDate))) {
+					nextAvailableDate.setDate(nextAvailableDate.getDate() + 1);
+				}
+
+				setDateRange((prevRange) => ({
+					...prevRange,
+					startDate: nextAvailableDate,
+					endDate: nextAvailableDate,
+				}));
+			}
 		}
 	}, [property?.bookings]);
 
@@ -91,7 +104,7 @@ const PropertyReservation = ({ property }) => {
 		<>
 			<div className="bg-white rounded-xl shadow-lg border-[1px] border-neutral-200 overflow-hidden">
 				<div className="flex flex-row items-center gap-0 p-4">
-					<div className="text-2xl font-semibold">{<FormatPrice price={property?.price} />}</div>
+					<div className="text-2xl font-semibold">{formatPrice(totalPrice)}</div>
 					<div className=" text-neutral-600 ml-2 font-normal">Per Day</div>
 				</div>
 				<hr className="bg-gray-50" />
@@ -116,7 +129,7 @@ const PropertyReservation = ({ property }) => {
 				<hr className="bg-gray-50" />
 				<div className=" p-4 flex flex-row items-center justify-between font-semibold text-lg">
 					<div>Total</div>
-					<div>{<FormatPrice price={totalPrice} />}</div>
+					<div> {formatPrice(totalPrice)}</div>
 				</div>
 			</div>
 			{showLoginModal && (

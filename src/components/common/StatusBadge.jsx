@@ -1,6 +1,5 @@
 import React from 'react';
 import { BOOKING_STATUS, PAYMENT_STATUS } from '../../constants/status';
-// import { BOOKING_STATUS, PAYMENT_STATUS } from './constants';
 
 const StatusBadge = ({ status, type }) => {
 	const isBookingStatus = type === 'booking';

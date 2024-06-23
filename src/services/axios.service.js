@@ -53,22 +53,6 @@ axiosPrivate.interceptors.response.use(
 			}
 		}
 
-		// const originalRequest = error.config;
-		// console.log(originalRequest);
-		// if (error.response.status === 401 && !originalRequest._retry) {
-		// 	originalRequest._retry = true;
-		// 	try {
-		// 		const response = await axiosInstance.post('/auth/refreshToken', {
-		// 			crossDomain: true,
-		// 			withCredentials: true,
-		// 		});
-
-		// 		localStorage.setItem('token', JSON.stringify(response.data.accessToken));
-		// 		return axiosPrivate(originalRequest);
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 	}
-		// }
 		return Promise.reject(error);
 	},
 );

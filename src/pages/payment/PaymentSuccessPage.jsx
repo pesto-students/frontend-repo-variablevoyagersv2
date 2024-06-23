@@ -12,10 +12,6 @@ const PaymentSuccessPage = () => {
 	const [booking, setBooking] = useState(null);
 
 	useEffect(() => {
-		// if (!location.state || !location.state.fromPayment) {
-		// 	navigate('/');
-		// 	return;
-		// }
 		const searchParams = new URLSearchParams(location.search);
 		const bookingId = searchParams.get('id');
 		if (!bookingId) {

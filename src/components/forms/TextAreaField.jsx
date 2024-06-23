@@ -1,9 +1,6 @@
-// TextAreaField.js
 import React from 'react';
-import { useForm } from 'react-hook-form';
 
 const TextAreaField = ({ label, id, name, register, required, error, placeholder, maxLength, watch }) => {
-	// const { watch } = useForm();
 	return (
 		<>
 			<label htmlFor={id} className="block text-sm font-medium text-gray-700">

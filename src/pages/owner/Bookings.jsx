@@ -54,28 +54,8 @@ const Bookings = () => {
 		setShowModal(true);
 		setSelectedBookingId(id);
 	};
-	// const handleAcceptRejec2t = async (id, bookingStatus, paymentStatus) => {
-	// 	console.log(id);
-	// 	const reqObj = {
-	// 		bookingStatus,
-	// 		paymentStatus,
-	// 		role: ROLES.OWNER,
-	// 	};
-	// 	const {
-	// 		data: { data },
-	// 	} = await axiosPrivate.put(`/booking/${id}`, reqObj);
-	// 	console.log(data);
-	// };
+
 	const handleConfirm = async () => {
-		// const reqObj = {
-		// 	bookingStatus,
-		// 	paymentStatus,
-		// 	role: ROLES.OWNER,
-		// };
-		// const {
-		// 	data: { data },
-		// } = await axiosPrivate.put(`/booking/${selectedBookingId}`, reqObj);
-		// console.log(data);
 		try {
 			setLoading(true);
 			const reqObj = {
@@ -126,7 +106,6 @@ const Bookings = () => {
 			</div>
 
 			<div className="lg:grid lg:grid-cols-12 lg:gap-x-5 mb-5">
-				{/* <div className="px-2 py-6 lg:col-span-3 lg:px-0 lg:py-0"> */}
 				<nav className="flex flex-wrap lg:flex-nowrap gap-2">
 					<a
 						onClick={() => handleFilter(BOOKING_STATUS.AWAITING_OWNER_APPROVAL)}
@@ -135,9 +114,6 @@ const Bookings = () => {
 						}`}
 					>
 						<span className="truncate">Awaiting approval</span>
-						{/* <span className="ml-3 hidden rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-900 md:inline-block">
-								{totalCount}
-							</span> */}
 					</a>
 					<a
 						onClick={() => handleFilter(BOOKING_STATUS.CONFIRMED)}
@@ -146,9 +122,6 @@ const Bookings = () => {
 						}`}
 					>
 						<span className="truncate">Confirmed</span>
-						{/* <span className="ml-3 hidden rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-900 md:inline-block">
-								{totalCount}
-							</span> */}
 					</a>
 					<a
 						onClick={() => handleFilter(BOOKING_STATUS.CANCELLED)}
@@ -157,9 +130,6 @@ const Bookings = () => {
 						}`}
 					>
 						<span className="truncate">Cancelled</span>
-						{/* <span className="ml-3 hidden rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-900 md:inline-block">
-								{totalCount}
-							</span> */}
 					</a>
 
 					<a
@@ -169,12 +139,8 @@ const Bookings = () => {
 						}`}
 					>
 						<span className="truncate">Completed</span>
-						{/* <span className="ml-3 hidden rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-900 md:inline-block">
-								{totalCount}
-							</span> */}
 					</a>
 				</nav>
-				{/* </div> */}
 			</div>
 
 			{bookings.length > 0 ? (
@@ -218,12 +184,6 @@ const Bookings = () => {
 											</dd>
 										</div>
 
-										{/* <div className="flex justify-between gap-x-4 py-2">
-											<dt className="text-gray-500">Property Price</dt>
-											<dd className="text-gray-700">
-												<time>{formatPrice(ele?.property?.price)} per day</time>
-											</dd>
-										</div> */}
 										<div className="flex justify-between gap-x-4 py-2">
 											<dt className="text-gray-500">Amount Paid</dt>
 											<dd className="flex items-start gap-x-2">
@@ -296,7 +256,6 @@ const Bookings = () => {
 					))}
 				</ul>
 			) : (
-				// <div className=" bg-white sm:p-6 sm:rounded-md">
 				<EmptyState
 					title={
 						view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL
@@ -322,7 +281,6 @@ const Bookings = () => {
 					}
 					icon={<RiCalendarCloseLine className="w-16 h-16 text-white" />}
 				/>
-				// </div>
 			)}
 			<div className="mt-5">
 				<Pagination totalCount={totalCount} page={page} limit={limit} onPageChange={setPage} pageClass={'justify-center'} />
