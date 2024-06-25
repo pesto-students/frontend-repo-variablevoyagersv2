@@ -7,7 +7,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import OtpModel from './OtpModel';
 import Button from '../../components/common/Button';
-import OnboardingModal from './OnboardingModal ';
+import OnboardingModal from './OnboardingModal';
 import InputField from '../../components/forms/InputField';
 import { handleLoginSuccess } from '../../services/user.service';
 import { useDispatch } from 'react-redux';

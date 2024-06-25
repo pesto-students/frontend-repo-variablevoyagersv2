@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance, axiosPrivate } from '../../services/axios.service';
 import Button from '../../components/common/Button';
-import OnboardingModal from './OnboardingModal ';
+import OnboardingModal from './OnboardingModal';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/authSlice';

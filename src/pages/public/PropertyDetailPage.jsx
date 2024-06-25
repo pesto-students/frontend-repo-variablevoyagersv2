@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { axiosPrivate } from '../../services/axios.service';
-import PropertyHead from '../../components/propertyDetails/PropertyHead';
 import PropertyDescriptions from '../../components/propertyDetails/PropertyDescriptions';
 import PropertyReservation from '../../components/propertyDetails/PropertyReservation';
+import PropertyHead from '../../components/propertyDetails/PropertyHead';
 import Loader from '../../components/common/Loader';
 import Reviews from '../../components/propertyDetails/Reviews';
-
 import { CATEGORIES } from '../../constants/categories';
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import customMarkerIcon from '/MapMarker2.png';

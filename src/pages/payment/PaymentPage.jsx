@@ -104,7 +104,7 @@ const PaymentPage = () => {
 							amount: orderResponse.order.amount,
 							status: PAYMENT_STATUS.SUCCESS,
 						});
-
+						console.log("Email Send Owner and Cus New booking after payment");
 						navigate(`/payment-success?id=${orderResponse.bookingId}`, { state: { fromPayment: true } });
 					},
 					prefill: {

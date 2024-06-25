@@ -5,32 +5,44 @@ import { formatDateRange, formatPrice } from '../../utils';
 import { IoCheckmarkCircleSharp } from 'react-icons/io5';
 import Loader from '../../components/common/Loader';
 
+function formatDate(dateString) {
+	return new Date(dateString).toLocaleString('en-US', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+		// hour: '2-digit',
+		// minute: '2-digit'
+	});
+}
+
 const PaymentSuccessPage = () => {
 	const location = useLocation();
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
 	const [booking, setBooking] = useState(null);
 
+	const searchParams = new URLSearchParams(location.search);
+	const bookingId = searchParams.get('id');
+
 	useEffect(() => {
-		const searchParams = new URLSearchParams(location.search);
-		const bookingId = searchParams.get('id');
 		if (!bookingId) {
 			navigate('/');
+			return;
 		}
+
 		const getBooking = async () => {
-			setLoading(true);
 			try {
-				const { data } = await axiosPrivate.get(`/booking/${bookingId}`);
-				console.log(data);
-				setBooking(data);
+				const { data } = await axiosPrivate.get(`/booking/send-mail/${bookingId}`);
+				setBooking(data.data);
 			} catch (err) {
-				console.log('Error fetching booking', booking);
+				console.log('Error fetching booking', err);
 			} finally {
 				setLoading(false);
 			}
 		};
+
 		getBooking();
-	}, []);
+	}, [bookingId, navigate]);
 
 	if (loading) {
 		return <Loader />;
@@ -38,10 +50,10 @@ const PaymentSuccessPage = () => {
 
 	return (
 		<>
-			<main className="grid h-screen place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
-				<div className=" rounded-lg bg-white px-4 pb-4 pt-5 text-left border border-gray-100 sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+			<main className="grid place-items-center bg-white px-6 py-24 sm:py-15 lg:px-8">
+				<div className="rounded-lg bg-white px-4 pb-4 pt-5 text-left border border-gray-100 sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
 					<div>
-						<div className="mx-auto flex  items-center justify-center rounded-full ">
+						<div className="mx-auto flex items-center justify-center rounded-full">
 							<IoCheckmarkCircleSharp className="h-12 w-12 text-green-600" />
 						</div>
 
@@ -49,13 +61,50 @@ const PaymentSuccessPage = () => {
 							<h3 className="text-lg font-semibold leading-6 text-gray-900" id="modal-title">
 								Payment successful
 							</h3>
-							<div className="mt-3">
-								<p className="text-md text-gray-500">
-									Your payment of {formatPrice(booking?.payments[0]?.amount)} for the event on {formatDateRange(booking?.startDate, booking?.endDate)}{' '}
-									at {booking?.property?.propertyName} has been successfully processed.
-								</p>
+							{/* <div className="mt-3">
+                <p className="text-md text-gray-500">
+                  Your payment of <span className=' font-semibold text-black'>{formatPrice(booking?.payments[0]?.amount)}</span> for the event on <span className=' font-semibold text-black'>{formatDateRange(booking?.startDate, booking?.endDate)}{' '}</span>
+                  at <span className=' font-semibold text-black'>{booking?.property?.propertyName}</span> has been successfully processed.
+                </p>
+              </div> */}
+							<div className="font-sans max-w-[600px] mx-auto p-5">
+								<h1 className="text-[#b4457f] text-2xl font-bold mt-0">BookMyVenue</h1>
+								<h2 className="text-[#4a4a4a]">Booking Confirmation</h2>
+								<p>Dear {booking.user.firstName},</p>
+								<p>Thank you for your booking. Here are the details:</p>
+								<table className="w-full border-collapse mb-5">
+									<tbody>
+										<tr>
+											<td className="p-2.5 border border-gray-300 font-bold">Booking ID</td>
+											<td className="p-2.5 border border-gray-300">{booking.id}</td>
+										</tr>
+										<tr>
+											<td className="p-2.5 border border-gray-300 font-bold">Property</td>
+											<td className="p-2.5 border border-gray-300">{booking.property.propertyName}</td>
+										</tr>
+										<tr>
+											<td className="p-2.5 border border-gray-300 font-bold">Check-in</td>
+											<td className="p-2.5 border border-gray-300">{formatDate(booking.startDate)}</td>
+										</tr>
+										<tr>
+											<td className="p-2.5 border border-gray-300 font-bold">Check-out</td>
+											<td className="p-2.5 border border-gray-300">{formatDate(booking.endDate)}</td>
+										</tr>
+										<tr>
+											<td className="p-2.5 border border-gray-300 font-bold">Status</td>
+											<td className="p-2.5 border border-gray-300 text-yellow-600">{booking.bookingStatus}</td>
+										</tr>
+										<tr>
+											<td className="p-2.5 border border-gray-300 font-bold">Amount Paid</td>
+											<td className="p-2.5 border border-gray-300">Rs.{booking.payments[0].amount}</td>
+										</tr>
+									</tbody>
+								</table>
+								<p>Please note that your booking is currently <span className='text-yellow-600'>{booking.bookingStatus}</span>. We will notify you once it's approved.</p>
+								<p>If you have any questions, please don't hesitate to contact us.</p>
 							</div>
 						</div>
+						<div className='text-center text-md text-gray-500'>Conformation email has been sent to your Email ID : <span className=' font-semibold text-black'>{booking?.user.email}</span></div>
 					</div>
 					<div className="mt-6 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
 						<Link
