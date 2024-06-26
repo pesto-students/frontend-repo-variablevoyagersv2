@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { , useEffect, useState } from 'react';
 import { debounce } from '../../utils';
+import { ReactSearchAutocomplete } from 'react-search-autocomplete';
+import { axiosPrivate } from '../../services/axios.service';
+import './serch.css'
 
 const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 	const [selectedCity, setSelectedCity] = useState('');
+	const [items, setItems] = useState([]);
 
 	useEffect(() => {
 		setSelectedCity(city);
@@ -16,8 +20,43 @@ const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 		const query = event.target.value;
 		onSearchVenues(query);
 	};
+	const handleOnSearch = async (string, results) => {
+		console.log(string);
+		if (string.length > 2) {
+			try {
+				const { data: { data } } = await axiosPrivate.get(`/property?search=${string}`);
 
-	const searchProp = debounce(handleSearchChange, 1000);
+				// Check if response.data is an array
+				if (Array.isArray(data.properties)) {
+					setItems(data.properties.map((item, index) => ({ id: index, name: item.propertyName })));
+				}
+				else {
+					console.error('Unexpected data structure:', data);
+					setItems([]);
+				}
+			} catch (error) {
+				console.error('Error fetching suggestions:', error);
+				setItems([]);
+			}
+		}
+	};
+	const handleOnSelect = (item) => {
+		onSearchVenues(item.name);
+		setItems([]);
+	};
+	const formatResult = (item) => {
+		return (
+			<div className="result-wrapper">
+				<span className="result-span">{item.name}</span>
+			</div>
+		);
+	};
+
+	const handleOnClear = () => {
+		onSearchVenues("");
+	};
+
+	// const searchProp = debounce(handleSearchChange, 1000);
 
 	const indianCities = ['Mumbai', 'Delhi', 'Bengaluru', 'Hyderabad', 'Ahmedabad', 'Chennai', 'Kolkata', 'Surat', 'Pune', 'Jaipur'];
 
@@ -40,6 +79,21 @@ const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 			</div>
 			<div className="md:col-span-8 col-span-8">
 				<div className="relative">
+
+					<ReactSearchAutocomplete
+						items={items}
+						onSearch={handleOnSearch}
+						onSelect={handleOnSelect}
+						onClear={handleOnClear}
+						maxResults={5}
+						autoFocus
+						formatResult={formatResult}
+						placeholder="Search venues..."
+						className="search"
+						inputSearchString={search}
+					/>
+				</div>
+				{/* <div className="relative">
 					<input
 						type="text"
 						defaultValue={search}
@@ -56,7 +110,7 @@ const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 							/>
 						</svg>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);

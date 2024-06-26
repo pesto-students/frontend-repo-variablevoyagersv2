@@ -18,11 +18,12 @@ import { toast } from 'react-toastify';
 import EmptyState from '../../components/common/EmptyState';
 import { RiCalendarCloseLine } from 'react-icons/ri';
 import { MdOutlineCancel } from 'react-icons/md';
+import { LuLoader2 } from 'react-icons/lu';
 const Bookings = () => {
 	const user = useSelector(selectUser);
 	const [loading, setLoading] = useState(false);
 	const [bookings, setBookings] = useState([]);
-
+	const [internalLoading, setInternalLoading] = useState(false);
 	const [page, setPage] = useState(1);
 	const [totalCount, setTotalCount] = useState(0);
 	const limit = 6;
@@ -33,7 +34,7 @@ const Bookings = () => {
 	const [view, setView] = useState(BOOKING_STATUS.AWAITING_OWNER_APPROVAL);
 	const getBookings = useCallback(async () => {
 		try {
-			setLoading(true);
+			setInternalLoading(true);
 			const { data } = await axiosPrivate.get(`/booking/owner-bookings/${user?.id}?page=${page}&limit=${limit}&status=${view}`);
 			console.log(data);
 			setTotalCount(data.totalCount);
@@ -41,7 +42,7 @@ const Bookings = () => {
 		} catch (error) {
 			console.log(error);
 		} finally {
-			setLoading(false);
+			setInternalLoading(false);
 		}
 	}, [page, user?.id, view]);
 	useEffect(() => {
@@ -57,7 +58,7 @@ const Bookings = () => {
 
 	const handleConfirm = async () => {
 		try {
-			setLoading(true);
+			setInternalLoading(true);
 			const reqObj = {
 				bookingStatus,
 				paymentStatus,
@@ -75,7 +76,7 @@ const Bookings = () => {
 			console.error('Error cancelling booking:', error);
 			toast.error('Something went wrong');
 		} finally {
-			setLoading(false);
+			setInternalLoading(false);
 			setShowModal(false);
 			setSelectedBookingId(null);
 		}
@@ -109,41 +110,37 @@ const Bookings = () => {
 				<nav className="flex flex-wrap lg:flex-nowrap gap-2">
 					<a
 						onClick={() => handleFilter(BOOKING_STATUS.AWAITING_OWNER_APPROVAL)}
-						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium  ${
-							view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50 '
-						}`}
+						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium  ${view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50 '
+							}`}
 					>
 						<span className="truncate">Awaiting approval</span>
 					</a>
 					<a
 						onClick={() => handleFilter(BOOKING_STATUS.CONFIRMED)}
-						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-							view === BOOKING_STATUS.CONFIRMED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-						}`}
+						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === BOOKING_STATUS.CONFIRMED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+							}`}
 					>
 						<span className="truncate">Confirmed</span>
 					</a>
 					<a
 						onClick={() => handleFilter(BOOKING_STATUS.CANCELLED)}
-						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-							view === BOOKING_STATUS.CANCELLED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-						}`}
+						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === BOOKING_STATUS.CANCELLED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+							}`}
 					>
 						<span className="truncate">Cancelled</span>
 					</a>
 
 					<a
 						onClick={() => handleFilter(BOOKING_STATUS.COMPLETED)}
-						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-							view === BOOKING_STATUS.COMPLETED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-						}`}
+						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === BOOKING_STATUS.COMPLETED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
+							}`}
 					>
 						<span className="truncate">Completed</span>
 					</a>
 				</nav>
 			</div>
 
-			{bookings.length > 0 ? (
+			{!internalLoading ? (bookings.length > 0 ? (
 				<ul role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 ">
 					{bookings.map((ele, idx) => (
 						<li key={idx} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
@@ -261,26 +258,30 @@ const Bookings = () => {
 						view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL
 							? 'No Bookings Awaiting Approval'
 							: view === BOOKING_STATUS.CONFIRMED
-							? 'No Confirmed Bookings'
-							: view === BOOKING_STATUS.CANCELLED
-							? 'No Cancelled Bookings'
-							: view === BOOKING_STATUS.COMPLETED
-							? 'No Completed Bookings'
-							: 'No Bookings'
+								? 'No Confirmed Bookings'
+								: view === BOOKING_STATUS.CANCELLED
+									? 'No Cancelled Bookings'
+									: view === BOOKING_STATUS.COMPLETED
+										? 'No Completed Bookings'
+										: 'No Bookings'
 					}
 					subtitle={
 						view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL
 							? 'There are no bookings awaiting your approval at the moment.'
 							: view === BOOKING_STATUS.CONFIRMED
-							? 'There are no confirmed bookings at the moment.'
-							: view === BOOKING_STATUS.CANCELLED
-							? 'There are no cancelled bookings at the moment.'
-							: view === BOOKING_STATUS.COMPLETED
-							? 'There are no completed bookings at the moment.'
-							: 'There are no bookings at the moment.'
+								? 'There are no confirmed bookings at the moment.'
+								: view === BOOKING_STATUS.CANCELLED
+									? 'There are no cancelled bookings at the moment.'
+									: view === BOOKING_STATUS.COMPLETED
+										? 'There are no completed bookings at the moment.'
+										: 'There are no bookings at the moment.'
 					}
 					icon={<RiCalendarCloseLine className="w-16 h-16 text-white" />}
 				/>
+			)) : (
+				<div className="flex items-center justify-center space-x-2 h-[40vh]">
+					<LuLoader2 className="w-8 h-8 text-white animate-spin" />
+				</div>
 			)}
 			<div className="mt-5">
 				<Pagination totalCount={totalCount} page={page} limit={limit} onPageChange={setPage} pageClass={'justify-center'} />
@@ -298,8 +299,8 @@ const Bookings = () => {
 					cancelText={bookingStatus === BOOKING_STATUS.CANCELLED ? 'No, Keep Booking' : 'I am not sure yet!'}
 					onConfirm={handleConfirm}
 					onCancel={handleCancel}
-					confirmDisabled={loading}
-					cancelDisabled={loading}
+					confirmDisabled={internalLoading}
+					cancelDisabled={internalLoading}
 					btnClass={
 						bookingStatus === BOOKING_STATUS.CANCELLED
 							? 'text-white bg-error-600 hover:bg-error-800 focus:ring-error-300 border-error-600'
