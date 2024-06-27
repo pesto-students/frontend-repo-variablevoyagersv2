@@ -16,6 +16,9 @@ import EditPropertyPage from '../pages/owner/EditPropertyPage';
 import SessionExpiredPage from '../pages/public/SessionExpiredPage';
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
 import PaymentPage from '../pages/payment/PaymentPage';
+import TermsOfService from '../pages/public/TermsOfService';
+import PrivacyPolicy from '../pages/public/PrivacyPolicy';
+import CancelAndRefund from '../pages/public/CancelAndRefund';
 
 export const router = createBrowserRouter([
 	{
@@ -24,6 +27,9 @@ export const router = createBrowserRouter([
 		children: [
 			{ path: '', element: <HomePage /> },
 			{ path: 'property-detail/:id', element: <PropertyDetailPage /> },
+			{ path: 'terms-of-service', element: <TermsOfService /> },
+			{ path: 'privacy-policy', element: <PrivacyPolicy /> },
+			{ path: 'cancel-refund-policy', element: <CancelAndRefund /> },
 			{
 				path: 'payment',
 				element: (

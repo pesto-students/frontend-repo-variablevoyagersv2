@@ -10,6 +10,7 @@ import { db } from '../../dexie/db';
 import Button from '../common/Button';
 import { formatPrice, getDatesBetween } from '../../utils';
 import { ROLES } from '../../constants/roles';
+import { formatDate } from 'date-fns';
 
 const PropertyReservation = ({ property }) => {
 	const [showLoginModal, setShowLoginModal] = useState(false);
@@ -27,13 +28,20 @@ const PropertyReservation = ({ property }) => {
 	useEffect(() => {
 		if (property?.bookings?.length > 0) {
 			const allDates = property?.bookings?.map((booking) => getDatesBetween(booking.startDate, booking.endDate)).flat();
-			console.log(allDates);
 
-			setDates(allDates);
 			const currentDate = new Date();
-			if (allDates.some((date) => isSameDay(date, currentDate))) {
+			const tomorrow = new Date(currentDate);
+			tomorrow.setDate(currentDate.getDate() + 1);
+			const dayAfterTomorrow = new Date(currentDate);
+			dayAfterTomorrow.setDate(currentDate.getDate() + 2);
+			const additionalDates = [currentDate, tomorrow, dayAfterTomorrow];
+
+			const allDatesWithAdditional = [...new Set([...allDates, ...additionalDates])];
+			setDates(allDatesWithAdditional);
+
+			if (allDatesWithAdditional.some((date) => isSameDay(date, currentDate))) {
 				let nextAvailableDate = new Date(currentDate);
-				while (allDates.some((date) => isSameDay(date, nextAvailableDate))) {
+				while (allDatesWithAdditional.some((date) => isSameDay(date, nextAvailableDate))) {
 					nextAvailableDate.setDate(nextAvailableDate.getDate() + 1);
 				}
 

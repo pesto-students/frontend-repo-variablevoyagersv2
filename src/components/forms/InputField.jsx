@@ -20,12 +20,28 @@ const InputField = ({ label, id, name, register, required, error, type, disabled
 							message: `Invalid ${label}`,
 						},
 					})}
-					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md 
+					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md
 					${disabled ? 'text-black text-opacity-70 bg-gray-50  ' : ' '}
 
-					 ${error ? 'border-error-700 focus:border-error-700 focus:ring-error-700' : 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'
-						}`}
+					 ${error ? '!border-error-700 focus:border-error-700 focus:ring-error-700' : 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'}`}
 					disabled={disabled ? true : false}
+				/>
+			) : type === 'phone' ? (
+				<input
+					type="number"
+					id={id}
+					name={name}
+					{...register(name, {
+						required,
+						pattern: {
+							value: /^[6-9]\d{9}$/,
+							message: `Invalid ${label}`,
+						},
+					})}
+					disabled={disabled ? true : false}
+					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md
+					${error ? '!border-error-700 focus:border-error-700 focus:focus:ring-error-700' : 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'}
+						`}
 				/>
 			) : type === 'number' ? (
 				<input
@@ -36,11 +52,8 @@ const InputField = ({ label, id, name, register, required, error, type, disabled
 						required,
 					})}
 					disabled={disabled ? true : false}
-					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md 
-					${error
-							? 'border-error-700 focus:border-error-700 focus:focus:ring-error-700'
-							: 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'
-						} 
+					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md
+					${error ? '!border-error-700 focus:border-error-700 focus:focus:ring-error-700' : 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'}
 						`}
 				/>
 			) : (
@@ -53,10 +66,11 @@ const InputField = ({ label, id, name, register, required, error, type, disabled
 					{...register(name, {
 						required,
 					})}
-					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${error
-						? 'border-error-700 focus:border-error-700 focus:focus:ring-error-700'
-						: 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'
-						}`}
+					className={`mt-1 focus:ring-indigo-500 focus:outline-none focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+						error
+							? '!border-error-700 focus:border-error-700 focus:focus:ring-error-700'
+							: 'border-gray-100 focus:border-primary-300 focus:ring-primary-50'
+					}`}
 					disabled={disabled ? true : false}
 					readOnly={readOnly ? true : false}
 				/>

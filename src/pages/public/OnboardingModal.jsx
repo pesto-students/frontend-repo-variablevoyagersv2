@@ -60,6 +60,7 @@ const OnboardingModal = ({ user, onClose }) => {
 			dispatch(setUser(data));
 			if (data.role === ROLES.OWNER) {
 				navigate('/owner/property');
+				navigate('/owner/property');
 			} else {
 				onClose();
 			}
@@ -93,7 +94,7 @@ const OnboardingModal = ({ user, onClose }) => {
 						<div className="flex flex-col gap-4">
 							<h2 className=" ">Select Your Profile</h2>
 							<div className="flex flex-col  md:flex-row justify-between gap-4">
-								<Tooltip content="User can only book">
+								<Tooltip content="Users can book available properties.">
 									<button
 										type="button"
 										value={selectedRole}
@@ -106,7 +107,7 @@ const OnboardingModal = ({ user, onClose }) => {
 										<span className="text-sm">User</span>
 									</button>
 								</Tooltip>
-								<Tooltip content="Owner can list properties">
+								<Tooltip content="Owners can list their properties for rent.">
 									<button
 										type="button"
 										value={selectedRole}
@@ -152,7 +153,7 @@ const OnboardingModal = ({ user, onClose }) => {
 									label="Phone"
 									id="phone"
 									name="phone"
-									type="number"
+									type="phone"
 									register={register}
 									required="Phone is required"
 									error={errors?.phone}

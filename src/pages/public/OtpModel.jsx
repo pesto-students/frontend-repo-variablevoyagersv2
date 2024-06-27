@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import OtpInput from 'react-otp-input';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,22 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/authSlice';
 import { handleLoginSuccess } from '../../services/user.service';
 import { ROLES } from '../../constants/roles';
-
+import { toast } from 'react-toastify';
+const inputStyle = {
+	width: '2.5rem',
+	height: '2.5rem',
+	margin: '0 0.5rem',
+	fontSize: '1rem',
+	borderRadius: '0.5rem',
+	border: '2px solid #ccc',
+	textAlign: 'center',
+	color: '#000',
+	backgroundColor: '#fff',
+	outline: 'none',
+	cursor: 'pointer',
+	transition: 'all 0.3s ease-in-out',
+	fontWeight: '700',
+};
 const OtpModel = ({ email, onPrev, onClose }) => {
 	const { handleSubmit, setValue } = useForm();
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,44 +36,11 @@ const OtpModel = ({ email, onPrev, onClose }) => {
 	const [newUser, setNewUser] = useState({});
 	const dispatch = useDispatch();
 
-	const [count, setCount] = useState(120);
-	const [countdownInterval, setCountdownInterval] = useState(null);
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setCount((prevCount) => {
-				if (prevCount === 1) {
-					clearInterval(interval);
-					setResend(true);
-					return 0;
-				}
-				return prevCount - 1;
-			});
-		}, 1000);
-
-		setCountdownInterval(interval);
-
-		return () => clearInterval(interval);
-	}, []);
-
 	const resendOtp = async () => {
 		try {
 			await axiosInstance.post('/auth/otp', { email });
 			setOtp('');
-			setCount(120);
-			setResend(false);
-			clearInterval(countdownInterval);
-			const newInterval = setInterval(() => {
-				setCount((prevCount) => {
-					if (prevCount === 1) {
-						clearInterval(newInterval);
-						setResend(true);
-						return 0;
-					}
-					return prevCount - 1;
-				});
-			}, 1000);
-			setCountdownInterval(newInterval);
+			toast.success('OTP send');
 		} catch (error) {
 			console.log(error.message);
 		}
@@ -70,24 +52,9 @@ const OtpModel = ({ email, onPrev, onClose }) => {
 			return data;
 		} catch (err) {
 			setIsSubmitting(false);
-			alert(err.response.data.message);
+			// alert(err.response.data.message);
+			toast.error(err.response.data.message);
 		}
-	};
-
-	const inputStyle = {
-		width: '2.5rem',
-		height: '2.5rem',
-		margin: '0 0.5rem',
-		fontSize: '1rem',
-		borderRadius: '0.5rem',
-		border: '2px solid #ccc',
-		textAlign: 'center',
-		color: '#000',
-		backgroundColor: '#fff',
-		outline: 'none',
-		cursor: 'pointer',
-		transition: 'all 0.3s ease-in-out',
-		fontWeight: '700',
 	};
 
 	const onSubmit = async () => {
@@ -122,12 +89,6 @@ const OtpModel = ({ email, onPrev, onClose }) => {
 		onClose();
 	};
 
-	const formatTime = (seconds) => {
-		const minutes = Math.floor(seconds / 60);
-		const remainingSeconds = seconds % 60;
-		return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-	};
-
 	return (
 		<>
 			{!showOnboarding ? (
@@ -145,6 +106,7 @@ const OtpModel = ({ email, onPrev, onClose }) => {
 						</div>
 						<div className="flex items-center justify-center text-black">
 							<OtpInput
+								shouldAutoFocus
 								value={otp}
 								onChange={(value) => {
 									setOtp(value);
@@ -155,33 +117,25 @@ const OtpModel = ({ email, onPrev, onClose }) => {
 								renderInput={(props) => <input {...props} style={inputStyle} />}
 							/>
 						</div>
-						<p>Remaining time: {formatTime(count)}</p>
-						<div className="flex items-center justify-center text-black mb-4">
-							{!resend ? (
-								<Button
-									buttonType="submit"
-									size="md"
-									variant="filled"
-									innerClass="w-[100%] bg-primary"
-									innerTextClass="text-white"
-									disabled={isSubmitting || count === 0}
-									loading={isSubmitting}
-								>
-									{isSubmitting ? 'Loading' : 'Verify OTP'}
-								</Button>
-							) : (
-								<Button
-									onClick={resendOtp}
-									size="md"
-									variant="filled"
-									innerClass="w-[100%] bg-primary"
-									innerTextClass="text-white"
-									disabled={isSubmitting}
-									loading={isSubmitting}
-								>
-									{isSubmitting ? 'Loading' : 'Resend OTP'}
-								</Button>
-							)}
+
+						<div className="flex flex-col items-center justify-center text-black">
+							<Button
+								buttonType="submit"
+								size="md"
+								variant="filled"
+								innerClass="w-[100%] bg-primary"
+								innerTextClass="text-white"
+								disabled={isSubmitting}
+								loading={isSubmitting}
+							>
+								{isSubmitting ? 'Loading' : 'Verify OTP'}
+							</Button>
+							<p className="text-sm text-gray-600 mt-6 pb-4">
+								No email? Look in spam or{' '}
+								<span onClick={resendOtp} className="font-semibold text-primary-500 cursor-pointer hover:underline">
+									try sending again.
+								</span>
+							</p>
 						</div>
 					</form>
 				</>

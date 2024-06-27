@@ -148,7 +148,7 @@ export default function UserMenu() {
 						buttonType="button"
 						size="sm"
 						variant="outline"
-						innerClass="w-full md:w-32  border border-primary"
+						innerClass="w-full md:w-32  border border-primary whitespace-nowrap"
 						innerTextClass="text-primary"
 						onClick={() => setShowLoginModal(true)}
 					>

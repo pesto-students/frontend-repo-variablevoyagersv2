@@ -1,8 +1,8 @@
-import React, { , useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { debounce } from '../../utils';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 import { axiosPrivate } from '../../services/axios.service';
-import './serch.css'
+import './serch.css';
 
 const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 	const [selectedCity, setSelectedCity] = useState('');
@@ -18,19 +18,21 @@ const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 
 	const handleSearchChange = (event) => {
 		const query = event.target.value;
+
 		onSearchVenues(query);
 	};
 	const handleOnSearch = async (string, results) => {
 		console.log(string);
 		if (string.length > 2) {
 			try {
-				const { data: { data } } = await axiosPrivate.get(`/property?search=${string}`);
+				const {
+					data: { data },
+				} = await axiosPrivate.get(`/property?search=${string}`);
 
 				// Check if response.data is an array
 				if (Array.isArray(data.properties)) {
 					setItems(data.properties.map((item, index) => ({ id: index, name: item.propertyName })));
-				}
-				else {
+				} else {
 					console.error('Unexpected data structure:', data);
 					setItems([]);
 				}
@@ -53,7 +55,7 @@ const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 	};
 
 	const handleOnClear = () => {
-		onSearchVenues("");
+		onSearchVenues('');
 	};
 
 	// const searchProp = debounce(handleSearchChange, 1000);
@@ -79,7 +81,6 @@ const VenueSearch = ({ onCitySelect, onSearchVenues, city, search }) => {
 			</div>
 			<div className="md:col-span-8 col-span-8">
 				<div className="relative">
-
 					<ReactSearchAutocomplete
 						items={items}
 						onSearch={handleOnSearch}

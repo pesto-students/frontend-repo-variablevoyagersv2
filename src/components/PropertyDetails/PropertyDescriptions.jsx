@@ -8,8 +8,8 @@ const PropertyDescriptions = ({ ownerName, capacity, description, avatar, addres
 			<div className="flex flex-col gap-5">
 				<div className="flex flex-row">
 					{tags?.map((tag) => (
-						<span key={tag.id} className="w-fit bg-primary text-white text-xs me-2 px-2.5 py-1.5 rounded-full">
-							{tag.title}
+						<span key={tag.id} className="w-fit bg-primary text-white text-xs me-2 px-2.5 py-1.5 rounded-full capitalize">
+							{tag.replaceAll('-', ' ')}
 						</span>
 					))}
 				</div>
@@ -36,17 +36,21 @@ const PropertyDescriptions = ({ ownerName, capacity, description, avatar, addres
 						{address}
 					</div>
 				</div>
-				<hr className="text-gray-100" />
-				<div className="font-light text-neutral-500 z-0 relative">
-					<h1 className="text-black text-xl  font-medium mb-2">What this place offers</h1>
-					{amenities?.map((amenity, index) => (
-						<div key={index} className="flex ml-2 mt-3 gap-2 items-center">
-							<span className=" w-1.5 h-1.5 rounded-full bg-gray-800"></span>
-							<div className="text-black ml-3 text-lg"></div>
-							{amenity}
+				{amenities?.length > 0 && (
+					<>
+						<hr className="text-gray-100" />
+						<div className="font-light text-neutral-500 z-0 relative">
+							<h1 className="text-black text-xl  font-medium mb-2">What this place offers</h1>
+							{amenities?.map((amenity, index) => (
+								<div key={index} className="flex ml-2 mt-3 gap-2 items-center">
+									<span className=" w-1.5 h-1.5 rounded-full bg-gray-800"></span>
+									<div className="text-black ml-3 text-lg"></div>
+									{amenity}
+								</div>
+							))}
 						</div>
-					))}
-				</div>
+					</>
+				)}
 			</div>
 		</>
 	);

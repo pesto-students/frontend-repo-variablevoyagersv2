@@ -22,7 +22,7 @@ export default function Navbar() {
 
 	return (
 		<>
-			<nav className="fixed w-full z-10 shadow-lg border-b-[1px]transition-colors duration-500 bg-white">
+			<nav className="fixed w-full z-10 shadow-lg border-b-[1px] transition-colors duration-500 bg-white">
 				<div className="mx-auto max-w-8xl  px-2 sm:px-9 lg:px-20 ">
 					<div className="relative flex h-16 items-center justify-between">
 						<Logo />

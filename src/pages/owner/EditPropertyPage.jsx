@@ -16,6 +16,7 @@ import { useJsApiLoader } from '@react-google-maps/api';
 const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 import { CATEGORIES } from '../../constants/categories';
+import { convertTo12HourFormat, convertTo24HourFormat } from '../../utils';
 const steps = [
 	{ name: 'Property Details', key: 'property-details' },
 	{ name: 'Location Information', key: 'property-address' },
@@ -49,7 +50,9 @@ const EditPropertyPage = () => {
 				data: { data },
 			} = await axiosPrivate.get(`/property/${id}`);
 
-			reset(data);
+			const checkInTime = convertTo24HourFormat(data.checkInTime);
+			const checkOutTime = convertTo24HourFormat(data.checkOutTime);
+			reset({ ...data, checkInTime, checkOutTime });
 			setSelectedCity(data.city);
 			setPropertyImages(data.propertyImages);
 			setCordinate({ lat: Number(data.lat), lng: Number(data.lng) });
@@ -111,6 +114,8 @@ const EditPropertyPage = () => {
 	} = methods;
 
 	const onSubmit = async (data) => {
+		const checkInTime = convertTo12HourFormat(data?.checkInTime);
+		const checkOutTime = convertTo12HourFormat(data?.checkOutTime);
 		let fd = new FormData();
 		fd.append('propertyName', data.propertyName);
 		fd.append('description', data.description);
@@ -120,12 +125,12 @@ const EditPropertyPage = () => {
 		fd.append('city', selectedCity);
 		fd.append('country', data.country);
 		fd.append('extraInfo', data.extraInfo ?? '');
-		fd.append('pincode', '');
+		fd.append('pincode', data.pincode);
 		fd.append('lat', cordinate.lat);
 		fd.append('lan', cordinate.lng);
 		fd.append('ownerId', user?.id);
-		fd.append('checkInTime', data?.checkInTime);
-		fd.append('checkOutTime', data?.checkOutTime);
+		fd.append('checkInTime', checkInTime);
+		fd.append('checkOutTime', checkOutTime);
 		fd.append('propertyTags', JSON.stringify(categories));
 		let oldImages = [];
 		let captions = [];

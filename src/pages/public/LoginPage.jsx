@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../services/axios.service';
 
 import { GoogleLogin } from '@react-oauth/google';
@@ -13,6 +13,7 @@ import { handleLoginSuccess } from '../../services/user.service';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/authSlice';
 import { ROLES } from '../../constants/roles';
+import { toast } from 'react-toastify';
 
 const LoginPage = ({ isOpen, onClose }) => {
 	const [isOtpSent, setIsOtpSent] = useState(false);
@@ -20,6 +21,7 @@ const LoginPage = ({ isOpen, onClose }) => {
 	const [loading, setLoading] = useState(false);
 	const [newUser, setNewUser] = useState({});
 	const [email, setEmail] = useState('');
+	const [termsChecked, setTermsChecked] = useState(false);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
@@ -31,6 +33,10 @@ const LoginPage = ({ isOpen, onClose }) => {
 	const [generalError, setGeneralError] = useState('');
 
 	const onSubmit = async (values) => {
+		if (!termsChecked) {
+			toast.error('You must agree to the terms and conditions before proceeding.');
+			return;
+		}
 		try {
 			setEmail(values.email);
 			await axiosInstance.post('/auth/otp', values);
@@ -112,9 +118,38 @@ const LoginPage = ({ isOpen, onClose }) => {
 											required="Email is required"
 											error={errors?.email}
 										/>
-										<p className="text-red-500">{errors.email?.message}</p>
+										<p className="text-sm text-red-500">{errors.email?.message}</p>
 									</div>
 									{generalError && <p className="text-red-500">{generalError}</p>}
+									<div className="mt-6 flex items-start">
+										<input
+											id="terms"
+											type="checkbox"
+											checked={termsChecked}
+											onChange={(e) => {
+												console.log(e);
+												setTermsChecked(e.target.checked);
+											}}
+											className="h-5 w-5 mt-[5px] rounded border-gray-300 text-indigo-500 focus:ring-indigo-500"
+										/>
+										<div className="ml-2">
+											<label htmlFor="terms" className="text-sm font-medium text-gray-600">
+												I have read and understood the{' '}
+												<Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-indigo-500 underline underline-offset-3">
+													privacy policy{' '}
+												</Link>{' '}
+												and the{' '}
+												<Link
+													to="/terms-of-service"
+													target="_blank"
+													rel="noopener noreferrer"
+													className="text-indigo-500 underline underline-offset-3"
+												>
+													terms of service.
+												</Link>
+											</label>
+										</div>
+									</div>
 									<Button
 										buttonType="submit"
 										size="md"
@@ -126,8 +161,13 @@ const LoginPage = ({ isOpen, onClose }) => {
 									>
 										{isSubmitting ? 'Loading' : 'Continue'}
 									</Button>
-									<div className="w-full text-center text-md font-medium ">OR</div>
 								</form>
+								<div className="mb-6 mt-6 flex items-center justify-center">
+									<div className="h-[1px] flex-1 bg-gray-100"></div>
+									<p className="mx-2 min-w-fit text-sm text-gray-600">OR</p>
+									<div className="h-[1px] flex-1 bg-gray-100"></div>
+								</div>
+
 								<GoogleLogin
 									onSuccess={handleGoogleLogin}
 									onError={() => {

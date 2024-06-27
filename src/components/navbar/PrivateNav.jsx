@@ -35,10 +35,10 @@ const PrivateNav = () => {
 	};
 	return (
 		<div>
-			<div className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white lg:hidden md:hidden">
-				<button type="button" onClick={toggleMenu} className={`${user ? '' : 'hidden'}`}>
+			<div className="relative inline-flex items-center justify-center  text-gray-400  hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white lg:hidden md:hidden">
+				<button type="button" onClick={toggleMenu} className={`${user ? 'hover:bg-primary p-2 rounded-md' : 'hidden'}`}>
 					<svg
-						className={`h-6 w-6 ${isMenuOpen ? 'hidden' : 'block'}`}
+						className={`h-6 w-6  ${isMenuOpen ? 'hidden' : 'block'}`}
 						fill="none"
 						viewBox="0 0 24 24"
 						strokeWidth="1.5"
@@ -63,7 +63,7 @@ const PrivateNav = () => {
 				</Link>
 			</div>
 			<div
-				className={`absolute md:hidden sm:left-[-6%] h-screen bg-white mt-3 left-[-3%] w-60 transform transition-transform ${
+				className={`absolute md:hidden sm:left-[-6%] h-screen bg-white mt-2  left-[-3%] w-60 transform transition-transform ${
 					isMenuOpen ? 'translate-x-0' : '-translate-x-full'
 				} z-10`}
 				onClick={handleMenuClick}

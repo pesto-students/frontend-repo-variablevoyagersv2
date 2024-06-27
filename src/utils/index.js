@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 export const formatDateRange = (startDate, endDate) => {
 	const start = new Date(startDate);
 	const end = new Date(endDate);
@@ -64,3 +66,52 @@ export const throttle = (func, limit) => {
 		}
 	};
 };
+
+export const convertTo12HourFormat = (time24) => {
+	if (!time24) return '';
+	const [hours, minutes] = time24.split(':');
+	let hours12 = parseInt(hours, 10);
+	let period = 'AM';
+
+	if (hours12 === 0) {
+		hours12 = 12;
+	} else if (hours12 === 12) {
+		period = 'PM';
+	} else if (hours12 > 12) {
+		hours12 -= 12;
+		period = 'PM';
+	}
+
+	return `${hours12}:${minutes} ${period}`;
+};
+
+export const convertTo24HourFormat = (time12) => {
+	if (!time12) return '';
+	const [time, period] = time12.split(' ');
+	let [hours, minutes] = time.split(':');
+	hours = parseInt(hours, 10);
+
+	if (period.toUpperCase() === 'PM' && hours !== 12) {
+		hours += 12;
+	} else if (period.toUpperCase() === 'AM' && hours === 12) {
+		hours = 0;
+	}
+
+	return `${hours.toString().padStart(2, '0')}:${minutes}`;
+};
+
+export function calculateDeadline(bookingDateString) {
+	// Parse the string into a Date object
+	const bookingDate = new Date(bookingDateString);
+
+	// Check if the parsing was successful
+	if (isNaN(bookingDate.getTime())) {
+		return 'Invalid date format';
+	}
+
+	// Calculate the deadline
+	const deadlineDate = new Date(bookingDate.getTime() + 24 * 60 * 60 * 1000);
+
+	return deadlineDate.toISOString();
+	// return format(deadlineDate, "MMM d, yyyy 'at' h:mm a");
+}

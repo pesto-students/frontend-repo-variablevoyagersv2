@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectUser } from '../../redux/slices/authSlice';
 import { axiosPrivate } from '../../services/axios.service';
 import Button from '../../components/common/Button';
-import { BOOKING_STATUS, PAYMENT_STATUS } from '../../constants/status';
+import { BOOKING_STATUS, PAYMENT_STATUS, bookingStatusMessages } from '../../constants/status';
 import { ROLES } from '../../constants/roles';
 
 import { format } from 'date-fns';
@@ -18,7 +18,9 @@ import { RiCalendarCloseLine } from 'react-icons/ri';
 import EmptyState from '../../components/common/EmptyState';
 import { MdOutlineCancel } from 'react-icons/md';
 import ReviewModal from '../../components/common/ReviewModal';
+import FilterTab from '../../components/common/FilterTab';
 import { LuLoader2 } from 'react-icons/lu';
+
 const MyBookings = () => {
 	const user = useSelector(selectUser);
 	const [loading, setLoading] = useState(false);
@@ -35,7 +37,7 @@ const MyBookings = () => {
 	const [reviewLoading, setReviewLoading] = useState(false);
 
 	const [view, setView] = useState(BOOKING_STATUS.AWAITING_OWNER_APPROVAL);
-
+	const { title, subtitle } = bookingStatusMessages[view] || bookingStatusMessages.default;
 	const getUserBookings = useCallback(async () => {
 		try {
 			setInternalLoading(true);
@@ -63,7 +65,7 @@ const MyBookings = () => {
 
 	const handleConfirm = async () => {
 		try {
-			setInternalLoading(true);
+			setLoading(true);
 			const reqObj = {
 				bookingStatus: BOOKING_STATUS.CANCELLED,
 				paymentStatus: PAYMENT_STATUS.REFUNDED,
@@ -80,7 +82,7 @@ const MyBookings = () => {
 			console.error('Error cancelling booking:', error);
 			toast.error('Something went wrong');
 		} finally {
-			setInternalLoading(false)
+			setLoading(false);
 			setShowModal(false);
 			setSelectedBookingId(null);
 		}
@@ -146,9 +148,9 @@ const MyBookings = () => {
 		setPage(1);
 	};
 
-	if (loading) {
-		return <Loader />;
-	}
+	// if (loading) {
+	// 	return <Loader />;
+	// }
 
 	return (
 		<>
@@ -161,164 +163,117 @@ const MyBookings = () => {
 
 			<div className="lg:grid lg:grid-cols-12 lg:gap-x-5 mb-5">
 				<nav className="flex flex-wrap lg:flex-nowrap gap-2">
-					<a
-						onClick={() => handleFilter(BOOKING_STATUS.AWAITING_OWNER_APPROVAL)}
-						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium  ${view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50 '
-							}`}
-					>
-						<span className="truncate">Awaiting approval</span>
-					</a>
-					<a
-						onClick={() => handleFilter(BOOKING_STATUS.CONFIRMED)}
-						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === BOOKING_STATUS.CONFIRMED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-							}`}
-					>
-						<span className="truncate">Confirmed</span>
-					</a>
-					<a
-						onClick={() => handleFilter(BOOKING_STATUS.CANCELLED)}
-						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === BOOKING_STATUS.CANCELLED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-							}`}
-					>
-						<span className="truncate">Cancelled</span>
-					</a>
-
-					<a
-						onClick={() => handleFilter(BOOKING_STATUS.COMPLETED)}
-						className={`cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium ${view === BOOKING_STATUS.COMPLETED ? 'bg-gray-50 text-gray-900' : 'hover:bg-gray-50 hover:text-gray-900 text-gray-50'
-							}`}
-					>
-						<span className="truncate">Completed</span>
-					</a>
+					<FilterTab status={BOOKING_STATUS.AWAITING_OWNER_APPROVAL} currentView={view} onFilter={handleFilter} label="Awaiting approval" />
+					<FilterTab status={BOOKING_STATUS.CONFIRMED} currentView={view} onFilter={handleFilter} label="Confirmed" />
+					<FilterTab status={BOOKING_STATUS.CANCELLED} currentView={view} onFilter={handleFilter} label="Cancelled" />
+					<FilterTab status={BOOKING_STATUS.COMPLETED} currentView={view} onFilter={handleFilter} label="Completed" />
 				</nav>
 			</div>
 
-			{!internalLoading ? (bookings.length > 0 ? (
-				<dev aria-labelledby="recent-heading" className="mt-16">
-					{bookings.map((ele, idx) => (
-						<div key={ele?.id} className="mb-4">
-							<div className="space-y-8 sm:px-4 lg:px-0">
-								<div className="border-b border-t border-gray-500 bg-white  shadow-sm rounded-lg border overflow-hidden">
-									<div className="bg-gray-25 p-4 sm:p-6 ">
-										<div className="flex  items-center md:items-start justify-between  gap-8">
-											<div className="flex items-center  justify-between flex-wrap gap-4 md:gap-8 w-full">
-												<dl className="flex items-center justify-between flex-wrap gap-4 md:gap-8 md:w-auto w-full">
-													<div>
-														<dt className="font-medium text-gray-900">Amount Paid</dt>
-														<dd className="mt-1 font-medium text-gray-900">
-															{formatPrice(ele?.payments[0].amount)} <StatusBadge status={ele?.payments[0].status} type="payment" />
-														</dd>
-													</div>
-													<div>
-														<dt className="font-medium text-gray-900">Event Date</dt>
-														<dd className="mt-1 text-gray-500">{formatDateRange(ele?.startDate, ele?.endDate)}</dd>
-													</div>
-												</dl>
-												<div className=" flex items-start justify-between flex-wrap gap-4 md:gap-8 md:w-auto w-full">
-													<div className="">
-														<dt className="font-medium text-gray-900">Booked On</dt>
-														<dd className="mt-1 text-gray-500">
-															<time>{format(new Date(ele?.bookingDate), 'dd MMMM yyyy')}</time>
-														</dd>
-													</div>
-													<div>
-														<dt className="font-medium text-gray-900">Booking Id</dt>
-														<dd className="mt-1 text-gray-500">{ele?.id.substring(0, 8).toUpperCase()}</dd>
+			{!internalLoading ? (
+				bookings.length > 0 ? (
+					<div aria-labelledby="recent-heading" className="mt-16">
+						{bookings.map((ele) => (
+							<div key={ele?.id} className="mb-4">
+								<div className="space-y-8 sm:px-4 lg:px-0">
+									<div className="border-b border-t border-gray-500 bg-white  shadow-sm rounded-lg border overflow-hidden">
+										<div className="bg-gray-25 p-4 sm:p-6 ">
+											<div className="flex  items-center md:items-start justify-between  gap-8">
+												<div className="flex items-center  justify-between flex-wrap gap-4 md:gap-8 w-full">
+													<dl className="flex items-center justify-between flex-wrap gap-4 md:gap-8 md:w-auto w-full">
+														<div>
+															<dt className="font-medium text-gray-900">Amount Paid</dt>
+															<dd className="mt-1 font-medium text-gray-900">
+																{formatPrice(ele?.payments[0].amount)} <StatusBadge status={ele?.payments[0].status} type="payment" />
+															</dd>
+														</div>
+														<div className="text-right md:text-left">
+															<dt className="font-medium text-gray-900">Event Date</dt>
+															<dd className="mt-1 text-gray-500">{formatDateRange(ele?.startDate, ele?.endDate)}</dd>
+														</div>
+													</dl>
+													<div className=" flex items-start justify-between flex-wrap gap-4 md:gap-8 md:w-auto w-full">
+														<div className="text-left md:text-right">
+															<dt className="font-medium text-gray-900">Booked On</dt>
+															<dd className="mt-1 text-gray-500">
+																<time>{format(new Date(ele?.bookingDate), 'dd MMMM yyyy')}</time>
+															</dd>
+														</div>
+														<div className="text-right">
+															<dt className="font-medium text-gray-900">Booking Id</dt>
+															<dd className="mt-1 text-gray-500">{ele?.id.substring(0, 8).toUpperCase()}</dd>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
 
-									<ul role="list" className="divide-y divide-gray-200">
-										<li className="p-4 sm:p-6">
-											<div className="flex items-center">
-												<div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-20 sm:w-20">
-													<img
-														src={ele?.property?.propertyImages[0]?.imgUrl}
-														alt={ele?.property?.propertyName}
-														className="h-full w-full object-cover object-center"
-													/>
-												</div>
-												<div className="ml-6 flex-1 ">
-													<div className="font-medium text-md text-gray-900 sm:flex sm:justify-between">
-														<h5>
-															{ele?.property?.propertyName}
-															<p className="mt-1 text-gray-500 text-sm">{formatPrice(ele?.property?.price)} per day</p>
-														</h5>
-													</div>
-												</div>
-											</div>
-
-											<div className="mt-6 sm:flex sm:justify-between">
+										<ul role="list" className="divide-y divide-gray-200">
+											<li className="p-4 sm:p-6">
 												<div className="flex items-center">
-													<span className="mr-2 font-medium">Booking:</span> <StatusBadge status={ele?.bookingStatus} type="booking" />
+													<div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-20 sm:w-20">
+														<img
+															src={ele?.property?.propertyImages[0]?.imgUrl}
+															alt={ele?.property?.propertyName}
+															className="h-full w-full object-cover object-center"
+														/>
+													</div>
+													<div className="ml-6 flex-1 ">
+														<div className="font-medium text-md text-gray-900 sm:flex sm:justify-between">
+															<h5>
+																{ele?.property?.propertyName}
+																<p className="mt-1 text-gray-500 text-sm">{formatPrice(ele?.property?.price)} per day</p>
+															</h5>
+														</div>
+													</div>
 												</div>
 
-												{(ele?.bookingStatus === BOOKING_STATUS.AWAITING_OWNER_APPROVAL || ele?.bookingStatus === BOOKING_STATUS.CONFIRMED) && (
-													<div className="flex items-center justify-center  pt-6 pb-2 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
-														<Button
-															buttonType="button"
-															size="sm"
-															variant="outline"
-															innerClass="w-full md:w-36  border !border-error-500"
-															innerTextClass="!text-red-500"
-															onClick={() => handleAcceptReject(ele.id, BOOKING_STATUS.CANCELLED, PAYMENT_STATUS.REFUNDED)}
-														>
-															Cancel
-														</Button>
+												<div className="mt-6 sm:flex sm:justify-between">
+													<div className="flex items-center">
+														<span className="mr-2 font-medium">Booking:</span> <StatusBadge status={ele?.bookingStatus} type="booking" />
 													</div>
-												)}
 
-												{ele?.bookingStatus === BOOKING_STATUS.COMPLETED && (
-													<div className="flex items-center justify-center  pt-6 pb-2 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
-														<Button
-															buttonType="button"
-															size="sm"
-															variant="outline"
-															innerClass="w-full md:w-36  border border-primary"
-															innerTextClass="text-primary"
-															onClick={() => addReview(ele)}
-														>
-															{ele?.reviews?.length > 0 ? 'Edit Review' : 'Add Review'}
-														</Button>
-													</div>
-												)}
-											</div>
-										</li>
-									</ul>
+													{(ele?.bookingStatus === BOOKING_STATUS.AWAITING_OWNER_APPROVAL || ele?.bookingStatus === BOOKING_STATUS.CONFIRMED) && (
+														<div className="flex items-center justify-center  pt-6 pb-2 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
+															<Button
+																buttonType="button"
+																size="sm"
+																variant="outline"
+																innerClass="w-full md:w-36  border !border-error-500"
+																innerTextClass="!text-red-500"
+																onClick={() => handleAcceptReject(ele.id, BOOKING_STATUS.CANCELLED, PAYMENT_STATUS.REFUNDED)}
+															>
+																Cancel
+															</Button>
+														</div>
+													)}
+
+													{ele?.bookingStatus === BOOKING_STATUS.COMPLETED && (
+														<div className="flex items-center justify-center  pt-6 pb-2 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
+															<Button
+																buttonType="button"
+																size="sm"
+																variant="outline"
+																innerClass="w-full md:w-36  border border-primary"
+																innerTextClass="text-primary"
+																onClick={() => addReview(ele)}
+															>
+																{ele?.reviews?.length > 0 ? 'Edit Review' : 'Add Review'}
+															</Button>
+														</div>
+													)}
+												</div>
+											</li>
+										</ul>
+									</div>
 								</div>
 							</div>
-						</div>
-					))}
-				</dev>
+						))}
+					</div>
+				) : (
+					<EmptyState title={title} subtitle={subtitle} icon={<RiCalendarCloseLine className="w-16 h-16 text-white" />} />
+				)
 			) : (
-				<EmptyState
-					title={
-						view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL
-							? 'No Bookings Awaiting Approval'
-							: view === BOOKING_STATUS.CONFIRMED
-								? 'No Confirmed Bookings'
-								: view === BOOKING_STATUS.CANCELLED
-									? 'No Cancelled Bookings'
-									: view === BOOKING_STATUS.COMPLETED
-										? 'No Completed Bookings'
-										: 'No Bookings'
-					}
-					subtitle={
-						view === BOOKING_STATUS.AWAITING_OWNER_APPROVAL
-							? 'There are no bookings awaiting for approval at the moment.'
-							: view === BOOKING_STATUS.CONFIRMED
-								? 'There are no confirmed bookings at the moment.'
-								: view === BOOKING_STATUS.CANCELLED
-									? 'There are no cancelled bookings at the moment.'
-									: view === BOOKING_STATUS.COMPLETED
-										? 'There are no completed bookings at the moment.'
-										: 'There are no bookings at the moment.'
-					}
-					icon={<RiCalendarCloseLine className="w-16 h-16 text-white" />}
-				/>
-			)) : (
 				<div className="flex items-center justify-center space-x-2 h-[40vh]">
 					<LuLoader2 className="w-8 h-8 text-white animate-spin" />
 				</div>
@@ -335,8 +290,8 @@ const MyBookings = () => {
 					cancelText="No, Keep Booking"
 					onConfirm={handleConfirm}
 					onCancel={handleCancel}
-					confirmDisabled={internalLoading}
-					cancelDisabled={internalLoading}
+					confirmDisabled={loading}
+					cancelDisabled={loading}
 					btnClass={'text-white bg-error-600 hover:bg-error-800 focus:ring-error-300 border-error-600'}
 					icon={<MdOutlineCancel className="w-10 h-10 text-error-600" />}
 				/>
@@ -346,9 +301,9 @@ const MyBookings = () => {
 					modalId="booking-review-modal"
 					onConfirm={handleReviewConfirm}
 					onCancel={handleReviewCancel}
-					confirmDisabled={internalLoading}
-					cancelDisabled={internalLoading}
-					btnClass={''}
+					// confirmDisabled={internalLoading}
+					// cancelDisabled={internalLoading}
+					// btnClass={''}
 					reviewLoading={reviewLoading}
 					reviewData={selectedBooking?.reviews[0]}
 				/>

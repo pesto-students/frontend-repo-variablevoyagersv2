@@ -42,7 +42,7 @@ const mapOptions = {
 const PropertyDetailPage = () => {
 	const [loading, setLoading] = useState(null);
 	const [property, setProperty] = useState(null);
-	const [tags, setTags] = useState([]);
+
 	const { isLoaded } = useJsApiLoader({
 		id: 'google-map-script',
 		googleMapsApiKey: GOOGLE_KEY,
@@ -61,7 +61,7 @@ const PropertyDetailPage = () => {
 				data: { data },
 			} = await axiosPrivate.get(`/property/${id}`);
 			setProperty(data);
-			setTags(CATEGORIES.filter((category) => data.propertyTags.includes(category.tagName)).map((ele) => ({ ...ele })));
+
 			console.log(data);
 		} catch (error) {
 			console.log(error);
@@ -91,7 +91,7 @@ const PropertyDetailPage = () => {
 							capacity={property?.capacity}
 							description={property?.description}
 							address={property?.address}
-							tags={tags}
+							tags={property?.propertyTags}
 							amenities={property?.amenities}
 						/>
 					</div>
@@ -101,7 +101,7 @@ const PropertyDetailPage = () => {
 				</div>
 				<hr />
 				{!isLoaded ? (
-					<h1>Loading...</h1>
+					<Loader />
 				) : property?.lat ? (
 					<>
 						<GoogleMap

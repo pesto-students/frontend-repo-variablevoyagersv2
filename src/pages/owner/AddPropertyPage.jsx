@@ -11,6 +11,7 @@ import PropertyAddress from '../../components/propertyForm/PropertyAddress';
 import PropertyExtra from '../../components/propertyForm/PropertyExtra';
 import PropertyTagsAndAmenities from '../../components/propertyForm/PropertyTagsAndAmenities';
 import { useJsApiLoader } from '@react-google-maps/api';
+import { convertTo12HourFormat } from '../../utils';
 const steps = [
 	{ name: 'Property Details', key: 'property-details' },
 	{ name: 'Location Information', key: 'property-address' },
@@ -79,6 +80,11 @@ const AddPropertyPage = () => {
 	} = methods;
 
 	const onSubmit = async (data) => {
+		console.log(data);
+		const checkInTime = convertTo12HourFormat(data?.checkInTime);
+		const checkOutTime = convertTo12HourFormat(data?.checkOutTime);
+		// console.log({ checkInTime, checkOutTime });
+		// return;
 		let fd = new FormData();
 		fd.append('propertyName', data.propertyName);
 		fd.append('description', data.description);
@@ -92,8 +98,8 @@ const AddPropertyPage = () => {
 		fd.append('country', data.country);
 		fd.append('extraInfo', data.extraInfo ?? '');
 		fd.append('ownerId', user?.id);
-		fd.append('checkInTime', data?.checkInTime);
-		fd.append('checkOutTime', data?.checkOutTime);
+		fd.append('checkInTime', checkInTime);
+		fd.append('checkOutTime', checkOutTime);
 		fd.append('propertyTags', JSON.stringify(categories));
 		let captions = [];
 		propertyImages.forEach((f) => {

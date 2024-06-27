@@ -23,7 +23,7 @@ const HomePage = () => {
 	const [hasMore, setHasMore] = useState(true);
 	const showImage = location.pathname === '/';
 	const currentCity = useCurrentLocation();
-
+	const [debounceLoading, setDebounceLoading] = useState(false);
 	const handleScroll = useCallback(
 		throttle(() => {
 			if (properties.length <= 7) return;
@@ -70,6 +70,7 @@ const HomePage = () => {
 	const fetchProperties = useCallback(
 		async (city = null, currentPage = 1, search = '', tag = '') => {
 			try {
+				setDebounceLoading(true);
 				setInfinityLoader(true);
 				const params = {
 					city: city || selectedCity,
@@ -90,6 +91,7 @@ const HomePage = () => {
 				setLoading(false);
 				setInfinityLoader(false);
 				setInternalLoading(false);
+				setDebounceLoading(false);
 			}
 		},
 		[selectedCity],
@@ -129,7 +131,13 @@ const HomePage = () => {
 				<div className="relative">
 					<img src={venue} alt="venue" className="h-[350px] w-full opacity-80 object-cover object-center" />
 					<div className="absolute top-[calc(-50%_+_350px)] left-1/2 transform -translate-x-1/2">
-						<VenueSearch onCitySelect={handleCitySelect} city={selectedCity} onSearchVenues={handleSearchVenues} search={searchQuery} />
+						<VenueSearch
+							onCitySelect={handleCitySelect}
+							city={selectedCity}
+							onSearchVenues={handleSearchVenues}
+							search={searchQuery}
+							debounceLoading={debounceLoading}
+						/>
 					</div>
 				</div>
 			)}

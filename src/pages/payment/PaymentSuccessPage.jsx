@@ -32,8 +32,9 @@ const PaymentSuccessPage = () => {
 
 		const getBooking = async () => {
 			try {
-				const { data } = await axiosPrivate.get(`/booking/send-mail/${bookingId}`);
-				setBooking(data.data);
+				const { data } = await axiosPrivate.get(`/booking/${bookingId}`);
+				console.log(data);
+				setBooking(data);
 			} catch (err) {
 				console.log('Error fetching booking', err);
 			} finally {
@@ -70,41 +71,46 @@ const PaymentSuccessPage = () => {
 							<div className="font-sans max-w-[600px] mx-auto p-5">
 								<h1 className="text-[#b4457f] text-2xl font-bold mt-0">BookMyVenue</h1>
 								<h2 className="text-[#4a4a4a]">Booking Confirmation</h2>
-								<p>Dear {booking.user.firstName},</p>
-								<p>Thank you for your booking. Here are the details:</p>
+								<p>Dear {booking?.user?.firstName},</p>
+								<p>Thank you for your booking?. Here are the details:</p>
 								<table className="w-full border-collapse mb-5">
 									<tbody>
 										<tr>
 											<td className="p-2.5 border border-gray-300 font-bold">Booking ID</td>
-											<td className="p-2.5 border border-gray-300">{booking.id}</td>
+											<td className="p-2.5 border border-gray-300">{booking?.id}</td>
 										</tr>
 										<tr>
 											<td className="p-2.5 border border-gray-300 font-bold">Property</td>
-											<td className="p-2.5 border border-gray-300">{booking.property.propertyName}</td>
+											<td className="p-2.5 border border-gray-300">{booking?.property.propertyName}</td>
 										</tr>
 										<tr>
 											<td className="p-2.5 border border-gray-300 font-bold">Check-in</td>
-											<td className="p-2.5 border border-gray-300">{formatDate(booking.startDate)}</td>
+											<td className="p-2.5 border border-gray-300">{formatDate(booking?.startDate)}</td>
 										</tr>
 										<tr>
 											<td className="p-2.5 border border-gray-300 font-bold">Check-out</td>
-											<td className="p-2.5 border border-gray-300">{formatDate(booking.endDate)}</td>
+											<td className="p-2.5 border border-gray-300">{formatDate(booking?.endDate)}</td>
 										</tr>
 										<tr>
 											<td className="p-2.5 border border-gray-300 font-bold">Status</td>
-											<td className="p-2.5 border border-gray-300 text-yellow-600">{booking.bookingStatus}</td>
+											<td className="p-2.5 border border-gray-300 text-yellow-600">{booking?.bookingStatus}</td>
 										</tr>
 										<tr>
 											<td className="p-2.5 border border-gray-300 font-bold">Amount Paid</td>
-											<td className="p-2.5 border border-gray-300">Rs.{booking.payments[0].amount}</td>
+											<td className="p-2.5 border border-gray-300">Rs.{booking?.payments[0].amount}</td>
 										</tr>
 									</tbody>
 								</table>
-								<p>Please note that your booking is currently <span className='text-yellow-600'>{booking.bookingStatus}</span>. We will notify you once it's approved.</p>
+								<p>
+									Please note that your booking is currently <span className="text-yellow-600">{booking?.bookingStatus}</span>. We will notify you
+									once it's approved.
+								</p>
 								<p>If you have any questions, please don't hesitate to contact us.</p>
 							</div>
 						</div>
-						<div className='text-center text-md text-gray-500'>Conformation email has been sent to your Email ID : <span className=' font-semibold text-black'>{booking?.user.email}</span></div>
+						<div className="text-center text-md text-gray-500">
+							Conformation email has been sent to your Email ID : <span className=" font-semibold text-black">{booking?.user.email}</span>
+						</div>
 					</div>
 					<div className="mt-6 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
 						<Link

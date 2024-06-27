@@ -148,7 +148,7 @@ const AccountForm = () => {
 									label="Phone"
 									id="phone"
 									name="phone"
-									type="number"
+									type="phone"
 									register={register}
 									required="Phone is required"
 									error={errors?.phone}
